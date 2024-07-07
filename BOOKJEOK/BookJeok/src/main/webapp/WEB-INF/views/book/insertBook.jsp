@@ -79,6 +79,7 @@
 <script>
     function searchBooks() {
         var $keyword = $('#keyword').val();
+        console.log($keyword);
         $.ajax({
 			url : 'book',            
 			type : 'get',

@@ -1,12 +1,21 @@
 package com.kh.bookjeok.book.controller;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
+@RequestMapping("book")
 public class BookController {
 
 	@GetMapping
@@ -25,17 +34,11 @@ public class BookController {
 		sb.append("&start=1&SearchTarget=Book&output=xml&Version=20131101");
 		
 		log.info("url : {}",sb);
-		/*
-        http://www.aladin.co.kr/ttb/api/ItemSearch.aspx
-        ?ttbkey=ttbgksxodur11530001
-        &Query=${encodeURIComponent($keyword)}
-        &QueryType=Keyword
-        		&MaxResults=10
-        		&start=1
-        		&SearchTarget=Book&output=xml
-        		&Version=20131101`,
-		*/
+		log.info("keyword : {}", keyword);
 		
-		return "";
+	
+        
+		
+		return responseData;
 	}
 }
