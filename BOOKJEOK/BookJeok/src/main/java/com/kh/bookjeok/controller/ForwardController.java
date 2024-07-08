@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class ForwardController {
 
-	@GetMapping("book")
+	@GetMapping("books")
 	public String registerBook() {
 		return "book/insertBook";
 	}
