@@ -7,20 +7,12 @@
 		<setting name="jdbcTypeForNull" value="NULL" />
 	</settings>
 
-	<!-- 
 	<typeAliases>
-		<typeAlias type="com.kh.spring.member.model.vo.Member" alias="member"/>
-		<typeAlias type="com.kh.spring.board.model.vo.Board" alias="board"/>		
-		<typeAlias type="com.kh.spring.notice.model.vo.Notice" alias="notice"/>	
-		<typeAlias type="com.kh.spring.board.model.vo.Reply" alias="reply"/>		
+		<typeAlias type="com.kh.bookjeok.member.model.vo.Member" alias="member"/>	
 	</typeAliases>
-	 -->	
-	<!-- 
+
 	<mappers>
 		<mapper resource="/mapper/member-mapper.xml"/>
-		<mapper resource="/mapper/board-mapper.xml"/>
-		<mapper resource="/mapper/notice-mapper.xml"/>
 	</mappers>
-	 -->
 	
 </configuration>

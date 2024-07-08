@@ -12,4 +12,9 @@ public class ForwardController {
 	public String registerBook() {
 		return "book/insertBook";
 	}
+	
+	@GetMapping("/main")
+	public String toMain() {
+		return "main";
+	}
 }
