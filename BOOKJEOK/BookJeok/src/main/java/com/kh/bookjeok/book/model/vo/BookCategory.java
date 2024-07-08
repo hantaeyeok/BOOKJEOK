@@ -16,8 +16,10 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 public class BookCategory {
-	private Book categoryNo;
-    private int parentCategoryNo;
-    private String categoryName;
+	private String categoryNo;//1001
+	private String categoryName;
+	private String upCategoryNo;
+    private String categoryStauts;
+    private int categorySeq; 
 
 }

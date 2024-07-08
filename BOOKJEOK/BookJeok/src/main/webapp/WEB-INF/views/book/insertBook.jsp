@@ -87,8 +87,40 @@
                         <button type="button" class="btn btn-secondary" onclick="checkIsbn()">유효성 검사</button>
                </div>
                 <div class="form-group">
+                	<!-- 
+                	카테고리 데이터 방식.
+                	국내도서>어린이>동화/명작/고전>외국창작동화
+					국내도서>어린이>책읽기/글쓰기>글쓰기 일반
+					국내도서>어린이>동화/명작/고전>외국창작동화
+					
+                	<label for="b_main_catgy">국내/해외</label>
+						<select class="main_select" name="b_main_catgy">
+							<option value="">전체</option>
+					</select>
+						
+                	<label for="b_main_catgy">카테고리 대분류</label>
+						<select class="main_select" name="b_main_catgy">
+							<option value="">전체</option>
+					</select>
+						
+					<label for="b_middle_catgy">카테고리 중분류</label>
+					<select class="middle_select" name="b_middle_catgy">
+						<option value="">--</option>
+					</select>
+						
+					<label for="b_sub_catgy">카테고리 소분류</label>
+					<select class="sub_select" name="b_sub_catgy">
+						<option value="">--</option>
+					</select>
+
+                	
+                	 -->
+                	
+                	
                     <label for="category">카테고리</label>
                     <input type="text" class="form-control" id="category" name="category">
+                    
+                    
                 </div>
                 <div class="form-group">
                     <label for="description">책설명</label>
