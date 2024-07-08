@@ -6,4 +6,10 @@ public interface QnaService {
 
 	int insertQuestion(Question question);
 
+	Question findById(int qnaNo);
+
+	int updateQuestion(Question question);
+
+	int deleteQna(int qnaNo);
+
 }

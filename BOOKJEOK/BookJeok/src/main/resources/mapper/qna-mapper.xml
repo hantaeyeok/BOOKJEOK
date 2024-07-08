@@ -4,6 +4,18 @@
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="qnaMapper">
 
+	<sql id="selectQuestion">
+		SELECT
+		       QNA_NO qnaNo,
+			   QUESTION_TITLE questionTitle,
+			   QUESTION_CONTENT questionContent,
+			   QUESTION_DATE questionDate,
+			   QUESTION_EDITDATE questionEditdate,
+			   QUESTION_ORIGINNAME questionOriginname,
+			   QUESTION_CHANGENAME questionChangename,
+			   USERID userId
+	</sql>
+
 	<insert id="insertQuestion" parameterType="question">
 		INSERT
 		  INTO
@@ -26,5 +38,37 @@
 			   #{questionChangename}
 			   )
 	</insert>
+	
+	<select id="findById" parameterType="_int" resultType="question">
+		<include refid="selectQuestion" />
+		  FROM
+			   QUESTION
+		 WHERE
+			   QNA_NO = #{qnaNo}
+		   AND
+			   QUESTION_STATUS = 'Y'
+	</select>
+	
+	<update id="updateQuestion" parameterType="question">
+		UPDATE
+			   QUESTION
+		   SET
+			   QUESTION_TITLE = #{questionTitle},
+			   QUESTION_CONTENT = #{questionContent},
+			   QUESTION_ORIGINNAME = #{questionOriginname},
+			   QUESTION_CHANGENAME = #{questionChangename},
+			   QUESTION_EDITDATE = SYSDATE
+		 WHERE
+			   QNA_NO = #{qnaNo}
+	</update>
+	
+	<update id="deleteQna" parameterType="_int">
+		UPDATE
+			   QUESTION
+		   SET
+			   QUESTION_STATUS = 'N'
+		 WHERE
+			   QNA_NO = #{qnaNo}
+	</update>
 
 </mapper>

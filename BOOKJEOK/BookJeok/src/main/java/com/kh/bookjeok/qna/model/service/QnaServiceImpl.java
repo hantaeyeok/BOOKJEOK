@@ -20,5 +20,20 @@ public class QnaServiceImpl implements QnaService {
 		return qnaMapper.insertQuestion(sqlSession, question);
 	}
 
+	@Override
+	public Question findById(int qnaNo) {
+		return qnaMapper.findById(sqlSession, qnaNo);
+	}
+
+	@Override
+	public int updateQuestion(Question question) {
+		return qnaMapper.updateQuestion(sqlSession, question);
+	}
+
+	@Override
+	public int deleteQna(int qnaNo) {
+		return qnaMapper.deleteQna(sqlSession, qnaNo);
+	}
+
 	
 }

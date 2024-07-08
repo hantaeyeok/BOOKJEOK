@@ -42,10 +42,10 @@
     <div class="content">
         <br><br>
         <div class="innerOuter">
-            <h2>1대1 문의 : 문의하기</h2>
+            <h2>1대1 문의 : 문의 수정하기</h2>
             <br>
 
-            <form id="enrollForm" method="post" action="insert.question" enctype="multipart/form-data">
+            <form id="enrollForm" method="post" action="" enctype="">
                 <table align="center">
                     <tr>
                         <th><label for="title">제목</label></th>
@@ -61,19 +61,27 @@
                     </tr>
                     <tr>
                         <th><label for="upfile">첨부파일</label></th>
-                        <td><input type="file" id="upfile" class="form-control-file border" name="upfile" accept=".zip"></td>
+                        <td>
+                            <input type="file" id="upfile" class="form-control-file border" name="reUpfile">  
+                        </td>
                     </tr>
                     <tr>
-                        <th></th>
-                        <td><small style="color: red; font-weight: bold;">※ 첨부 파일은 ZIP파일만 업로드가 가능합니다.</small></td>
+                    	<td>
+                    		현재 업로드된 파일 : 
+                            <a href="" download="">flower.zip</a>
+                            <button style="border-radius: 2px; border-width: 1px; 
+                            border-color: gray; box-shadow: 0.5px 0.5px rgba(0.5px,0.5px,0.5px,0.5px);">파일 제거</button>
+                        </td>
                     </tr>
                 </table>
                 <br>
 
                 <div align="center">
-                    <button type="submit" class="btn btn-primary">문의하기</button>
+                    <button type="submit" class="btn btn-primary">문의 수정하기</button>
                     <button type="reset" class="btn btn-danger">취소하기</button>
                 </div>
+                
+                <input type="hidden" name="qnaNo" value="" />
             </form>
         </div>
         <br><br>

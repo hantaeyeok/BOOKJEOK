@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.bookjeok.qna.model.service.QnaService;
 import com.kh.bookjeok.qna.model.vo.Question;
@@ -38,7 +39,7 @@ public class QnaController {
 		
 		model.addAttribute("question", question);
 		
-		return "qna/questionList";
+		return "qna/qna-list";
 	}
 	
 	
@@ -51,6 +52,15 @@ public class QnaController {
 		log.info("검색키워드 : {}", keyword);
 	}
 	*/
+	
+	@GetMapping("detail-qna")
+	public ModelAndView detail(int qnaNo, ModelAndView mv) {
+		
+		mv.addObject("question", qnaService.findById(qnaNo))
+		  .setViewName("qna/qna-detail");
+		
+		return mv;
+	}
 	
 	@GetMapping("insertForm.question")
 	public String insertForm() {
@@ -72,12 +82,12 @@ public class QnaController {
 		
 		if(qnaService.insertQuestion(question) > 0) {
 			
-			session.setAttribute("alertMsg", "문의완료!");
+			session.setAttribute("alert", "문의완료!");
 			return "redirect:questionList";
 			
 		} else {
 			
-			model.addAttribute("errorMsg", "문의실패!");
+			model.addAttribute("alert", "문의실패!");
 			return "redirect:questionList";
 		}
 	}
@@ -105,5 +115,71 @@ public class QnaController {
 		}
 		
 		return "resources/uploadFiles/" + changename;
+	}
+	
+	@PostMapping("updateForm.question")
+	public ModelAndView updateForm(ModelAndView mv, int qnaNo) {
+		
+		mv.addObject("question", qnaService.findById(qnaNo)).setViewName("qna/question-update");
+		
+		return mv;
+	}
+	
+	@PostMapping("update.question")
+	public String updateQuestion(Question question,
+						 		 MultipartFile reUpfile,
+						 		 HttpSession session) {
+		
+		if(!reUpfile.getOriginalFilename().equals("")) {
+			question.setQuestionOriginname(reUpfile.getOriginalFilename());
+			question.setQuestionChangename(saveFile(reUpfile, session));
+		}
+		
+		if(qnaService.updateQuestion(question) > 0) {
+			
+			session.setAttribute("alert", "문의수정완료!");
+			return "redirect:qna-detail?qnaNo=" + question.getQnaNo();
+			
+		} else {
+			
+			session.setAttribute("alert", "문의수정실패!");
+			return "redirect:qna-detail?qnaNo=" + question.getQnaNo();
+		}
+	}
+	
+	@PostMapping("delete.qna")
+	public String deleteQna(int qnaNo,
+							String filePath,
+							HttpSession session,
+							Model model) {
+		
+		if(qnaService.deleteQna(qnaNo) > 0) {
+			
+			if(!"".equals(filePath)) {
+				
+				new File(session.getServletContext().getRealPath(filePath)).delete();
+				
+			}
+			
+			session.setAttribute("alert", "문의삭제완료!");
+			
+			return "redirect:questionList";
+			
+		} else {
+			
+			model.addAttribute("alert", "문의삭제실패!");
+			return "redirect:questionList";
+		}
+	}
+	
+	@PostMapping
+	public String deleteFile(int qnaNo,
+							 String filePath,
+							 HttpSession session,
+							 Model model) {
+		
+		new File(session.getServletContext().getRealPath(filePath)).delete();
+		
+		return "";
 	}
 }
