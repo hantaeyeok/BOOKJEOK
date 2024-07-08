@@ -18,4 +18,6 @@ public interface BookService {
 	//insertBookCategory
 	int insertBookCategory(BookCategory bookCategory);
 	
+	//list 카테고리 구조 생성
+	List<Category> createCategory()
 }
