@@ -53,7 +53,7 @@ public class QnaController {
 	}
 	*/
 	
-	@GetMapping("detail-qna")
+	@GetMapping("detail.qna")
 	public ModelAndView detail(int qnaNo, ModelAndView mv) {
 		
 		mv.addObject("question", qnaService.findById(qnaNo))
