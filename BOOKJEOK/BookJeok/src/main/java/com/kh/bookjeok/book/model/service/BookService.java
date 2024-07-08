@@ -7,7 +7,7 @@ import com.kh.bookjeok.book.model.vo.Book;
 public interface BookService {
 
 	//insert
-	int insertBook(Book book);
+	int saveBook(Book book);
 	
 	//update
 	int updateBook(Book book);

@@ -49,8 +49,8 @@
                 </div>
                 <div></div>
                 <div class="modal-footer">
-                	<button type="button" class="btn btn-secondary" onclick="searchBooks(currentPage - 1)">이전</button>
-                	<button type="button" class="btn btn-secondary" onclick="searchBooks(currentPage + 1)">다음</button>
+                	<button type="button" class="btn btn-secondary" onclick="changePage(-1)">이전</button>
+                	<button type="button" class="btn btn-secondary" onclick="changePage(+1)">다음</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
                 </div>
             </div>
@@ -115,14 +115,14 @@
 var currentPage = 1;
 
 function searchBooks() {
-    var $keyword = $('#keyword').val();
-    
+    var $keyword = $('#keyword').val(); 
     $.ajax({
-        url: 'book', 
-        type: 'get', 
-        data: { keyword: $keyword,
-        		start : currentPage }, 
-        success: function(result) { 
+        url: 'books',
+        type: 'GET', 
+        data: { keyword : $keyword,
+        		pageNo  : currentPage
+        		 }, 
+        success: result => { 
             let rows = '';
             const items = result.object.item; 
             
@@ -133,7 +133,7 @@ function searchBooks() {
                         '" data-pubdate="' + item.pubDate + '" data-isbn="' + item.isbn + 
                         '" data-category="' + item.categoryName + '" data-description="' + item.description + 
                         '" data-price="' + item.priceSales + '">'
-                        + '<td><img src="' + item.cover + '" style="width:100px;height:auto;"></td>'
+                        + '<td><img src="' + item.cover + '" style="width:100px;height:150px;"></td>'
                         + '<td>' + item.title + '</td>'
                         + '<td>' + item.author + '</td>'
                         + '<td>' + item.publisher + '</td>'
@@ -147,7 +147,7 @@ function searchBooks() {
             $('#modalBookResults').html(rows);
             $('#bookModal').modal('show'); 
         },
-        error: function() {
+        error: e => {
             alert("도서 정보를 불러오는 데 실패했습니다.");
         }
     });
@@ -166,6 +166,10 @@ function selectBook(tr) {
     $('#price').val($tr.data('price'));
 }
 
+function changePage(delta) {
+    currentPage += delta;
+    searchBooks(); // 변경된 페이지 번호로 검색을 다시 실행
+}
 
 function checkIsbn() {
 	//isbn 유효성 검사해야함.
