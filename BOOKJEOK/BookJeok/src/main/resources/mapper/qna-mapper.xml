@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qnaMapper">
+
+	<insert id="insertQuestion" parameterType="question">
+		INSERT
+		  INTO
+			   QUESTION
+		  	   (
+			   QNA_NO,
+			   QUESTION_TITLE,
+			   USER_ID,
+			   QUESTION_CONTENT,
+			   QUESTION_ORIGINNAME,
+			   QUESTION_CHANGENAME
+			   )
+		VALUES
+			   (
+			   QNA_SEQ.NEXTVAL,
+			   #{questionTitle},
+			   #{userId},
+			   #{questionContent},
+			   #{questionOriginname},
+			   #{questionChangename}
+			   )
+	</insert>
+
+</mapper>
