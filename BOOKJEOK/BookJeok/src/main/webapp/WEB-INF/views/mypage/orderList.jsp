@@ -95,7 +95,7 @@ border-left: solid 1px #CCC; padding:0px 10px; display:flex; align-items:center;
 		console.log($order); // 출력 확인 완료\
 		let text='';
 		text += "?orderNo="+$order
-		location.href="orderList"+text;
+		location.href="orderDetail"+text;
 	});
 	/*
 	 각 항목 요소 클릭 시, 데이터를 가지고 구매내역-상세 / 구매내역-환불 페이지로 이동하도록 내용 구성 → 전송방식 : GET, QueryString
