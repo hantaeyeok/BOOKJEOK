@@ -251,17 +251,13 @@ select option {
                 	$(() => {
                 		const $idInput = $('#userId');
                 		const $checkResult = $('#checkResult');
-                		const $joinSubmit = $('#join-btn');
+                		const $joinSubmit = $('#btn_submit');
+
                 		$idInput.keyup(() => { 
-                			console.log($idInput.val());
-                		});
-                		
-                		/*
-                		$idInput.keyup(() => { 
-                			//console.log($idInput.val().length);
+                			console.log($idInput.val().length);
                 			if($idInput.val().length >= 5) {
                 				$.ajax({
-                					url : 'idCheck.do',
+                					url : '/member/idCheck',
                 					type : 'get',
                 					data : {
                 						checkId : $idInput.val()
@@ -275,7 +271,6 @@ select option {
                 							$checkResult.show().css('color', 'lightgreen').text('id check success');
                 							$joinSubmit.attr('disabled', false);
                 						}
-                						
                 					},
                 					error : () => {}
                 				});
@@ -283,7 +278,7 @@ select option {
                 				$checkResult.hide();
                 				$joinSubmit.attr('disabled', true);
                 			}
-                		} ); */
+                		} );
                 	})
                 </script>
             </div>

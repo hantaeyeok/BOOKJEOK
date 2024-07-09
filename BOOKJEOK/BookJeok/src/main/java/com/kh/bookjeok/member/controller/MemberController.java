@@ -4,8 +4,10 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kh.bookjeok.member.model.service.MemberService;
 import com.kh.bookjeok.member.model.vo.Member;
@@ -54,4 +56,11 @@ public class MemberController {
 		}
 		return null;
 	}
+	
+	@ResponseBody
+	@GetMapping("idCheck")
+	public String userId(String checkId) {
+		return memberService.idCheck(checkId) > 0 ? "NNNNN" : "NNNNY";
+	}
+	
 }
