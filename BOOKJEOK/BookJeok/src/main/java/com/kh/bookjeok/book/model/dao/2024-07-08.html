@@ -1,0 +1,57 @@
+<div class="row">
+    <div class="col-md-8">
+        <h3>도서 정보 추가</h3>
+        <form id="bookForm" action="book" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="bookCover">책 표지:</label>
+                <input type="file" class="form-control-file" id="bookCover" name="bookCover" onchange="previewCoverImage(this);">
+                <div class="image-preview" id="coverPreview">
+                    <img id="coverImage" src="http://via.placeholder.com/150x150" class="img-fluid" alt="책 표지 미리보기" style="max-height: 300px;">
+                </div>
+            </div>              
+            <div class="form-group">
+                <label for="title">책제목:</label>
+                <input type="text" class="form-control" id="title" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="author">저자:</label>
+                <input type="text" class="form-control" id="author" name="author" required>
+            </div>
+            <div class="form-group">
+                <label for="publisher">출판사:</label>
+                <input type="text" class="form-control" id="publisher" name="publisher" required>
+            </div>
+            <div class="form-group">
+                <label for="pubDate">출판일:</label>
+                <input type="date" class="form-control" id="pubDate" name="pubDate" required>
+            </div>
+            <div class="form-group">
+                <label for="isbn">ISBN:</label>
+                <input type="text" class="form-control" id="isbn" name="isbn" required>
+                <button type="button" class="btn btn-secondary" onclick="checkIsbn()">유효성 검사</button>
+            </div>
+            <div class="form-group">
+                <label for="category">카테고리:</label>
+                <input type="text" class="form-control" id="category" name="category">
+            </div>
+            <div class="form-group">
+                <label for="description">책설명:</label>
+                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="detailImage">상세설명 이미지 추가:</label>
+                <input type="file" class="form-control" id="detailImage" name="detailImage" onchange="previewImage(this, 'imagePreview')">
+                <div class="image-preview" id="imagePreview">
+                    <img src="" alt="상세 설명 이미지">
+                    <span>이미지 없음</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="detailDescription">상세 설명:</label>
+                <textarea class="form-control" id="detailDescription" name="detailDescription" rows="3" placeholder="해당 내용은 상세설명이미지 아래에 들어가는 텍스트입니다."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">등록</button>
+        </form>
+    </div>
+</div>
+</div>

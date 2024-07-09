@@ -16,21 +16,14 @@ public class BookServiceImple implements BookService{
 	private final BookMapper bookMapper;
 	
 	@Override
-	public int saveBook(Book book, BookDetail bookdetail, BookCategory bookCategory) {
-		
-		bookMapper.insertBook(book);
-		bookMapper.insertBookDetail(bookdetail);
-		bookMapper.insertBookCategory(bookCategory);
-		
-		int retult = bookMapper.saveBook(book, bookdetail, bookCategory);
-		
-		return retult;
+	public int saveBookAll(Book book, BookDetail bookdetail, BookCategory bookCategory) {
+
+		return 0;
 	}
 
 	@Override
-	public int insertBook(Book book) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int saveBook(Book book) {
+		return bookMapper.saveBook(book);
 	}
 
 	@Override
@@ -45,7 +38,19 @@ public class BookServiceImple implements BookService{
 		return 0;
 	}
 
+	//카테고리 
+	@Override
+	public BookCategory findCategoryNameParent(String categoryName, BookCategory parentCategory) {
+		return bookMapper.findCategoryNameParent(categoryName, parentCategory);
+	}
+
+	@Override
+	public int saveCategory(BookCategory category) {
+		return bookMapper.saveCategory(category);
+	}
+
 	
+
 
 	
 }

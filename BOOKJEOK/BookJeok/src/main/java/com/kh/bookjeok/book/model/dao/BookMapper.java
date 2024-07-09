@@ -10,7 +10,10 @@ import com.kh.bookjeok.book.model.vo.BookDetail;
 public interface BookMapper {
 	
 	//saveBook()
-	public int saveBook(Book book, BookDetail bookdetail, BookCategory bookCategory);
+	public int saveBookAll(Book book, BookDetail bookdetail, BookCategory bookCategory);
+	
+	//saveBook
+	int saveBook(Book book);
 	
 	//insertBook()
 	int insertBook(Book book);
@@ -20,5 +23,13 @@ public interface BookMapper {
 	
 	//insertBookCategory
 	int insertBookCategory(BookCategory bookCategory);
+	
+	
+	// 카테고리 상위 카테고리랑 비교하려고 함.
+	BookCategory findCategoryNameParent(String categoryName, BookCategory parentCategory);
+		
+		
+	// 카테고리 넣기,
+	int saveCategory(BookCategory category);
 
 }

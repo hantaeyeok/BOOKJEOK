@@ -56,12 +56,22 @@
             </div>
         </div>
     </div>
+    
 
     <div class="row">
        
         <div class="col-md-8">
             <h3>도서 정보 추가</h3>
-            <form id="bookForm" action="saveBook" method="post" enctype="multipart/form-data">
+            <form id="bookForm" action="book/saveBook" method="post" enctype="multipart/form-data">
+             <!-- 책 표지 이미지 업로드 -->
+             <!-- 책 표지를 직접등록할 경우 -->
+			    <div class="form-group">
+			        <label for="bookCover">책 표지:</label>
+			        <input type="file" class="form-control-file" id="bookCover" name="bookCover" onchange="previewCoverImage(this);">
+			        <div class="image-preview" id="coverPreview">
+			            <img id="coverImage" src="http://via.placeholder.com/150x150" class="img-fluid" alt="책 표지 미리보기" style="max-height: 300px;">
+			        </div>
+			    </div>
                 <div class="form-group">
             		<img id="cover" src="http://via.placeholder.com/150x150" class="img-fluid" alt="책 표지" style="width: 100%; height: auto;">
         		</div>                
@@ -87,41 +97,23 @@
                         <button type="button" class="btn btn-secondary" onclick="checkIsbn()">유효성 검사</button>
                </div>
                 <div class="form-group">
-                	<!-- 
-                	카테고리 데이터 방식.
-                	국내도서>어린이>동화/명작/고전>외국창작동화
-					국내도서>어린이>책읽기/글쓰기>글쓰기 일반
-					국내도서>어린이>동화/명작/고전>외국창작동화
-					
-                	<label for="b_main_catgy">국내/해외</label>
-						<select class="main_select" name="b_main_catgy">
-							<option value="">전체</option>
-					</select>
-						
-                	<label for="b_main_catgy">카테고리 대분류</label>
-						<select class="main_select" name="b_main_catgy">
-							<option value="">전체</option>
-					</select>
-						
-					<label for="b_middle_catgy">카테고리 중분류</label>
-					<select class="middle_select" name="b_middle_catgy">
-						<option value="">--</option>
-					</select>
-						
-					<label for="b_sub_catgy">카테고리 소분류</label>
-					<select class="sub_select" name="b_sub_catgy">
-						<option value="">--</option>
-					</select>
-
-                	
-                	 -->
-                	
-                	
                     <label for="category">카테고리</label>
                     <input type="text" class="form-control" id="category" name="category">
-                    
-                    
                 </div>
+                 <div class="form-group">
+                    <label for="price">가격:</label>
+                    <input type="number" class="form-control" id="price" name="price" required>
+                </div>
+                <div class="form-group">
+                    <label for="stock">재고:</label>
+                    <input type="number" class="form-control" id="stock" name="stock" required>
+                </div>
+                <button type="submit" class="btn btn-primary">등록</button>
+            </form>
+                
+                
+          <form id="bookForm" action="book/saveBookDetail" method="post" enctype="multipart/form-data">
+          		<input type="hidden" name="bookNo">
                 <div class="form-group">
                     <label for="description">책설명</label>
                     <textarea class="form-control" id="description" name="description" rows="3"></textarea>
@@ -139,7 +131,10 @@
                         <textarea class="form-control" id="detailDescription" name="detailDescription" rows="3" placeholder="해당 내용은 상세설명이미지 아래에 들어가는 텍스트입니다."></textarea>
                     </div>
                 <button type="submit" class="btn btn-primary">등록</button>
-            </form>
+          </form>
+      
+      
+            
         </div>
     </div>
 </div>

@@ -4,19 +4,104 @@
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.bookjeok.book.model.dao.BookMapper">
 
-<insert id="insertBook">
-
-
+<!-- saveBook -->
+<insert id="saveBook" parameterType="book">
+	INSERT
+	INTO	
+			BOOK
+			
+			(
+			BOOK_NO,
+			CATEGORY_ID,
+			BOOK_TITLE,
+			BOOK_AUTHOR,
+			BOOK_PUBLISHER,
+			BOOK_PUB_DATE,
+			BOOK_ISBN,
+			BOOK_PRICE,
+			BOOK_DESCRIPTION,
+			BOOK_COVER,
+			BOOK_CREATE_DATE,
+			BOOK_UPDATE_DATE,
+			BOOK_AMOUNT,
+			BOOK_STATUS
+			)
+	VALUES
+			(
+			 BOOK_NO_SEQ.NEXTVAL,
+	         #{categoryId},
+	         #{bookTitle},
+	         #{bookAuthor},
+	         #{bookPublisher},
+	         #{bookPubDate},
+	         #{bookIsbn},
+	         #{bookPrice},
+	         #{bookDescription},
+	         #{bookCover},
+	         #{bookCreateDate},
+	         #{bookUpdateDate},
+	         #{bookAmount},
+	         #{bookStatus}
+			)
 </insert>
 
 
-<insert id="insertBookDetail">
 
-
+<!-- 카테고리 com.kh.bookjeok.book.model.vo.BookCategory -->
+<insert id="saveCategory" parameterType="bookCategory">
+	INSERT 
+	INTO 
+			BOOK_CATEGORY 
+			
+			(
+			CATEGORY_NAME, 
+			UP_CATEGORY_NO, 
+			CATEGORY_STATUS, 
+			CATEGORY_SEQ
+			)
+	VALUES
+			(
+			#{categoryName}, 
+			#{upCategoryNo}, 
+			#{categoryStatus}, 
+			#{categorySeq}
+			)
 </insert>
 
 
-<insert id="insertBookCategory">
+<!-- 카테고리 이름과 상위 카테고리를 기준으로 카테고리 조회 -->
+<!-- 카테고리 name 일치하는 거 있는지 확인 -->
+<select id="findCategoryNameParent" resultType="bookCategory">
+	
+	SELECT
+			CATEGORY_NO, 
+			CATEGORY_NAME, 
+			UP_CATEGORY_NO, 
+			CATEGORY_STATUS, 
+			CATEGORY_SEQ
+	FROM
+			BOOK_CATEGORY
+	WHERE
+			CATEGORY_NAME = #{categoryName}
+    AND 	
+    		UP_CATEGORY_NO = #{parentCategoryNo}
+
+</select>
+</mapper>
 
 
-</insert>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
