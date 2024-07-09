@@ -8,10 +8,12 @@
 	</settings>
 
 	<typeAliases>
-		<typeAlias type="com.kh.bookjeok.member.model.vo.Member" alias="member"/>	
+		<typeAlias type="com.kh.bookjeok.member.model.vo.Member" alias="member"/>
+		<typeAlias type="com.kh.bookjeok.notice.model.vo.notice" alias="notice"/>	
 	</typeAliases>
 
 	<mappers>
+		<mapper resource="/mapper/member-mapper.xml"/>
 		<mapper resource="/mapper/member-mapper.xml"/>
 	</mappers>
 	
