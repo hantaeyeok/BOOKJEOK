@@ -4,6 +4,59 @@
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.bookjeok.notice.model.dao.NoticeMapper">
 
+		<sql id="selectNotice">
+		SELECT
+		 	  NOTICE_NO noticeNo,
+		 	  NOTICE_TITLE noticeTitle,
+		 	  NOTICE_WRITER noticeWriter,
+		 	  NOTICE_CONTENT noticeContent,
+		 	  CREATE_DATE createDate
+		 FROM
+		      NOTICE
+	</sql>
+	<select id="findAll" resultType="notice">
+		<include refid ="selectNotice"/>
+		ORDER
+		   BY
+		     NOTICE_NO DESC
+	</select>
+	<select id="findById" resultType="notice" parameterType="_int">
+		<include refid="selectNotice"/>
+		WHERE
+		      NOTICE_NO = #{noticeNo}
+	
+	</select>
+ 	<insert id="save" parameterType="notice">
+ 		INSERT
+ 		  INTO
+ 		       NOTICE
+ 		VALUES
+ 		       (
+ 		       SEQ_NNO.NEXTVAL,
+ 		       #{noticeTitle},
+ 		       #{noticeWriter},
+ 		       #{noticeContent},
+ 		       SYSDATE
+ 		       )
+ 	</insert>
+ 	<delete id="delete" parameterType="_int">
+ 		DELETE
+ 		      NOTICE
+ 		 WHERE
+ 		      NOTICE_NO = #{noticeNo}
+ 	</delete>
+ 	<update id="update" parameterType="notice">
+ 		UPDATE
+ 			   NOTICE
+ 		   SET
+ 		       NOTICE_TITLE = #{noticeTitle},
+ 		       NOTICE_CONTENT = #{noticeContent}
+ 		 WHERE
+ 		       NOTICE_NO = #{noticeNo}
+ 	       AND
+ 	           NOTICE_WRITER = #{noticeWriter}
+
+ 	</update>
 
 
 
