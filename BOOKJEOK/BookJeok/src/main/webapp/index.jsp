@@ -12,6 +12,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
-<jsp:forward page="/main.jsp"></jsp:forward>
+<jsp:forward page="/main"></jsp:forward>
 </body>
 </html>
