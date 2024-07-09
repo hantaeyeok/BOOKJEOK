@@ -241,7 +241,7 @@ select option {
 <body>
 
 <div class="container">
-    <form action="/member/join" method="post">
+    <form action="/member/join" method="post" id="join_form">
         <div class="row">
             <h4>회원 정보</h4>
             <div class="input-group input-group-icon"><input type="text" placeholder="아이디" id="userId" name="userId" />
@@ -254,7 +254,6 @@ select option {
                 		const $joinSubmit = $('#btn_submit');
 
                 		$idInput.keyup(() => { 
-                			console.log($idInput.val().length);
                 			if($idInput.val().length >= 5) {
                 				$.ajax({
                 					url : '/member/idCheck',
@@ -265,36 +264,67 @@ select option {
                 					success : response => {
                 						console.log(response);
                 						if (response.substr(4)==="N") { // jung bok
-                							$checkResult.show().css('color', 'crimson').text('id check failed');
+                							$checkResult.show().css('color', 'crimson').text('이미 존재하는 아이디입니다.');
                 							$joinSubmit.attr('disabled', true);
                 						} else { //not jung bok
-                							$checkResult.show().css('color', 'lightgreen').text('id check success');
+                							$checkResult.show().css('color', 'lightgreen').text('사용 가능한 아이디입니다.');
                 							$joinSubmit.attr('disabled', false);
                 						}
                 					},
                 					error : () => {}
                 				});
                 			} else {
-                				$checkResult.hide();
+                				$checkResult.show().css('color', 'crimson').text('아이디는 5글자 이상이어야 합니다.');
                 				$joinSubmit.attr('disabled', true);
                 			}
                 		} );
                 	})
                 </script>
             </div>
-            <div class="input-group input-group-icon"><input type="password" placeholder="비밀번호" id="userPwd" name="userPwd" />
+            
+            <div class="input-group input-group-icon">
+            	<input type="password" placeholder="비밀번호" id="userPwd" name="userPwd" />
                 <div class="input-icon"><i class="fa fa-key"></i></div>
+                <div style="font-size:0.7em; margin-top:10px; float:right; color:gray;">비밀번호는 영어 대문자, 영어 소문자, 숫자, 특수문자가 하나씩 포함된 문자열로 작성하여주세요</div><br>
             </div>
             <div class="input-group input-group-icon"><input type="password" placeholder="비밀번호 재확인" id="userPwdRetype" />
                 <div class="input-icon"><i class="fa fa-key"></i></div>
             </div>
-            <br>
             <div class="input-group input-group-icon"><input type="text" placeholder="이름" id="userName" name="userName" />
                 <div class="input-icon"><i class="fa fa-user"></i></div>
             </div>
             <div class="input-group input-group-icon"><input type="email" placeholder="이메일" id="email" name="email" />
                 <div class="input-icon"><i class="fa fa-envelope"></i></div>
+                <div id="emailCheckResult" style="display:none; font-size:1em; margin-top:10px; float:right;"></div><br>
             </div>
+                <script>
+                	$(() => {
+                		const $emailInput = $('#email');
+                		const $checkEmailResult = $('#emailCheckResult');
+                		const $joinSubmit = $('#btn_submit');
+
+                		$emailInput.keyup(() => { 
+               				$.ajax({
+               					url : '/member/emailCheck',
+               					type : 'get',
+               					data : {
+               						checkEmail : $emailInput.val()
+               					},
+               					success : response => {
+               						console.log(response);
+               						if (response.substr(4)==="N") { // jung bok
+               							$checkEmailResult.show().css('color', 'crimson').text('이미 사용중인 이메일입니다.');
+               							$joinSubmit.attr('disabled', true);
+               						} else { //not jung bok
+               							$checkEmailResult.show().css('color', 'lightgreen').text('사용 가능한 이메일입니다.');
+               							$joinSubmit.attr('disabled', false);
+               						}
+               					},
+               					error : () => {}
+               				});
+                		} );
+                	})
+                </script>
         </div>
         <div class="row" style="display:none;">
             <div class="col-half">
@@ -307,7 +337,7 @@ select option {
             </div>
         </div>
         <div class="row">
-            <h4>세부 정보</h4>
+            <h4>선택 기입 정보</h4>
             <div class="input-group">
 	            <input id="payment-method-card" type="radio" name="gender" value="M" checked />
 	            <label for="payment-method-card">
@@ -345,10 +375,32 @@ select option {
             <div class="input-group"><input id="terms" type="checkbox" /><label data-toggle="modal" data-target=".bd-example-modal-lg">개인정보 이용 약관에 동의합니다.</label></div>
         </div>
         <div class="row">
-        	<input type="submit" class="input-group" value="회원가입" id="btn_submit"/>
+        	<input type="button" class="input-group" value="회원가입" id="btn_submit" onclick="fc_submit()"/>
         </div>
     </form>
     
+    <script>
+    function fc_submit() {
+    	const pattern = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/;
+    	const $userPwd = $('#userPwd');
+    	const $userPwdRetype = $('#userPwdRetype');
+    	const $terms = $('#terms');
+    	const $join_form = $('#join_form');
+    	if(pattern.test($userPwd.val())) { //패스워드 정규식
+        	if($userPwd.val()===$userPwdRetype.val()) { //비밀번호와 비밀번호확인 일치여부
+        		if($terms.is(':checked')) { //개인정보 동의 약관 체크여부
+        			$join_form.submit();
+        		} else {
+        			alert('개인정보 이용 약관에 동의하여주세요.');
+        		}
+        	} else {
+        		alert('비밀번호와 비밀번호확인란이 일치하지 않습니다.');
+        	}
+    	} else {
+    		alert('비밀번호는 영어 대문자, 영어 소문자, 숫자, 특수문자가 하나씩 포함된 문자열로 작성하여주세요.');
+    	}	
+    };
+    </script>
     
 	<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
 	  <div class="modal-dialog modal-lg">

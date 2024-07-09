@@ -3,6 +3,14 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.bookjeok.member.model.dao.MemberMapper">
+	<update id="updatePwd">
+		UPDATE
+				MEMBER
+			SET
+				USER_PWD=#{userPwd}
+		WHERE
+				USER_ID=#{userId}
+	</update>
 	<select id="idCheck" parameterType="string" resultType="_int">
 		SELECT
 			COUNT(*)
@@ -10,6 +18,14 @@
 			MEMBER
 		WHERE
 			USER_ID = #{idCheck}
+	</select>
+	<select id="emailCheck" parameterType="string" resultType="_int">
+		SELECT
+			COUNT(*)
+		FROM
+			MEMBER_EMAIL
+		WHERE
+			EMAIL = #{emailCheck}
 	</select>
 	<select id="login" parameterType="member" resultType="member">
 		SELECT

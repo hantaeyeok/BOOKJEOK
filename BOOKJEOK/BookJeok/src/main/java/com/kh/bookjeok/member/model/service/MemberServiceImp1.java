@@ -18,6 +18,7 @@ public class MemberServiceImp1 implements MemberService{
 		// TODO Auto-generated method stub
 		return MemberMapper.login(member);
 	}
+
 	
 	@Override
 	public int insertMem(Member member) {
@@ -30,6 +31,12 @@ public class MemberServiceImp1 implements MemberService{
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	
+	@Override
+	public int updatePwd(Member member) {
+		// TODO Auto-generated method stub
+		return MemberMapper.updatePwd(member);
+	}
 
 	@Override
 	public int delete(String string) {
@@ -41,6 +48,11 @@ public class MemberServiceImp1 implements MemberService{
 	public int idCheck(String idCheck) {
 		// TODO Auto-generated method stub
 		return MemberMapper.idCheck(idCheck);
+	}
+	@Override
+	public int emailCheck(String emailCheck) {
+		// TODO Auto-generated method stub
+		return MemberMapper.emailCheck(emailCheck);
 	}
 
 
