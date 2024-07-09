@@ -3,6 +3,7 @@ package com.kh.bookjeok.qna.model.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -33,6 +34,15 @@ public class QnaRepository {
 
 	public int qnaCount(SqlSessionTemplate sqlSession) {
 		return sqlSession.selectOne("qnaMapper.qnaCount");
+	}
+
+	public int searchCount(SqlSessionTemplate sqlSession, Map<String, String> map) {
+		return sqlSession.selectOne("qnaMapper.searchCount", map);
+	}
+
+	public List<Question> findByConditionAndKeyword(SqlSessionTemplate sqlSession, Map<String, String> map,
+			RowBounds rowBounds) {
+		return sqlSession.selectList("qnaMapper.findByConditionAndKeyword", map, rowBounds);
 	}
 
 }

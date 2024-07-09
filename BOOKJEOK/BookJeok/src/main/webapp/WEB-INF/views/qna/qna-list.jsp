@@ -50,19 +50,27 @@
         <div class="innerOuter" style="padding:5% 10%;">
             <h2>1대1 문의</h2>
             <br>
-            <form id="searchForm" action="" method="get" align="center">
+            <form id="searchForm" action="search.qna" method="get" align="center">
                 <div class="select">
                     <select class="custom-select" name="condition">
-                        <option value="title">제목</option>
-                        <option value="content">내용</option>
+                        <option value="title">문의제목</option>
                         <option value="status">처리상태</option>
                     </select>
                 </div>
                 <div class="text">
-                    <input type="text" class="form-control" name="keyword">
+                    <input type="text" class="form-control" name="keyword" value="${ keyword }">
                 </div>
                 <button type="submit" class="searchBtn btn btn-secondary">검색</button>
             </form>
+            
+            <script>
+	            $(() => {
+	     
+	            	$('#searchForm option[value="${condition}"]').attr('selected', true);
+	            	
+	            })
+            </script>
+            
             <br clear="both">
             <br>
             <table id="boardList" class="table table-hover" align="center">
@@ -76,18 +84,18 @@
                 </thead>
                 <tbody>
                 	<c:choose>
-                		<c:when test="${ list.size() == 0 }">
+                		<c:when test="${ question.size() == 0 }">
                 			<tr>
                 				<td colspan="4">조회된 문의가 없습니다.</td>
                 			</tr>
                 		</c:when>
                 	</c:choose>
-                	<c:forEach items="${ list }" var="qna">
-                		<tr class="qna-detail" id="qnaNo-${ qna.qnaNo }">
-                			<td>${ qna.qnaNo }</td>
-	                        <td>${ qna.questionTitle }</td>
-	                        <td>${ qna.questionDate }</td>
-	                        <td>${ qna.questionStatus }</td>
+                	<c:forEach items="${ question }" var="question">
+                		<tr class="qna-detail" id="qnaNo-${ question.qnaNo }">
+                			<td>${ question.qnaNo }</td>
+	                        <td>${ question.questionTitle }</td>
+	                        <td>${ question.questionDate }</td>
+	                        <td>${ question.questionStatus }</td>
                 		</tr>
                 	</c:forEach>
                 </tbody>
@@ -105,13 +113,73 @@
 
             <div id="pagingArea">
                 <ul class="pagination">
-                    <li class="page-item disabled"><a class="page-link" href="#">이전</a></li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">4</a></li>
-                    <li class="page-item"><a class="page-link" href="#">5</a></li>
-                    <li class="page-item"><a class="page-link" href="#">다음</a></li>
+                	<c:choose>
+                		<c:when test="${ '1' eq pageInfo.currentPage }">
+                    		<li class="page-item disabled">
+                    			<a class="page-link" href="#">이전</a>
+                    		</li>
+                    	</c:when>
+                    	<c:otherwise>
+                    		<c:choose>
+                    			<c:when test="${ empty condition }">
+                    				<li class="page-item">
+				                    	<a class="page-link" 
+				                    	   href="list.qna?page=${ pageInfo.currentPage - 1 }">이전</a>
+				                    </li>
+                    			</c:when>
+                    			<c:otherwise>
+                    				<li class="page-item">
+			                    		<a class="page-link" 
+			                    		   href="search.qna?page=${ pageInfo.currentPage - 1 }
+			                    		   &condition=${condition}&keyword=${keyword}">이전</a>
+			                    	</li>
+                    			</c:otherwise>
+                    		</c:choose>
+                    	</c:otherwise>
+                	</c:choose>
+                
+                    <c:forEach begin="${ pageInfo.startPage }" end="${ pageInfo.endPage }" var="p">
+                    	<c:choose>
+                    		<c:when test="${ empty condition }">
+                    			<li class="page-item">
+		                    		<a class="page-link" href="list.qna?page=${ p }">${ p }</a>
+		                    	</li>
+                    		</c:when>
+                    		<c:otherwise>
+	                    		<li class="page-item">
+		                    		<a class="page-link" 
+		                    		   href="search.qna.do?page=${ p }&condition=${condition}&keyword=${keyword}"
+		                    		   >${ p }</a>
+		                    	</li>
+                    		</c:otherwise>
+                    	</c:choose>
+                    </c:forEach>
+                    
+                    <c:choose>
+                		<c:when test="${ pageInfo.maxPage eq pageInfo.currentPage }">
+                    		<li class="page-item disabled">
+                    			<a class="page-link" href="#">다음</a>
+                    		</li>
+                    	</c:when>
+                    	<c:otherwise>
+                    		<c:choose>
+                    			<c:when test="${ empty condition }">
+                    				<li class="page-item">
+				                    	<a class="page-link" 
+				                    	   href="list.qna?page=${ pageInfo.currentPage + 1 }">다음</a>
+				                    </li>
+                    			</c:when>
+                    			<c:otherwise>
+                    				<li class="page-item">
+			                    		<a class="page-link" 
+			                    		   href="search.qna?page=${ pageInfo.currentPage + 1 }
+			                    		   &condition=${condition}&keyword=${keyword}">다음</a>
+			                    	</li>
+                    			</c:otherwise>
+                    		</c:choose>
+                    	</c:otherwise>
+                	</c:choose>
+                    
                 </ul>
             </div>
             <br>

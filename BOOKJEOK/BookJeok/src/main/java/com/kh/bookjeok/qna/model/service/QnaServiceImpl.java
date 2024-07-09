@@ -3,6 +3,7 @@ package com.kh.bookjeok.qna.model.service;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +47,16 @@ public class QnaServiceImpl implements QnaService {
 	@Override
 	public int qnaCount() {
 		return qnaRepository.qnaCount(sqlSession);
+	}
+
+	@Override
+	public int searchCount(Map<String, String> map) {
+		return qnaRepository.searchCount(sqlSession, map);
+	}
+
+	@Override
+	public List<Question> findByConditionAndKeyword(Map<String, String> map, RowBounds rowBounds) {
+		return qnaRepository.findByConditionAndKeyword(sqlSession, map, rowBounds);
 	}
 
 	

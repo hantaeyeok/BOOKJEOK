@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.kh.bookjeok.model.Page;
 import com.kh.bookjeok.qna.model.service.QnaService;
 import com.kh.bookjeok.qna.model.vo.Question;
+import com.kh.bookjeok.template.PageTemplate;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +38,8 @@ public class QnaController {
 	public String list(@RequestParam(value="page", defaultValue="1") int page,
 					   Model model,
 					   Page pageInfo) {
+		
+		log.info("Received request for list.qna with page: {}", page);
 		
 		// paging
 		
@@ -94,16 +98,42 @@ public class QnaController {
 		return "qna/qna-list";
 	}
 	
-	/*
+	
 	@GetMapping("search.qna")
-	public String search(String condition,
-					     String keyword,
-					     Model model) {
+	public String search(String condition, 
+			   			   String keyword,
+			   			   @RequestParam(value="page", defaultValue="1") int page,
+			   			   Model model) {
 		
-		log.info("검색조건 : {}", condition);
-		log.info("검색키워드 : {}", keyword);
+	    log.info("검색 조건 : {}", condition);
+	    log.info("검색 키워드 : {}", keyword);
+	   
+	    Map<String, String> map = new HashMap();
+	    map.put("condition", condition);
+	    map.put("keyword", keyword);
+	   
+	    int searchCount = qnaService.searchCount(map);
+	    log.info("검색 조건에 부합하는 행의 수 : {}", searchCount);
+	    int currentPage = page;
+	    int pageLimit = 3;
+	    int listLimit = 3;
+	   
+	    Page pageInfo = PageTemplate.getPageInfo(searchCount, 
+		 	   								     currentPage, 
+			   									 pageLimit, 
+			   								     listLimit);
+	   
+	    RowBounds rowBounds = new RowBounds((currentPage - 1) * listLimit, listLimit);
+	   
+	    List<Question> question = qnaService.findByConditionAndKeyword(map, rowBounds);
+	   
+	    model.addAttribute("question", question);
+	    model.addAttribute("pageInfo", pageInfo);
+	    model.addAttribute("keyword", keyword);
+	    model.addAttribute("condition", condition);
+	   
+	    return "qna/qna-list";
 	}
-	*/
 	
 	@GetMapping("detail.qna")
 	public ModelAndView detail(int qnaNo, ModelAndView mv) {

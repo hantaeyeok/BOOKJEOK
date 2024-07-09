@@ -51,6 +51,39 @@
 		WHERE
 			  RNUM BETWEEN #{startValue} AND #{endValue}
 	</select>
+	<select id="searchCount" parameterType="hashmap" resultType="_int">
+		SELECT
+               COUNT(QNA_NO)
+          FROM
+               QUESTION
+         WHERE
+         <if test="condition  == 'status'">
+               QUESTION_STATUS    
+         </if>
+         <if test="condition == 'title'">
+         	   QUESTION_TITLE
+         </if>
+               LIKE '%' || #{keyword} || '%'
+	</select>
+	
+	<select id="findByConditionAndKeyword" parameterType="hashmap" resultType="question">
+		<include refid="selectQuestion" />
+		  FROM
+			   QUESTION
+		 WHERE
+		<choose>
+			<when test="condition == 'status'">
+			   QUESTION_STATUS
+			</when>
+			<otherwise>
+			   QUESTION_TITLE
+			</otherwise>
+		</choose>
+		       LIKE '%' || #{keyword} || '%'
+		 ORDER
+			BY
+			   QNA_NO DESC
+	</select>
 	
 	<select id="qnaCount" resultType="_int">
 		SELECT
