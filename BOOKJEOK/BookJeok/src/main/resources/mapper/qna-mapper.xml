@@ -13,8 +13,53 @@
 			   QUESTION_EDITDATE questionEditdate,
 			   QUESTION_ORIGINNAME questionOriginname,
 			   QUESTION_CHANGENAME questionChangename,
-			   USERID userId
+			   USER_ID userId
 	</sql>
+	
+	<select id="findAll" resultType="question" parameterType="map">
+		<include refid="selectQuestion" />
+		 FROM
+			  (SELECT
+			          QNA_NO,
+				      QUESTION_TITLE,
+				      QUESTION_CONTENT,
+				      QUESTION_DATE,
+				      QUESTION_EDITDATE,
+				      QUESTION_ORIGINNAME,
+				      QUESTION_CHANGENAME,
+				      USER_ID,
+				      ROWNUM RNUM
+			     FROM
+			     	  (SELECT
+			     	  		  QNA_NO,
+				      		  QUESTION_TITLE,
+						      QUESTION_CONTENT,
+						      QUESTION_DATE,
+						      QUESTION_EDITDATE,
+						      QUESTION_ORIGINNAME,
+						      QUESTION_CHANGENAME,
+						      USER_ID
+			     	     FROM
+			     	     	  QUESTION
+			     	    WHERE
+			     	     	  QUESTION_STATUS = 'Y'
+			     	   	ORDER 
+			     	   	   BY
+			     	     	  QNA_NO DESC
+			     	  )
+			  )
+		WHERE
+			  RNUM BETWEEN #{startValue} AND #{endValue}
+	</select>
+	
+	<select id="qnaCount" resultType="_int">
+		SELECT
+			   COUNT(QNA_NO)
+		  FROM
+			   QUESTION
+		 WHERE
+			   QUESTION_STATUS = 'Y'
+	</select>
 
 	<insert id="insertQuestion" parameterType="question">
 		INSERT

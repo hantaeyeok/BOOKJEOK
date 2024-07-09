@@ -1,5 +1,8 @@
 package com.kh.bookjeok.qna.model.service;
 
+import java.util.List;
+import java.util.Map;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +36,16 @@ public class QnaServiceImpl implements QnaService {
 	@Override
 	public int deleteQna(int qnaNo) {
 		return qnaRepository.deleteQna(sqlSession, qnaNo);
+	}
+
+	@Override
+	public List<Question> findAll(Map<String, Integer> map) {
+		return qnaRepository.findAll(sqlSession, map);
+	}
+
+	@Override
+	public int qnaCount() {
+		return qnaRepository.qnaCount(sqlSession);
 	}
 
 	

@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -11,9 +14,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.kh.bookjeok.model.Page;
 import com.kh.bookjeok.qna.model.service.QnaService;
 import com.kh.bookjeok.qna.model.vo.Question;
 
@@ -26,23 +31,70 @@ import lombok.extern.slf4j.Slf4j;
 public class QnaController {
 
 	private final QnaService qnaService;
-	/*
+	
 	@GetMapping("list.qna")
-	public String list(Model model) {
+	public String list(@RequestParam(value="page", defaultValue="1") int page,
+					   Model model,
+					   Page pageInfo) {
 		
 		// paging
 		
-		List <Question> question = qnaService.findById();
+		int listCount; 		// 게시글 수
+		int currentPage;	// 현재 페이지
+		int pageLimit;		// 페이징 바(버튼)에 보여질 최대 개수
+		int listLimit;		// 한 페이지에 보여질 게시글 최대 개수
+		
+
+		int maxPage;		// 총 페이지 개수
+		int startPage;		// 페이징 바의 시작 수 
+		int endPage;		// 페이징 바의 마지막 수
+
+		
+		listCount = qnaService.qnaCount();
+		currentPage = page;
+		
+		pageLimit = 10;
+		listLimit = 10;
+		
+		maxPage = (int)Math.ceil((double)listCount/listLimit);
+		
+		startPage = (currentPage - 1) / pageLimit * pageLimit + 1;
+		
+		endPage = startPage + pageLimit - 1;
+		
+		if(endPage > maxPage) endPage = maxPage;
+		
+		int startValue = (currentPage - 1) * listLimit + 1;
+		
+		int endValue = startValue + listLimit - 1;
+		
+		pageInfo = Page.builder()
+					   .listCount(listCount)
+					   .currentPage(currentPage)
+					   .pageLimit(pageLimit)
+					   .listLimit(listLimit)
+					   .maxPage(maxPage)
+					   .startPage(startPage)
+					   .endPage(endPage)
+					   .build();
+		
+		Map<String, Integer> map = new HashMap();
+		
+		map.put("startValue", startValue);
+		map.put("endValue", endValue);
+		
+		List<Question> question = qnaService.findAll(map);
 		
 		log.info("조회된 1대1 문의사항 개수 : {}", question.size());
 		log.info("조회된 1대1 문의사항 목록 : {}", question);
 		
 		model.addAttribute("question", question);
+		model.addAttribute("pageInfo", pageInfo);
 		
 		return "qna/qna-list";
 	}
 	
-	
+	/*
 	@GetMapping("search.qna")
 	public String search(String condition,
 					     String keyword,

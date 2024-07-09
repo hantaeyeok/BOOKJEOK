@@ -1,5 +1,8 @@
 package com.kh.bookjeok.qna.model.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -22,6 +25,14 @@ public class QnaRepository {
 
 	public int deleteQna(SqlSessionTemplate sqlSession, int qnaNo) {
 		return sqlSession.update("qnaMapper.deleteQna", qnaNo);
+	}
+
+	public List<Question> findAll(SqlSessionTemplate sqlSession, Map<String, Integer> map) {
+		return sqlSession.selectList("qnaMapper.findAll", map);
+	}
+
+	public int qnaCount(SqlSessionTemplate sqlSession) {
+		return sqlSession.selectOne("qnaMapper.qnaCount");
 	}
 
 }

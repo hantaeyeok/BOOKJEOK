@@ -68,46 +68,40 @@
             <table id="boardList" class="table table-hover" align="center">
                 <thead>
                     <tr>
-                        <th>글번호</th>
-                        <th>문의</th>
+                        <th>문의번호</th>
+                        <th>문의제목</th>
                         <th>문의날짜</th>
                         <th>처리상태</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>5</td>
-                        <td>마지막 게시글제목</td>
-                        <td>2024-06-10</td>
-                        <td>처리중</td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>네번째 게시글제목</td>
-                        <td>2024-06-07</td>
-                        <td>처리중</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>세번째 게시글제목</td>
-                        <td>2024-06-03</td>
-                        <td>처리완료</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>두번째 게시글제목</td>
-                        <td>2024-06-01</td>
-                        <td>처리완료</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>첫번째 게시글제목</td>
-                        <td>2023-12-25</td>
-                        <td>처리완료</td>
-                    </tr>
+                	<c:choose>
+                		<c:when test="${ list.size() == 0 }">
+                			<tr>
+                				<td colspan="4">조회된 문의가 없습니다.</td>
+                			</tr>
+                		</c:when>
+                	</c:choose>
+                	<c:forEach items="${ list }" var="qna">
+                		<tr class="qna-detail" id="qnaNo-${ qna.qnaNo }">
+                			<td>${ qna.qnaNo }</td>
+	                        <td>${ qna.questionTitle }</td>
+	                        <td>${ qna.questionDate }</td>
+	                        <td>${ qna.questionStatus }</td>
+                		</tr>
+                	</c:forEach>
                 </tbody>
             </table>
             <br>
+            <script>
+            	$(() => {
+            		
+            		$('.qna-detail').click(e => {
+            			
+            			location.href = 'detail.qna?qnaNo=' + e.currentTarget.id.split('-')[1];
+            		})
+            	});
+            </script>
 
             <div id="pagingArea">
                 <ul class="pagination">
@@ -121,7 +115,7 @@
                 </ul>
             </div>
             <br>
-            <a class="btn btn-primary" style="float:right;" href="">문의하기</a>
+            <a class="btn btn-primary" style="float:right;" href="insertForm.question">문의하기</a>
             <br><br>
         </div>
         <br><br>

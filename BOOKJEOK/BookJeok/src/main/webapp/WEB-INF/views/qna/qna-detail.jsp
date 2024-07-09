@@ -40,26 +40,26 @@
             <span 
                 style="float: right; border-radius: 20px; width: 100px; height: 30px;
                 border: 2px; background-color: blue; font-weight: bold; color: white; text-align: center; line-height: 30px;">
-                처리중
+                ${ question.questionStatus }
             </span>
             <br><br>
 
             <table id="contentArea" align="center" class="table">
                 <tr>
                     <th width="100">제목</th>
-                    <td colspan="3">문의입니다!</td>
+                    <td colspan="3">${question.questionTitle }</td>
                 </tr>
                 <tr>
                     <th>작성자</th>
-                    <td>user01</td>
+                    <td>${ question.userId }</td>
                 </tr>
                 <tr>
                     <th>작성일</th>
-                    <td>2020-02-07</td>
+                    <td>${ question.questionDate }</td>
                 </tr>
                 <tr>
                     <th>내용</th>
-                    <td colspan="4"><p style="height:150px;">게시판 내용이 들어갈 자리!!</p></td>
+                    <td colspan="4"><p style="height:150px;">${ question.questionContent }</p></td>
                 </tr>
                 <tr>
                     <th>첨부파일</th>
