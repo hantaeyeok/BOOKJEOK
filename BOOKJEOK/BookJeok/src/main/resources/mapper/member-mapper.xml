@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.bookjeok.member.model.dao.MemberMapper">
+	<select id="login" parameterType="member" resultType="member">
+		SELECT
+				USER_ID userId,
+				USER_PWD userPwd,
+				USER_NAME userName,
+				ENROLL_DATE enrollDate,
+				MODIFY_DATE modifyDate,
+				STATUS status,
+				MILEAGE mileage
+		FROM
+				MEMBER
+		WHERE
+				USER_ID = #{userId}
+		AND
+				STATUS = 'Y'
+	</select>
+	<insert id="insertMem" parameterType="member">
+		INSERT ALL
+			INTO
+					MEMBER
+				VALUES
+					(
+					 #{userId},
+					 #{userPwd},
+					 #{userName},
+					 DEFAULT,
+					 DEFAULT,
+					 DEFAULT,
+					 DEFAULT
+					)
+			INTO
+					MEMBER_EMAIL
+				VALUES
+					(
+					#{userId},
+					#{email}
+					)
+			INTO
+					MEMBER_ADDRESS
+				VALUES
+					(
+					#{userId},
+					#{address},
+					#{addressDetail},
+					#{postnum}
+					)
+			INTO
+					MEMBER_GENDER
+				VALUES
+					(
+					#{userId},
+					#{gender}
+					)
+			INTO
+					MEMBER_PHONE
+				VALUES
+					(
+					#{userId},
+					#{phone}
+					)
+			SELECT 1 FROM DUAL
+	</insert>
+</mapper>
