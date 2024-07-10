@@ -21,6 +21,7 @@
 	<mappers>
 		<mapper resource="/mapper/book-mapper.xml"/>
 		<mapper resource="/mapper/member-mapper.xml"/>
+		<mapper resource="/mapper/qna-mapper.xml" />
 	</mappers>
 	
 </configuration>
