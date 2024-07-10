@@ -4,7 +4,7 @@
 	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
 	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
-		
+
 	<!-- Root Context: defines shared resources visible to all other web components -->
 		
 		
@@ -30,6 +30,9 @@
 	   		<property name="maxUploadSize" value="100000000"/>
 	   		<property name="maxInMemorySize" value="100000000"/>
 	   </bean>
+
 	   
 	   <mybatis-spring:scan base-package="com.kh.bookjeok.book.model.dao"/>
+	   <mybatis-spring:scan base-package="com.kh.bookjeok.member.model.dao"/>
+
 </beans>
