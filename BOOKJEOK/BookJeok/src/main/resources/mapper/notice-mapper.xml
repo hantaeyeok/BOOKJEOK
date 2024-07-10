@@ -10,7 +10,8 @@
 		 	  NOTICE_TITLE noticeTitle,
 		 	  NOTICE_WRITER noticeWriter,
 		 	  NOTICE_CONTENT noticeContent,
-		 	  CREATE_DATE createDate
+		 	  CREATE_DATE createDate,
+		 	  USER_ID userId
 		 FROM
 		      NOTICE
 	</sql>
@@ -20,43 +21,6 @@
 		   BY
 		     NOTICE_NO DESC
 	</select>
-	<select id="findById" resultType="notice" parameterType="_int">
-		<include refid="selectNotice"/>
-		WHERE
-		      NOTICE_NO = #{noticeNo}
-	
-	</select>
- 	<insert id="save" parameterType="notice">
- 		INSERT
- 		  INTO
- 		       NOTICE
- 		VALUES
- 		       (
- 		       SEQ_NNO.NEXTVAL,
- 		       #{noticeTitle},
- 		       #{noticeWriter},
- 		       #{noticeContent},
- 		       SYSDATE
- 		       )
- 	</insert>
- 	<delete id="delete" parameterType="_int">
- 		DELETE
- 		      NOTICE
- 		 WHERE
- 		      NOTICE_NO = #{noticeNo}
- 	</delete>
- 	<update id="update" parameterType="notice">
- 		UPDATE
- 			   NOTICE
- 		   SET
- 		       NOTICE_TITLE = #{noticeTitle},
- 		       NOTICE_CONTENT = #{noticeContent}
- 		 WHERE
- 		       NOTICE_NO = #{noticeNo}
- 	       AND
- 	           NOTICE_WRITER = #{noticeWriter}
-
- 	</update>
 
 
 
