@@ -16,7 +16,7 @@ import lombok.ToString;
 @Builder
 public class Book {
     private int bookNo;
-    private String categoryId;
+    private Integer categoryId;
     private String bookTitle;
     private String bookAuthor;
     private String bookPublisher;
@@ -27,6 +27,7 @@ public class Book {
     private String bookCover;
     private Date bookCreateDate;
     private Date bookUpdateDate;
-    private Integer bookAmount;
+    private int bookAmount;
     private String bookStatus;
 }
+  

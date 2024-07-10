@@ -10,7 +10,10 @@
 
 	<typeAliases>
 		<typeAlias type="com.kh.bookjeok.book.model.vo.Book" alias="book"/>		
-		<typeAlias type="com.kh.bookjeok.book.model.vo.BookCategory" alias="bookCategory"/>		
+		<typeAlias type="com.kh.bookjeok.book.model.vo.TopCategory" alias="topCategory"/>
+		<typeAlias type="com.kh.bookjeok.book.model.vo.LowerCategory" alias="lowerCategory"/>
+		<typeAlias type="com.kh.bookjeok.book.model.vo.MidCategory" alias="midCategory"/>
+		<typeAlias type="com.kh.bookjeok.book.model.vo.UpperCategory" alias="upperCategory"/>
 	</typeAliases>
 	
 

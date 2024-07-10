@@ -6,102 +6,135 @@
 
 <!-- saveBook -->
 <insert id="saveBook" parameterType="book">
-	INSERT
-	INTO	
-			BOOK
-			
-			(
-			BOOK_NO,
-			CATEGORY_ID,
-			BOOK_TITLE,
-			BOOK_AUTHOR,
-			BOOK_PUBLISHER,
-			BOOK_PUB_DATE,
-			BOOK_ISBN,
-			BOOK_PRICE,
-			BOOK_DESCRIPTION,
-			BOOK_COVER,
-			BOOK_CREATE_DATE,
-			BOOK_UPDATE_DATE,
-			BOOK_AMOUNT,
-			BOOK_STATUS
-			)
-	VALUES
-			(
-			 BOOK_NO_SEQ.NEXTVAL,
-	         #{categoryId},
-	         #{bookTitle},
-	         #{bookAuthor},
-	         #{bookPublisher},
-	         #{bookPubDate},
-	         #{bookIsbn},
-	         #{bookPrice},
-	         #{bookDescription},
-	         #{bookCover},
-	         #{bookCreateDate},
-	         #{bookUpdateDate},
-	         #{bookAmount},
-	         #{bookStatus}
-			)
+    INSERT 
+    INTO 
+    	BOOK (
+		        BOOK_NO,
+		        CATEGORY_ID,
+		        BOOK_TITLE,
+		        BOOK_AUTHOR,
+		        BOOK_PUBLISHER,
+		        BOOK_PUB_DATE,
+		        BOOK_ISBN,
+		        BOOK_PRICE,
+		        BOOK_DESCRIPTION,
+		        BOOK_COVER,
+		        BOOK_CREATE_DATE,
+		        BOOK_AMOUNT,
+		        BOOK_STATUS
+    			) 
+    VALUES (
+		        BOOK_NO_SEQ.NEXTVAL,
+		        #{categoryId},
+		        #{bookTitle},
+		        #{bookAuthor},
+		        #{bookPublisher},
+		        #{bookPubDate},
+		        #{bookIsbn},
+		        #{bookPrice},
+		        #{bookDescription},
+		        #{bookCover},
+		        DEFAULT,
+		        #{bookAmount},
+		        DEFAULT
+    		)
 </insert>
 
-
-
-<!-- 카테고리 com.kh.bookjeok.book.model.vo.BookCategory -->
-<insert id="saveCategory" parameterType="bookCategory">
-	INSERT 
-	INTO 
-			BOOK_CATEGORY 
-			
-			(
-			CATEGORY_NAME, 
-			UP_CATEGORY_NO, 
-			CATEGORY_STATUS, 
-			CATEGORY_SEQ
-			)
-	VALUES
-			(
-			#{categoryName}, 
-			#{upCategoryNo}, 
-			#{categoryStatus}, 
-			#{categorySeq}
-			)
-</insert>
-
-
-<!-- 카테고리 이름과 상위 카테고리를 기준으로 카테고리 조회 -->
-<!-- 카테고리 name 일치하는 거 있는지 확인 -->
-<select id="findCategoryNameParent" resultType="bookCategory">
-	
-	SELECT
-			CATEGORY_NO, 
-			CATEGORY_NAME, 
-			UP_CATEGORY_NO, 
-			CATEGORY_STATUS, 
-			CATEGORY_SEQ
-	FROM
-			BOOK_CATEGORY
-	WHERE
-			CATEGORY_NAME = #{categoryName}
-    AND 	
-    		UP_CATEGORY_NO = #{parentCategoryNo}
-
+<!-- TopCategory 조회 -->
+<select id="selectTopCategoryByName" resultType="topCategory" parameterType="string">
+    SELECT 
+	        TOP_CATEGORY_NO topCategoryNo, 
+	        TOP_CATEGORY_NAME topCategoryName,
+	        CATEGORY_STATUS categoryStatus
+    FROM 
+        	TOP_CATEGORY 
+    WHERE 
+        	TOP_CATEGORY_NAME = #{topCategoryName}
 </select>
+
+<!-- TopCategory 삽입 -->
+<insert id="insertTopCategory" parameterType="topCategory">
+    INSERT 
+    INTO 
+    		TOP_CATEGORY 
+    		(TOP_CATEGORY_NO, TOP_CATEGORY_NAME, CATEGORY_STATUS)
+    VALUES 
+    		(top_category_seq.NEXTVAL, #{topCategoryName}, 'Y')
+</insert>
+
+<!-- UpperCategory 조회 -->
+<select id="selectUpperCategoryByNameAndParentId" resultType="upperCategory" parameterType="map" >
+
+    SELECT 
+	        UPPER_CATEGORY_NO upperCategoryNo,
+	        UPPER_CATEGORY_NAME upperCategoryName,
+	        TOP_CATEGORY_NO topCategoryNo, 
+	        CATEGORY_STATUS categoryStatus
+    FROM 
+        	UPPER_CATEGORY 
+    WHERE 
+        	UPPER_CATEGORY_NAME = #{upperCategoryName} 
+    AND 
+    		TOP_CATEGORY_NO = #{topCategoryNo}
+</select>
+
+
+<!-- UpperCategory 삽입 -->
+<insert id="insertUpperCategory" parameterType="upperCategory">
+    INSERT 
+    INTO 
+    		UPPER_CATEGORY 
+    		(UPPER_CATEGORY_NO, UPPER_CATEGORY_NAME, TOP_CATEGORY_NO, CATEGORY_STATUS)
+    VALUES 
+    		(upper_category_seq.NEXTVAL, #{upperCategoryName}, #{topCategoryNo}, 'Y')
+</insert>
+
+
+<!-- MidCategory 조회 -->
+<select id="selectMidCategoryByNameAndParentId" resultType="midCategory"  parameterType="map">
+    SELECT 
+        MID_CATEGORY_NO midCategoryNo,
+        MID_CATEGORY_NAME midCategoryName,
+        UPPER_CATEGORY_NO upperCategoryNo,
+        CATEGORY_STATUS categoryStatus
+    FROM 
+        MID_CATEGORY 
+    WHERE 
+        MID_CATEGORY_NAME = #{midCategoryName} 
+    AND 
+    	UPPER_CATEGORY_NO = #{upperCategoryNo}
+</select>
+
+
+<!-- MidCategory 삽입 -->
+<insert id="insertMidCategory" parameterType="midCategory">
+    INSERT INTO MID_CATEGORY (MID_CATEGORY_NO, MID_CATEGORY_NAME, UPPER_CATEGORY_NO, CATEGORY_STATUS)
+    VALUES (mid_category_seq.NEXTVAL, #{midCategoryName}, #{upperCategoryNo}, 'Y')
+</insert>
+
+<!-- LowerCategory 조회 -->
+<select id="selectLowerCategoryByNameAndParentId" resultType="lowerCategory"  parameterType="map">
+    SELECT 
+        LOWER_CATEGORY_NO lowerCategoryNo, 
+        LOWER_CATEGORY_NAME lowerCategoryName, 
+        MID_CATEGORY_NO midCategoryNo, 
+        CATEGORY_STATUS categoryStatus
+    FROM 
+        LOWER_CATEGORY 
+    WHERE 
+        LOWER_CATEGORY_NAME = #{lowerCategoryName} 
+    AND 
+    	MID_CATEGORY_NO = #{midCategoryNo}
+</select>
+
+<!-- LowerCategory 삽입 -->
+<insert id="insertLowerCategory" parameterType="lowerCategory">
+    INSERT 
+    INTO 
+    		LOWER_CATEGORY 
+    		(LOWER_CATEGORY_NO, LOWER_CATEGORY_NAME, MID_CATEGORY_NO, CATEGORY_STATUS)
+    VALUES 
+    		(lower_category_seq.NEXTVAL, #{lowerCategoryName}, #{midCategoryNo}, 'Y')
+</insert>
+
 </mapper>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
