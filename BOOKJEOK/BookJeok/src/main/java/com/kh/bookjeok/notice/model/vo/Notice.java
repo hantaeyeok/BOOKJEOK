@@ -1,6 +1,7 @@
 package com.kh.bookjeok.notice.model.vo;
 
 import java.sql.Date;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,5 +25,6 @@ public class Notice {
 	private int noticeVisited;
 	private String noticeStatus;
 	private Date noticeDate;
+	private List<NoticeFile> noticeFileList;
 	
 }
