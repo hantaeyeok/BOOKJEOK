@@ -13,6 +13,7 @@
 			   QUESTION_EDITDATE questionEditdate,
 			   QUESTION_ORIGINNAME questionOriginname,
 			   QUESTION_CHANGENAME questionChangename,
+			   QUESTION_STATUS questionStatus,
 			   USER_ID userId
 	</sql>
 	
@@ -27,6 +28,7 @@
 				      QUESTION_EDITDATE,
 				      QUESTION_ORIGINNAME,
 				      QUESTION_CHANGENAME,
+				      QUESTION_STATUS,
 				      USER_ID,
 				      ROWNUM RNUM
 			     FROM
@@ -38,6 +40,7 @@
 						      QUESTION_EDITDATE,
 						      QUESTION_ORIGINNAME,
 						      QUESTION_CHANGENAME,
+						      QUESTION_STATUS,
 						      USER_ID
 			     	     FROM
 			     	     	  QUESTION
