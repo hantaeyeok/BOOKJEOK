@@ -40,6 +40,7 @@ public class QnaController {
 					   Page pageInfo) {
 		
 		log.info("Received request for list.qna with page: {}", page);
+		System.out.println(page);
 		
 		// paging
 		
@@ -92,6 +93,9 @@ public class QnaController {
 		log.info("조회된 1대1 문의사항 개수 : {}", question.size());
 		log.info("조회된 1대1 문의사항 목록 : {}", question);
 		
+		System.out.println("조회된 문의사항 개수" + question.size());
+		System.out.println("조회된 문의사항 목록" + question);
+		
 		model.addAttribute("question", question);
 		model.addAttribute("pageInfo", pageInfo);
 		
@@ -107,13 +111,19 @@ public class QnaController {
 		
 	    log.info("검색 조건 : {}", condition);
 	    log.info("검색 키워드 : {}", keyword);
+	    
+	    System.out.println("검색 조건 : " + condition);
+	    System.out.println("검색 키워드 : " + keyword);
 	   
 	    Map<String, String> map = new HashMap();
 	    map.put("condition", condition);
 	    map.put("keyword", keyword);
 	   
 	    int searchCount = qnaService.searchCount(map);
+	    
 	    log.info("검색 조건에 부합하는 행의 수 : {}", searchCount);
+	    System.out.println("검색 조건에 부합하는 행의 수 : " + searchCount);
+	    
 	    int currentPage = page;
 	    int pageLimit = 3;
 	    int listLimit = 3;
