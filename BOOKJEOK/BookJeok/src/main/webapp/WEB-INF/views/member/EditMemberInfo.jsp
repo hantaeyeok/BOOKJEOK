@@ -286,10 +286,43 @@ select option {
 	            <div class="input-group input-group-icon"><input type="text" placeholder="이름" id="userName" name="userName" value="${loginUser.userName }" readonly />
 	                <div class="input-icon"><i class="fa fa-user"></i></div>
 	            </div>
-	            <div class="input-group input-group-icon"><input type="email" placeholder="이메일" id="email" name="email" value="${loginUser.email }" readonly />
+	            <div class="input-group input-group-icon"><input type="email" placeholder="이메일" id="email" name="email" value="${loginUser.email }" />
 	                <div class="input-icon"><i class="fa fa-envelope"></i></div>
 	                <div id="emailCheckResult" style="display:none; font-size:1em; margin-top:10px; float:right;"></div><br>
 	            </div>
+                <script>
+                	$(() => {
+                		const $emailInput = $('#email');
+                		const $checkEmailResult = $('#emailCheckResult');
+                		const $joinSubmit = $('#btn_submit');
+
+                		$emailInput.keyup(() => { 
+               				$.ajax({
+               					url : '/member/emailCheck',
+               					type : 'get',
+               					data : {
+               						checkEmail : $emailInput.val()
+               					},
+               					success : response => {
+               						console.log(response);
+               						if (response.substr(4)==="N") { // jung bok
+               							if ($emailInput.val() != ${sessionScope.loginUser.email}) {
+	               							$checkEmailResult.show().css('color', 'crimson').text('이미 사용중인 이메일입니다.');
+	               							$joinSubmit.attr('disabled', true);
+               							} else {
+               								$checkEmailResult.show().css('color', 'lightgreen').text('사용 가능한 이메일입니다.');
+               								$joinSubmit.attr('disabled', false);
+               							}
+               						} else { //not jung bok
+               							$checkEmailResult.show().css('color', 'lightgreen').text('사용 가능한 이메일입니다.');
+               							$joinSubmit.attr('disabled', false);
+               						}
+               					},
+               					error : () => {}
+               				});
+                		} );
+                	})
+                </script>
 	            <div class="input-group">
 		            <input id="payment-method-card" type="radio" name="gender" value="M" readonly/>
 		            <label for="payment-method-card">
@@ -326,9 +359,33 @@ select option {
 	        	<input type="button" class="input-group" value="회원정보 수정" id="info_submit" onclick="info_submit()"/>
 	        </div>
 	        <script>
+	        	window.onload = () => {
+	        		$("input:radio[name='gender'][value=${loginUser.gender }]").prop('checked',true);
+	        	};
 	        	function info_submit() {
-	        		const $etcForm = $('#etcForm');
-	        		$etcForm.submit();
+	           		const phone_pattern = /^(?:(010)|(01[1|6|7|8|9]))-\d{3,4}-(\d{4})$/;
+	           		const email_pattern = /[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]$/i;
+	           		const postnum_pattern = /^[a-z|A-Z|0-9]{5}$/;
+	           		
+	            	const $email = $('#email');
+	            	const $phone = $('#phone');
+	            	const $postnum = $('#postnum');
+	            	const $etcForm = $('#etcForm');
+	            	
+	            	if(postnum_pattern.test($postnum.val())) { //우편번호 정규식
+        		    	if($phone.val()=='' || phone_pattern.test($phone.val())) { //폰 정규식
+        			    	if(email_pattern.test($email.val())) { //이메일 정규식
+        			    		$etcForm.submit();
+        			    	} else {
+        			    		alert('올바른 이메일 형식을 입력해주세요.');
+        			    	}
+        		    	} else {
+        		    		alert('하이픈(-)을 포함하여 올바른 형식으로 휴대폰 번호를 작성해주세요.');
+        		    	}
+	            	} else {
+	            		alert('우편번호는 숫자5자리로 이루어져 있어야 합니다.');
+	            	}
+	        		
 	        	}
 	        </script>
 	    </form>

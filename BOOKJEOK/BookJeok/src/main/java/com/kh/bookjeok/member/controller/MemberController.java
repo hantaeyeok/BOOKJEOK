@@ -35,12 +35,20 @@ public class MemberController {
 			System.out.println("로그인 실패");
 		}
 		
-		return null;
+		return "redirect:/";
 	}
 	
 	@PostMapping("join")
 	public String join(Member member, HttpSession session) {
 
+		member.setUserId(member.getUserId().replaceAll(" ", ""));
+		member.setUserName(member.getUserName().replaceAll(" ", ""));
+		member.setUserPwd(member.getUserPwd().replaceAll(" ", ""));
+		member.setPhone(member.getPhone().replaceAll(" ", ""));
+		member.setAddress(member.getAddress().replaceAll("  ", " "));
+		member.setPostnum(member.getPostnum().replaceAll(" ", ""));
+		member.setEmail(member.getEmail().replaceAll(" ", ""));
+		
 		//암호화구문 삽입 부분
 		String encPwd = bCryptPasswordEncoder.encode(member.getUserPwd());
 		member.setUserPwd(encPwd);
@@ -55,7 +63,7 @@ public class MemberController {
 		} else {
 			System.out.println("회원가입 실패");
 		}
-		return null;
+		return "redirect:/";
 	}
 	
 	@ResponseBody

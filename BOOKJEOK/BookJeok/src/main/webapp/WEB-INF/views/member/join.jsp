@@ -252,7 +252,7 @@ select option {
                 		const $idInput = $('#userId');
                 		const $checkResult = $('#checkResult');
                 		const $joinSubmit = $('#btn_submit');
-
+						
                 		$idInput.keyup(() => { 
                 			if($idInput.val().length >= 5) {
                 				$.ajax({
@@ -283,17 +283,17 @@ select option {
             </div>
             
             <div class="input-group input-group-icon">
-            	<input type="password" placeholder="비밀번호" id="userPwd" name="userPwd" />
+            	<input type="password" placeholder="비밀번호" id="userPwd" name="userPwd" required/>
                 <div class="input-icon"><i class="fa fa-key"></i></div>
                 <div style="font-size:0.7em; margin-top:10px; float:right; color:gray;">비밀번호는 영어 대문자, 영어 소문자, 숫자, 특수문자가 하나씩 포함된 문자열로 작성하여주세요</div><br>
             </div>
-            <div class="input-group input-group-icon"><input type="password" placeholder="비밀번호 재확인" id="userPwdRetype" />
+            <div class="input-group input-group-icon"><input type="password" placeholder="비밀번호 재확인" id="userPwdRetype" required/>
                 <div class="input-icon"><i class="fa fa-key"></i></div>
             </div>
-            <div class="input-group input-group-icon"><input type="text" placeholder="이름" id="userName" name="userName" />
+            <div class="input-group input-group-icon"><input type="text" placeholder="이름" id="userName" name="userName" required/>
                 <div class="input-icon"><i class="fa fa-user"></i></div>
             </div>
-            <div class="input-group input-group-icon"><input type="email" placeholder="이메일" id="email" name="email" />
+            <div class="input-group input-group-icon"><input type="email" placeholder="이메일" id="email" name="email" required/>
                 <div class="input-icon"><i class="fa fa-envelope"></i></div>
                 <div id="emailCheckResult" style="display:none; font-size:1em; margin-top:10px; float:right;"></div><br>
             </div>
@@ -381,24 +381,50 @@ select option {
     
     <script>
     function fc_submit() {
-    	const pattern = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/;
+    	const pw_pattern = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/;
+    	const id_pattern = /^[a-z|A-Z|0-9]{4,}$/;
+   		const phone_pattern = /^(?:(010)|(01[1|6|7|8|9]))-\d{3,4}-(\d{4})$/;
+   		const email_pattern = /[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]$/i;
+   		const postnum_pattern = /^[a-z|A-Z|0-9]{5}$/;
+   		
+   		const $userId = $('#userId');
     	const $userPwd = $('#userPwd');
     	const $userPwdRetype = $('#userPwdRetype');
+    	const $email = $('#email');
+    	const $phone = $('#phone');
     	const $terms = $('#terms');
+    	const $postnum = $('#postnum');
     	const $join_form = $('#join_form');
-    	if(pattern.test($userPwd.val())) { //패스워드 정규식
-        	if($userPwd.val()===$userPwdRetype.val()) { //비밀번호와 비밀번호확인 일치여부
-        		if($terms.is(':checked')) { //개인정보 동의 약관 체크여부
-        			$join_form.submit();
-        		} else {
-        			alert('개인정보 이용 약관에 동의하여주세요.');
-        		}
-        	} else {
-        		alert('비밀번호와 비밀번호확인란이 일치하지 않습니다.');
-        	}
+    	
+    	if(postnum_pattern.test($postnum.val())) { //우편번호 정규식
+			if(id_pattern.test($userId.val())) { //아이디 정규식
+		    	if($phone.val()=='' || phone_pattern.test($phone.val())) { //폰 정규식
+			    	if(email_pattern.test($email.val())) { //이메일 정규식
+				    	if(pw_pattern.test($userPwd.val())) { //패스워드 정규식
+				        	if($userPwd.val()===$userPwdRetype.val()) { //비밀번호와 비밀번호확인 일치여부
+				        		if($terms.is(':checked')) { //개인정보 동의 약관 체크여부
+				        			$join_form.submit();
+				        		} else {
+				        			alert('개인정보 이용 약관에 동의하여주세요.');
+				        		}
+				        	} else {
+				        		alert('비밀번호와 비밀번호확인란이 일치하지 않습니다.');
+				        	}
+				    	} else {
+				    		alert('비밀번호는 영어 대문자, 영어 소문자, 숫자, 특수문자가 하나씩 포함된 문자열로 작성하여주세요.');
+				    	}
+			    	} else {
+			    		alert('올바른 이메일 형식을 입력해주세요.');
+			    	}
+		    	} else {
+		    		alert('하이픈(-)을 포함하여 올바른 형식으로 휴대폰 번호를 작성해주세요.');
+		    	}
+		   	} else {
+		   		alert('id에는 영문자와 숫자만, 최소 4자리 이상 들어가야 사용할 수 있습니다.');
+		   	}
     	} else {
-    		alert('비밀번호는 영어 대문자, 영어 소문자, 숫자, 특수문자가 하나씩 포함된 문자열로 작성하여주세요.');
-    	}	
+    		alert('우편번호는 숫자5자리로 이루어져 있어야 합니다.');
+    	}
     };
     </script>
     
