@@ -37,6 +37,12 @@ public class MemberServiceImp1 implements MemberService{
 		// TODO Auto-generated method stub
 		return MemberMapper.updatePwd(member);
 	}
+	
+	@Override
+	public int updateEtc(Member member) {
+		// TODO Auto-generated method stub
+		return MemberMapper.updateEtc(member);
+	}
 
 	@Override
 	public int delete(String string) {

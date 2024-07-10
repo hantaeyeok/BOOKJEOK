@@ -18,5 +18,7 @@ public interface MemberService {
 	// 아이디 중복체크(SELECT)
 	int idCheck(String idCheck);
 	int emailCheck(String emailCheck);
+
+	int updateEtc(Member member);
 	
 }

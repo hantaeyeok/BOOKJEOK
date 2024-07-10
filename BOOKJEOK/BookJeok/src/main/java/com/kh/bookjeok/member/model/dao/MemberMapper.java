@@ -15,6 +15,8 @@ public interface MemberMapper{
 	
 	int updatePwd(Member member);
 	
+	int updateEtc(Member member);
+	
 	int delete(String string);
 	
 	// 아이디 중복체크(SELECT)

@@ -11,6 +11,19 @@
 		WHERE
 				USER_ID=#{userId}
 	</update>
+	
+	<update id="updateEtc" parameterType="member">
+		UPDATE
+				MEMBER m, MEMBER_EMAIL e, MEMBER_PHONE p, MEMBER_ADDRESS a, MEMBER_GENDER g
+			SET
+				e.EMAIL=#{email},
+				p.PHONE=#{phone},
+				a.ADDRESS=#{address},
+				a.ADDRESS_DETAIL
+		WHERE
+				USER_ID=#{userId}
+	</update>
+	
 	<select id="idCheck" parameterType="string" resultType="_int">
 		SELECT
 			COUNT(*)

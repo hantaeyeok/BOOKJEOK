@@ -282,7 +282,7 @@ select option {
 	     <form action="/member/EditMemberInfoEtc" method="post" id="etcForm">
 	        <div class="row">
 	            <h4>세부 정보</h4>
-	
+				<input type="hidden" placeholder="아이디" name="userId" value="${loginUser.userId }" readonly/>
 	            <div class="input-group input-group-icon"><input type="text" placeholder="이름" id="userName" name="userName" value="${loginUser.userName }" readonly />
 	                <div class="input-icon"><i class="fa fa-user"></i></div>
 	            </div>
@@ -294,7 +294,7 @@ select option {
                 	$(() => {
                 		const $emailInput = $('#email');
                 		const $checkEmailResult = $('#emailCheckResult');
-                		const $joinSubmit = $('#btn_submit');
+                		const $info_submit = $('#info_submit');
 
                 		$emailInput.keyup(() => { 
                				$.ajax({
@@ -304,18 +304,17 @@ select option {
                						checkEmail : $emailInput.val()
                					},
                					success : response => {
-               						console.log(response);
                						if (response.substr(4)==="N") { // jung bok
-               							if ($emailInput.val() != ${sessionScope.loginUser.email}) {
+               							if ($emailInput.val() != '${sessionScope.loginUser.email}') {
 	               							$checkEmailResult.show().css('color', 'crimson').text('이미 사용중인 이메일입니다.');
-	               							$joinSubmit.attr('disabled', true);
+	               							$info_submit.attr('disabled', true);
                							} else {
                								$checkEmailResult.show().css('color', 'lightgreen').text('사용 가능한 이메일입니다.');
-               								$joinSubmit.attr('disabled', false);
+               								$info_submit.attr('disabled', false);
                							}
                						} else { //not jung bok
                							$checkEmailResult.show().css('color', 'lightgreen').text('사용 가능한 이메일입니다.');
-               							$joinSubmit.attr('disabled', false);
+               							$info_submit.attr('disabled', false);
                						}
                					},
                					error : () => {}
@@ -356,13 +355,13 @@ select option {
 	            </div>
 	        </div>
 	        <div class="row">
-	        	<input type="button" class="input-group" value="회원정보 수정" id="info_submit" onclick="info_submit()"/>
+	        	<input type="button" class="input-group" value="회원정보 수정" id="info_submit" onclick="info_submitfc()"/>
 	        </div>
 	        <script>
 	        	window.onload = () => {
 	        		$("input:radio[name='gender'][value=${loginUser.gender }]").prop('checked',true);
 	        	};
-	        	function info_submit() {
+	        	function info_submitfc() {
 	           		const phone_pattern = /^(?:(010)|(01[1|6|7|8|9]))-\d{3,4}-(\d{4})$/;
 	           		const email_pattern = /[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]$/i;
 	           		const postnum_pattern = /^[a-z|A-Z|0-9]{5}$/;

@@ -80,6 +80,7 @@ public class MemberController {
 	
 	@PostMapping("EditMemberPwCheck")
 	public ModelAndView EditMemberPwCheck(String userPwd, HttpSession session, ModelAndView mv) {
+		userPwd = userPwd.replaceAll(" ", "");
 		Member loginUser;
 		loginUser = (Member)session.getAttribute("loginUser");
 		if (loginUser!=null && bCryptPasswordEncoder.matches(userPwd, loginUser.getUserPwd())) {
@@ -97,6 +98,13 @@ public class MemberController {
 //		System.out.println("(Member)(session.getAttribute(\"loginUser\")) : "+(Member)(session.getAttribute("loginUser")));
 //		System.out.println("memberService.login(  (Member)(session.getAttribute(\"loginUser\"))  ).getUserId() : "+ memberService.login(  (Member)(session.getAttribute("loginUser"))  ).getUserId());
 //		System.out.println("member.getUserId().equals(  memberService.login(  (Member)(session.getAttribute(\"loginUser\"))  ).getUserId())  :" + member.getUserId().equals(  memberService.login(  (Member)(session.getAttribute("loginUser"))  ).getUserId())  );
+		member.setUserId(member.getUserId().replaceAll(" ", ""));
+		member.setUserName(member.getUserName().replaceAll(" ", ""));
+		member.setUserPwd(member.getUserPwd().replaceAll(" ", ""));
+		member.setPhone(member.getPhone().replaceAll(" ", ""));
+		member.setAddress(member.getAddress().replaceAll("  ", " "));
+		member.setPostnum(member.getPostnum().replaceAll(" ", ""));
+		member.setEmail(member.getEmail().replaceAll(" ", ""));
 		if(session.getAttribute("loginUser")!=null && member.getUserId().equals(  memberService.login(  (Member)(session.getAttribute("loginUser"))  ).getUserId())  ) {
 			String encPwd = bCryptPasswordEncoder.encode(member.getUserPwd());
 			System.out.println("member.getUserPwd() : "+member.getUserPwd());
@@ -110,6 +118,26 @@ public class MemberController {
 		}
 		mv.setViewName("redirect:/");
 		return mv;
+	}
+	
+	@PostMapping("EditMemberInfoEtc")
+	public String EditMemberInfoEtc(Member member, HttpSession session) {
+		member.setUserId(member.getUserId().replaceAll(" ", ""));
+		member.setUserName(member.getUserName().replaceAll(" ", ""));
+		member.setUserPwd(member.getUserPwd().replaceAll(" ", ""));
+		member.setPhone(member.getPhone().replaceAll(" ", ""));
+		member.setAddress(member.getAddress().replaceAll("  ", " "));
+		member.setPostnum(member.getPostnum().replaceAll(" ", ""));
+		member.setEmail(member.getEmail().replaceAll(" ", ""));
+		
+		if(session.getAttribute("loginUser")!=null && member.getUserId().equals(  memberService.login(  (Member)(session.getAttribute("loginUser"))  ).getUserId())  ) {
+			int up = memberService.updateEtc(member);
+			if (up > 0) {
+				System.out.println("업데이트 성공 - member : ");
+			}
+		}
+		
+		return null;
 	}
 	
 	
