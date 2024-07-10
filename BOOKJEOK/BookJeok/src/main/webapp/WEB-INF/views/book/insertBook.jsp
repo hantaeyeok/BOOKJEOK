@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+    
 <!DOCTYPE html>
 <html>
 <head>
@@ -56,44 +58,101 @@
             </div>
         </div>
     </div>
+    
 
     <div class="row">
-       
         <div class="col-md-8">
             <h3>도서 정보 추가</h3>
-            <form id="bookForm" action="saveBook" method="post" enctype="multipart/form-data">
-                <div class="form-group">
-            		<img id="cover" src="http://via.placeholder.com/150x150" class="img-fluid" alt="책 표지" style="width: 100%; height: auto;">
-        		</div>                
+            <form id="bookForm" action="book/saveBook" method="post" enctype="multipart/form-data">
+            		
+            	
+            	
+            				
+				<div class="form-group">
+				    <label for="bookCover">책 표지:</label>
+				    <select id="coverType">
+				        <option value="basic" selected>기본값 사용</option>
+				        <option value="custom">직접 등록</option>
+				    </select>
+				    
+				    <input type="text" class="form-control-file" id="bookCoverText"  name="bookCoverText" />
+				    <!-- 
+				    <input type="file" class="form-control-file" id="bookCoverFile"  name="bookCoverFile"/>
+				    -->
+				    <img id="coverPreview" src="http://via.placeholder.com/150x150" class="img-fluid" alt="책 표지 미리보기">
+				</div>
+				
+				<script>
+				    document.getElementById('coverType').addEventListener('change', function() {
+				        var coverType = this.value;
+				        var textInput = document.getElementById('bookCoverText');
+				        var fileInput = document.getElementById('bookCoverFile');
+				
+				        if (coverType === 'basic') {
+				            textInput.style.display = 'none';
+				            textInput.name = 'bookCover';
+				            fileInput.style.display = 'none';
+				            fileInput.name = '';
+				        } else if (coverType === 'custom') {
+				            fileInput.style.display = '';
+				            fileInput.name = 'bookCover';
+				            textInput.style.display = 'none';
+				            textInput.name = '';
+				        }
+				    });
+				</script>
+		        
                 <div class="form-group">
                     <label for="title">책제목</label>
-                    <input type="text" class="form-control" id="title" name="title" required>
+                    <input type="text" class="form-control" id="title" name="bookTitle" required>
                 </div>
+                
                 <div class="form-group">
                     <label for="author">저자</label>
-                    <input type="text" class="form-control" id="author" name="author" required>
+                    <input type="text" class="form-control" id="author" name="bookAuthor" required>
                 </div>
+                
                 <div class="form-group">
                     <label for="publisher">출판사</label>
-                    <input type="text" class="form-control" id="publisher" name="publisher" required>
+                    <input type="text" class="form-control" id="publisher" name="bookPublisher" required>
                 </div>
+                
                 <div class="form-group">
                     <label for="pubDate">출판일</label>
-                    <input type="date" class="form-control" id="pubDate" name="pubDate" required>
+                    <input type="date" class="form-control" id="pubDate" name="bookPubDate" required>
                 </div>
+                
                 <div class="form-group">
                         <label for="isbn">ISBN</label>
-                        <input type="text" class="form-control" id="isbn" name="isbn" required>
+                        <input type="text" class="form-control" id="isbn" name="bookIsbn" required>
                         <button type="button" class="btn btn-secondary" onclick="checkIsbn()">유효성 검사</button>
-               </div>
+                </div>
+                
                 <div class="form-group">
                     <label for="category">카테고리</label>
-                    <input type="text" class="form-control" id="category" name="category">
+                    <input type="text" class="form-control" id="category" name="categoryString">
                 </div>
+                
+                <div class="form-group">
+                    <label for="price">가격:</label>
+                    <input type="number" class="form-control" id="price" name="bookPrice" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="stock">재고:</label>
+                    <input type="number" class="form-control" id="price" name="bookAmount" required>
+                </div>
+        	
                 <div class="form-group">
                     <label for="description">책설명</label>
-                    <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    <textarea class="form-control" id="description" name=bookDescription rows="3"></textarea>
                 </div>
+           <button type="submit" class="btn btn-primary">등록</button> 
+           </form>
+           
+            <form id="bookForm" action="book/saveBookDetail" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="bookNo">
+          		
                 <div class="form-group">
                         <label for="detailImage1">상세설명 이미지 추가</label>
                         <input type="file" class="form-control" id="detailImage" name="detailImage" onchange="previewImage(this, 'imagePreview')">
@@ -101,13 +160,17 @@
                             <img src="" alt="상세 설명 이미지">
                             <span>이미지 없음</span>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="detailDescription">상세 설명</label>
-                        <textarea class="form-control" id="detailDescription" name="detailDescription" rows="3" placeholder="해당 내용은 상세설명이미지 아래에 들어가는 텍스트입니다."></textarea>
-                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="detailDescription">상세 설명</label>
+                    <textarea class="form-control" id="detailDescription" name="detailDescription" rows="3" placeholder="해당 내용은 상세설명이미지 아래에 들어가는 텍스트입니다."></textarea>
+                </div>
                 <button type="submit" class="btn btn-primary">등록</button>
-            </form>
+          </form>
+      
+      
+            
         </div>
     </div>
 </div>
@@ -120,31 +183,15 @@ function searchBooks() {
     $.ajax({
         url: 'books',
         type: 'get', 
-        data: { keyword: $keyword,
-        		start : currentPage},
-        success : result => { 
-        	console.log(result.object);
-            let rows = '';
+        data: { keyword: $keyword, start: currentPage },
+        success: result => {
+            console.log(result.object);
             const items = result.object.item; 
             console.log(items);
-            
+            let rows = '';
+
             for (let i = 0; i < items.length; i++) {
-                const item = items[i];
-                rows += '<tr onclick="selectBook(this)" data-cover="' + item.cover + '" data-title="' + item.title + 
-                        '" data-author="' + item.author + '" data-publisher="' + item.publisher + 
-                        '" data-pubdate="' + item.pubDate + '" data-isbn="' + item.isbn + 
-                        '" data-category="' + item.categoryName + '" data-description="' + item.description + 
-                        '" data-price="' + item.priceSales + '">'
-                        + '<td><img src="' + item.cover + '" style="width:100px;height:150px;"></td>'
-                        + '<td>' + item.title + '</td>'
-                        + '<td>' + item.author + '</td>'
-                        + '<td>' + item.publisher + '</td>'
-                        + '<td>' + item.isbn + '</td>'
-                        + '<td>' + item.priceSales + '원</td>'
-                        + '<td>' + item.categoryName + '</td>'
-                        + '<td>' + item.description + '</td>'
-                        + '<td><button class="btn btn-primary">선택</button></td>'
-                        + '</tr>';
+                rows += buildBookRow(items[i]);
             }
             $('#modalBookResults').html(rows);
             $('#bookModal').modal('show'); 
@@ -152,9 +199,46 @@ function searchBooks() {
     });
 }
 
+function buildBookRow(item) {
+    var setData = 'data-cover="' + item.cover + '" ' +
+                  'data-title="' + item.title + '" ' +
+                  'data-author="' + item.author + '" ' +
+                  'data-publisher="' + item.publisher + '" ' +
+                  'data-pubdate="' + item.pubDate + '" ' +
+                  'data-isbn="' + item.isbn + '" ' +
+                  'data-category="' + item.categoryName + '" ' +
+                  'data-description="' + item.description + '" ' +
+                  'data-price="' + item.priceSales + '"';
+
+    return '<tr onclick="selectBook(this)" ' + setData + '>' +
+           '<td><img src="' + item.cover + '" style="width:100px;height:150px;"></td>' +
+           '<td>' + item.title + '</td>' +
+           '<td>' + item.author + '</td>' +
+           '<td>' + item.publisher + '</td>' +
+           '<td>' + item.isbn + '</td>' +
+           '<td>' + item.priceSales + '원</td>' +
+           '<td>' + item.categoryName + '</td>' +
+           '<td>' + item.description + '</td>' +
+           '<td><button class="btn btn-primary">선택</button></td>' +
+           '</tr>';
+}
+
+
+function setDataAttributes(item) {
+    return 'data-cover="' + item.cover + '" ' +
+           'data-title="' + item.title + '" ' +
+           'data-author="' + item.author + '" ' +
+           'data-publisher="' + item.publisher + '" ' +
+           'data-pubdate="' + item.pubDate + '" ' +
+           'data-isbn="' + item.isbn + '" ' +
+           'data-category="' + item.categoryName + '" ' +
+           'data-description="' + item.description + '" ' +
+           'data-price="' + item.priceSales + '"';
+}
+
 function selectBook(tr) {
     var $tr = $(tr);
-    $('#cover').attr('src', $tr.data('cover'));
+    $('#coverPreview').attr('src', $tr.data('cover'));
     $('#title').val($tr.data('title'));
     $('#author').val($tr.data('author'));
     $('#publisher').val($tr.data('publisher'));
@@ -163,13 +247,9 @@ function selectBook(tr) {
     $('#category').val($tr.data('category'));
     $('#description').val($tr.data('description'));
     $('#price').val($tr.data('price'));
+    $('#bookCoverText').val($tr.data('cover'))
 }
-
-function changePage(delta) {
-    currentPage += delta;
-    searchBooks(); // 변경된 페이지 번호로 검색을 다시 실행
-}
-
+		
 function checkIsbn() {
 	//isbn 유효성 검사해야함.
 }

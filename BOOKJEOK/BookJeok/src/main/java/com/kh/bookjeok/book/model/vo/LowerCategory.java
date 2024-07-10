@@ -1,7 +1,5 @@
 package com.kh.bookjeok.book.model.vo;
 
-import java.sql.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,9 +13,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BookCategory {
-	private Book categoryNo;
-    private int parentCategoryNo;
-    private String categoryName;
-
+public class LowerCategory {
+    private int lowerCategoryNo;
+    private String lowerCategoryName;
+    private Integer midCategoryNo;
+    private String categoryStatus;
 }
