@@ -137,4 +137,24 @@
     		(lower_category_seq.NEXTVAL, #{lowerCategoryName}, #{midCategoryNo}, 'Y')
 </insert>
 
+
+<select id="isbnCheck" parameterType="String" resultType="int">
+	SELECT
+			COUNT(*)
+	FROM
+			BOOK
+	WHERE
+			BOOK_ISBN = #{isbn}
+</select>
+
+
+
+
+
+
+
+
+
+
+
 </mapper>

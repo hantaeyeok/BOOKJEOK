@@ -30,4 +30,7 @@ public interface BookMapper {
 	//Book정보 저장하는 메소드
 	int saveBook(Book book);
 	
+	//isbnCheck
+	int isbnCheck(String isbn);
+	
 }

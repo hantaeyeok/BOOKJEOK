@@ -36,28 +36,26 @@ public class BookController {
 	
 	@PostMapping("/saveBook")
     public String saveBook(Book book, 
-    		@RequestParam("bookCoverText") String bookCoverText,
+            @RequestParam(required = false) String bookCoverText,
+            @RequestParam(required = false) MultipartFile bookCoverFile,
     		String categoryString ,
     		HttpSession session) {		
 		
+		if(bookCoverFile != null && !bookCoverFile.isEmpty()) { //파일로 들어올 때 
+			String coverPath = fileUploadService.saveFile(bookCoverFile, session);
+			book.setBookCover(coverPath);
+	    } else if (bookCoverText != null && !bookCoverText.isEmpty()) { // 경로로 들어올 때
+	    	book.setBookCover(bookCoverText); 
+	    } else {
+	    	log.info("북 커버가 없어서 기본 이미지 넣어요");
+	    	book.setBookCover("bookbook.jpg");
+	    }
 		
-	    
-	    //파일 이미지 커버 서버에저장
-	    //if(!coverImg.isEmpty()) {
-	    	//String coverPath = fileUploadService.saveFile(coverImg, session);
-	    	//book.setBookCover(coverPath);
-	    	//
-		//System.out.println(coverPath);
-	    //} 
-	    
-	    System.out.println(bookCoverText);
-	    book.setBookCover(bookCoverText);
-	   
-	 // 카테고리 저장 및 ID 반환
-        Integer categoryId = bookCategoryService.saveCategory(categoryString);
+		// 카테고리 저장 및 ID 반환
+        Integer categoryId = bookCategoryService.saveCategory(categoryString); 
         book.setCategoryId(categoryId);
 	    
-	    //saveBook
+      //saveBook
 	    int result1 = bookService.saveBook(book);
 	    if(result1 == 0) {
 	    	log.info("insertBook 실패");
@@ -65,9 +63,14 @@ public class BookController {
 	    	log.info("insertBook 성공");
 	    }
 	    
-	    return "redirect:/";
+	    return "redirect:/book";
     }
 	
+	@PostMapping("")
+	public String saveBookDetail() {
+		
+		return "redirect:/book";
+	}
 
 		
 }

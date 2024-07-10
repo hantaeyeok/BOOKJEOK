@@ -9,5 +9,5 @@ import com.kh.bookjeok.book.model.vo.UpperCategory;
 public interface BookService {
 
 	int saveBook(Book book);
-
+	int isbnCheck(String isbn);
 }

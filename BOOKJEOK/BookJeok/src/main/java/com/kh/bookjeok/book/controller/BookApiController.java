@@ -8,19 +8,26 @@ import java.net.URL;
 
 import org.json.JSONObject;
 import org.json.XML;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kh.bookjeok.book.model.service.BookService;
+import com.kh.bookjeok.common.model.vo.Message;
 
-
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 @RequestMapping("books")
+@RequiredArgsConstructor
 public class BookApiController {
-
+	
+	private final BookService bookService;
+	
 	@GetMapping(produces = "application/json; charset=UTF-8")
 	public String searchAladinAPI(String keyword, String start) throws IOException {
 
@@ -65,5 +72,25 @@ public class BookApiController {
 	    urlConnection.disconnect();
 	    
 		return json.toString();
+	}
+	
+	@GetMapping("/isbnCheck")
+	public ResponseEntity<Message> isbnCheck(String isbn) {
+		log.info("isbn : {}",isbn);
+		int response = bookService.isbnCheck(isbn);
+		if(response == 0) {
+            Message responseMsg = Message.builder()
+                                         .message("유효한 ISBN입니다.")
+                                         .data("ISBN 유효성 검사 성공")
+                                         .build();
+            return ResponseEntity.status(HttpStatus.OK).body(responseMsg);
+        } else {
+            Message responseMsg = Message.builder()
+                                         .message("유효하지 않은 ISBN입니다.")
+                                         .data("ISBN 유효성 검사 실패")
+                                         .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseMsg);
+        }
+		
 	}
 }

@@ -18,6 +18,11 @@ public class BookServiceImple implements BookService{
 	public int saveBook(Book book) {
 		return bookMapper.saveBook(book);
 	}
+
+	@Override
+	public int isbnCheck(String isbn) {
+		return bookMapper.isbnCheck(isbn);
+	}
 	
 	
 
