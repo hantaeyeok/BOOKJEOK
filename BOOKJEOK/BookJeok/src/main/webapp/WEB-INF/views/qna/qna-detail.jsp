@@ -40,7 +40,7 @@
             <span 
                 style="float: right; border-radius: 20px; width: 100px; height: 30px;
                 border: 2px; background-color: blue; font-weight: bold; color: white; text-align: center; line-height: 30px;">
-                ${ question.questionStatus }
+                처리중
             </span>
             <br><br>
 
@@ -73,15 +73,15 @@
             <div align="center">
                 <!-- 해당 버튼은 사용자만이 보이도록 한다. -->
                 <!-- 수정하기 버튼은 답변이 없을 때 활성화, 답변이 있는 경우 비활성화 -->
-                <a class="btn btn-primary" href="">수정</a>
-                <a class="btn btn-danger" href="">삭제</a>
+                <a class="btn btn-primary" href="updateForm.question?qnaNo=${question.qnaNo }">수정</a>
+                <a class="btn btn-danger" href="delete.qna?qnaNo=${question.qnaNo }">삭제</a>
             </div>
             <br><br><br>
-            <!--답변은 작성된 경우에만 보이도록 한다.-->
             <hr>
             <!--해당 버튼은 관리자만 보이도록 하며, 답변등록을 하지 않은 경우에만 보이도록 한다.-->
             <a class="btn btn-primary" href="" style="float: right;">답변등록</a>
             <br><br>
+            <!--답변은 작성된 경우에만 보이도록 한다.-->
             <table id="replyArea" class="table" align="center">
                 <tr>
                     <th>답변내용</th>
@@ -98,13 +98,13 @@
             <hr>
             <div align="center">
                 <!-- 해당 버튼은 관리자만 보이도록 한다. -->
-                <a class="btn btn-primary" href="">수정</a>
-                <a class="btn btn-danger" href="">삭제</a>
+                <a class="btn btn-primary" href="">답변수정</a>
+                <a class="btn btn-danger" href="">답변삭제</a>
             </div>
             <br><br>
             <hr>
             <div align="center">
-                <a class="btn btn-secondary" href="" style="width: 100px;">목록</a>
+                <a class="btn btn-secondary" href="list.qna" style="width: 100px;">목록</a>
             </div>
         </div>
         <br><br>

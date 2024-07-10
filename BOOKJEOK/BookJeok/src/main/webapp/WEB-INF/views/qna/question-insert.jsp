@@ -53,7 +53,7 @@
                     </tr>
                     <tr>
                         <th><label for="writer">작성자</label></th>
-                        <td><input type="text" id="writer" class="form-control" value="user01" name="questionWriter" readonly></td>
+                        <td><input type="text" id="writer" class="form-control" value="user01" name="userId" readonly></td>
                     </tr>
                     <tr>
                         <th><label for="content">내용</label></th>
@@ -72,7 +72,7 @@
 
                 <div align="center">
                     <button type="submit" class="btn btn-primary">문의하기</button>
-                    <button type="reset" class="btn btn-danger">취소하기</button>
+                    <a class="btn btn-danger" href="list.qna">취소하기</a>
                 </div>
             </form>
         </div>

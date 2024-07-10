@@ -45,43 +45,48 @@
             <h2>1대1 문의 : 문의 수정하기</h2>
             <br>
 
-            <form id="enrollForm" method="post" action="" enctype="">
+            <form id="enrollForm" method="post" action="update.question" enctype="multipart/form-data">
                 <table align="center">
                     <tr>
                         <th><label for="title">제목</label></th>
-                        <td><input type="text" id="title" class="form-control" name="questionTitle" required></td>
+                        <td><input type="text" id="title" class="form-control" 
+                        		   value="${question.questionTitle }" name="questionTitle" required></td>
                     </tr>
                     <tr>
                         <th><label for="writer">작성자</label></th>
-                        <td><input type="text" id="writer" class="form-control" value="user01" name="questionWriter" readonly></td>
+                        <td><input type="text" id="writer" class="form-control" value="${question.userId }" name="userId" readonly></td>
                     </tr>
                     <tr>
                         <th><label for="content">내용</label></th>
-                        <td><textarea id="content" class="form-control" rows="10" style="resize:none;" name="questionContent" required></textarea></td>
+                        <td><textarea id="content" class="form-control" rows="10" style="resize:none;" 
+                        	 name="questionContent" required>${question.questionContent }</textarea></td>
                     </tr>
                     <tr>
                         <th><label for="upfile">첨부파일</label></th>
                         <td>
-                            <input type="file" id="upfile" class="form-control-file border" name="reUpfile">  
+                            <input type="file" id="upfile" class="form-control-file border" name="reUpfile" accept=".zip">
+                            <c:if test="${ not empty question.questionOriginname }">
+                            	<a href="${ question.questionChangename }" download="${ question.questionOriginname }">${ question.questionOriginname }</a>
+                            	<input type="hidden" name="questionChangename" value="${ question.questionChangename }" />
+                				<input type="hidden" name="questionOriginname" value="${ question.questionOriginname }" />
+                				<button style="border-radius: 2px; border-width: 1px; 
+                            	border-color: gray; box-shadow: 0.5px 0.5px rgba(0.5px,0.5px,0.5px,0.5px);">파일 제거</button>
+                            </c:if>
                         </td>
                     </tr>
                     <tr>
-                    	<td>
-                    		현재 업로드된 파일 : 
-                            <a href="" download="">flower.zip</a>
-                            <button style="border-radius: 2px; border-width: 1px; 
-                            border-color: gray; box-shadow: 0.5px 0.5px rgba(0.5px,0.5px,0.5px,0.5px);">파일 제거</button>
-                        </td>
+                        <th></th>
+                        <td><small style="color: red; font-weight: bold;">※ 첨부 파일은 ZIP파일만 업로드가 가능합니다.</small></td>
                     </tr>
                 </table>
                 <br>
 
                 <div align="center">
                     <button type="submit" class="btn btn-primary">문의 수정하기</button>
-                    <button type="reset" class="btn btn-danger">취소하기</button>
+                    <a class="btn btn-danger" href="detail.qna?qnaNo=${question.qnaNo}">취소하기</a>
                 </div>
                 
-                <input type="hidden" name="qnaNo" value="" />
+                <input type="hidden" name="qnaNo" value="${question.qnaNo }" />
             </form>
         </div>
         <br><br>

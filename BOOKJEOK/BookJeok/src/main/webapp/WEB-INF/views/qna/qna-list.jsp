@@ -95,7 +95,7 @@
                 			<td>${ question.qnaNo }</td>
 	                        <td>${ question.questionTitle }</td>
 	                        <td>${ question.questionDate }</td>
-	                        <td>${ question.questionStatus }</td>
+	                        <td>처리중</td>
                 		</tr>
                 	</c:forEach>
                 </tbody>

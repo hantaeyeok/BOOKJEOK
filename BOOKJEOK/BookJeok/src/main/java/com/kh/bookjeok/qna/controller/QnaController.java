@@ -58,8 +58,8 @@ public class QnaController {
 		listCount = qnaService.qnaCount();
 		currentPage = page;
 		
-		pageLimit = 10;
-		listLimit = 10;
+		pageLimit = 5;
+		listLimit = 2;
 		
 		maxPage = (int)Math.ceil((double)listCount/listLimit);
 		
@@ -209,7 +209,7 @@ public class QnaController {
 		return "resources/uploadFiles/" + changename;
 	}
 	
-	@PostMapping("updateForm.question")
+	@GetMapping("updateForm.question")
 	public ModelAndView updateForm(ModelAndView mv, int qnaNo) {
 		
 		mv.addObject("question", qnaService.findById(qnaNo)).setViewName("qna/question-update");
@@ -239,7 +239,7 @@ public class QnaController {
 		}
 	}
 	
-	@PostMapping("delete.qna")
+	@GetMapping("delete.qna")
 	public String deleteQna(int qnaNo,
 							String filePath,
 							HttpSession session,
