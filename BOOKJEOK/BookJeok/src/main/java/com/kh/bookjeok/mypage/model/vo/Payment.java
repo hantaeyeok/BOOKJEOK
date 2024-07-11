@@ -1,6 +1,8 @@
 package com.kh.bookjeok.mypage.model.vo;
 
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,4 +28,5 @@ public class Payment {
 	private int paymentPrice;
 	private int mileageGet;
 	private int mileageUsed;
+	private List<PaymentPerbook> orderList;
 }
