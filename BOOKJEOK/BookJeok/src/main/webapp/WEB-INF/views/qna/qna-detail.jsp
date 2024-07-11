@@ -144,7 +144,7 @@
 		            <br>
 		            <hr>
 		            <div align="center">
-		                <a class="btn btn-primary" href="">답변수정</a>
+		                <a class="btn btn-primary" href="updateForm.answer?answerNo=${answer.answerNo }">답변수정</a>
 		                <a class="btn btn-danger" href="delete.answer?answerNo=${answer.answerNo }">답변삭제</a>
 		            </div>
 		            <br><br>

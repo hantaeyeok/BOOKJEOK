@@ -64,4 +64,12 @@ public class QnaRepository {
 		return sqlSession.update("qnaMapper.deleteAnswer", answerNo);
 	}
 
+	public Answer findByAnswerNo(SqlSessionTemplate sqlSession, int answerNo) {
+		return sqlSession.selectOne("qnaMapper.findByAnswerNo", answerNo);
+	}
+
+	public int updateAnswer(SqlSessionTemplate sqlSession, Answer answer) {
+		return sqlSession.update("qnaMapper.updateAnswer", answer);
+	}
+
 }

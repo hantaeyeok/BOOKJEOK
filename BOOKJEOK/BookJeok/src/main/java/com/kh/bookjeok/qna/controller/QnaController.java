@@ -352,4 +352,39 @@ public class QnaController {
 		}
 	}
 	
+	@GetMapping("updateForm.answer")
+	public ModelAndView updateAnswerForm(ModelAndView mv, int answerNo) {
+		
+		mv.addObject("answer", qnaService.findByAnswerNo(answerNo))
+		  .setViewName("qna/answer-update");
+		
+		return mv;
+	}
+	
+	@PostMapping("update.answer")
+	public String updateAnswer(Answer answer,
+						 	   MultipartFile reUpfile,
+						 	   HttpSession session,
+						 	   @RequestParam("qnaNo") int qnaNo) {
+		
+		if(!reUpfile.getOriginalFilename().equals("")) {
+			answer.setAnswerOriginname(reUpfile.getOriginalFilename());
+			answer.setAnswerChangename(saveFile(reUpfile, session));
+		}
+		
+		// QnaNo 설정
+	    answer.setQnaNo(qnaNo);
+		
+		if(qnaService.updateAnswer(answer) > 0) {
+			
+			session.setAttribute("alert", "답변수정완료!");
+			return "redirect:detail.qna?qnaNo=" + answer.getQnaNo();
+			
+		} else {
+			
+			session.setAttribute("alert", "답변수정실패!");
+			return "redirect:detail.qna?qnaNo=" + answer.getQnaNo();
+		}
+	}
+	
 }

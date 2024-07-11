@@ -246,5 +246,27 @@
 		 WHERE
 			   ANSWER_NO = #{answerNo}
 	</update>
+	
+	<select id="findByAnswerNo" parameterType="_int" resultType="answer">
+		<include refid="selectAnswer" />
+		  FROM
+			   ANSWER
+		 WHERE
+			   ANSWER_NO = #{answerNo}
+		   AND
+			   ANSWER_STATUS = 'Y'
+	</select>
+	
+	<update id="updateAnswer" parameterType="answer">
+		UPDATE
+			   ANSWER
+		   SET
+			   ANSWER_CONTENT = #{answerContent},
+			   ANSWER_ORIGINNAME = #{answerOriginname},
+			   ANSWER_CHANGENAME = #{answerChangename},
+			   ANSWER_EDITDATE = SYSDATE
+		 WHERE
+			   ANSWER_NO = #{answerNo}
+	</update>
 
 </mapper>

@@ -81,5 +81,15 @@ public class QnaServiceImpl implements QnaService {
 	public int deleteAnswer(int answerNo) {
 		return qnaRepository.deleteAnswer(sqlSession, answerNo);
 	}
+
+	@Override
+	public Answer findByAnswerNo(int answerNo) {
+		return qnaRepository.findByAnswerNo(sqlSession, answerNo);
+	}
+
+	@Override
+	public int updateAnswer(Answer answer) {
+		return qnaRepository.updateAnswer(sqlSession, answer);
+	}
 	
 }

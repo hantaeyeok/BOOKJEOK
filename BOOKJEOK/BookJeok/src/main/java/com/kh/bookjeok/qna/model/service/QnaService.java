@@ -36,4 +36,8 @@ public interface QnaService {
 
 	int deleteAnswer(int answerNo);
 
+	Answer findByAnswerNo(int answerNo);
+
+	int updateAnswer(Answer answer);
+
 }
