@@ -92,19 +92,11 @@ public class MemberController {
 		return mv;
 	}
 	
+	@ResponseBody
 	@PostMapping("EditMemberInfoPwd")
-	public ModelAndView EditMemberInfoPwd(Member member, HttpSession session, ModelAndView mv) {
-//		System.out.println("session.getAttribute(\"loginUser\") : "+session.getAttribute("loginUser"));
-//		System.out.println("(Member)(session.getAttribute(\"loginUser\")) : "+(Member)(session.getAttribute("loginUser")));
-//		System.out.println("memberService.login(  (Member)(session.getAttribute(\"loginUser\"))  ).getUserId() : "+ memberService.login(  (Member)(session.getAttribute("loginUser"))  ).getUserId());
-//		System.out.println("member.getUserId().equals(  memberService.login(  (Member)(session.getAttribute(\"loginUser\"))  ).getUserId())  :" + member.getUserId().equals(  memberService.login(  (Member)(session.getAttribute("loginUser"))  ).getUserId())  );
+	public Member EditMemberInfoPwd(Member member, HttpSession session) {
 		member.setUserId(member.getUserId().replaceAll(" ", ""));
-		member.setUserName(member.getUserName().replaceAll(" ", ""));
 		member.setUserPwd(member.getUserPwd().replaceAll(" ", ""));
-		member.setPhone(member.getPhone().replaceAll(" ", ""));
-		member.setAddress(member.getAddress().replaceAll("  ", " "));
-		member.setPostnum(member.getPostnum().replaceAll(" ", ""));
-		member.setEmail(member.getEmail().replaceAll(" ", ""));
 		if(session.getAttribute("loginUser")!=null && member.getUserId().equals(  memberService.login(  (Member)(session.getAttribute("loginUser"))  ).getUserId())  ) {
 			String encPwd = bCryptPasswordEncoder.encode(member.getUserPwd());
 			System.out.println("member.getUserPwd() : "+member.getUserPwd());
@@ -112,32 +104,51 @@ public class MemberController {
 			System.out.println("인코딩 후 member.getUserPwd() : " + member.getUserPwd());
 
 			int up = memberService.updatePwd(member);
+			member=memberService.login(member);
 			if (up > 0) {
-				System.out.println("업데이트 성공 - member : ");
+				System.out.println("업데이트 성공 - member : "+member);
 			}
 		}
-		mv.setViewName("redirect:/");
-		return mv;
+		return member;
 	}
 	
+	@ResponseBody
 	@PostMapping("EditMemberInfoEtc")
-	public String EditMemberInfoEtc(Member member, HttpSession session) {
-		member.setUserId(member.getUserId().replaceAll(" ", ""));
-		member.setUserName(member.getUserName().replaceAll(" ", ""));
-		member.setUserPwd(member.getUserPwd().replaceAll(" ", ""));
+	public Member EditMemberInfoEtc(Member member, HttpSession session) {
 		member.setPhone(member.getPhone().replaceAll(" ", ""));
 		member.setAddress(member.getAddress().replaceAll("  ", " "));
 		member.setPostnum(member.getPostnum().replaceAll(" ", ""));
 		member.setEmail(member.getEmail().replaceAll(" ", ""));
-		
+		System.out.println(member);
 		if(session.getAttribute("loginUser")!=null && member.getUserId().equals(  memberService.login(  (Member)(session.getAttribute("loginUser"))  ).getUserId())  ) {
-			int up = memberService.updateEtc(member);
-			if (up > 0) {
-				System.out.println("업데이트 성공 - member : ");
+			int upAddress=0;
+			int upPhone=0;
+			int upGender=0;
+			int upEmail=0;
+			if (!member.getAddress().isEmpty())				{
+				upAddress = memberService.updateAddress(member);
+			}
+			if (!member.getPhone().isEmpty())				{
+				upPhone = memberService.updatePhone(member);
+			}
+			if (!member.getGender().isEmpty())				{
+				upGender = memberService.updateGender(member);
+			}
+			if (!member.getEmail().isEmpty())				{
+				upEmail = memberService.updateEmail(member);
+			}
+			member = memberService.login(member);
+			session.setAttribute("loginUser", member);
+			
+			int rst = upAddress + upPhone + upGender + upEmail;
+			if (rst > 0) {
+				System.out.println("업데이트 성공 - member : "+ member);
+			} else {
+				System.out.println("없데이트");
 			}
 		}
 		
-		return null;
+		return member;
 	}
 	
 	

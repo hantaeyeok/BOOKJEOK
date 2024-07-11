@@ -14,8 +14,10 @@ public interface MemberMapper{
 	int update(Member member);
 	
 	int updatePwd(Member member);
-	
-	int updateEtc(Member member);
+	int updatePhone(Member member);
+	int updateEmail(Member member);
+	int updateGender(Member member);
+	int updateAddress(Member member);
 	
 	int delete(String string);
 	
