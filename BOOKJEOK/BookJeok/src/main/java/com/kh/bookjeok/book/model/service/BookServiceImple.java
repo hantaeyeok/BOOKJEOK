@@ -33,6 +33,11 @@ public class BookServiceImple implements BookService{
 	public Book isbnSelect(String bookIsbn) {
 		return bookMapper.isbnSelect(bookIsbn);
 	}
+
+	@Override
+	public Book selectBookNo(int bookNo) {
+		return bookMapper.selectBookNo(bookNo);
+	}
 	
 	
 

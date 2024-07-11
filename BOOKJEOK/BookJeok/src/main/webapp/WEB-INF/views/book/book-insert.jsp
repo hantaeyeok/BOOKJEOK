@@ -143,8 +143,7 @@ document.getElementById('coverType').addEventListener('change', function() {
         </div>
         <button type="button" class="btn btn-primary" onclick="submitBookForm()" style="display: none">도서 정보 저장</button>
     </form>
-    detailFormData
-    action="book/saveBookDetail" method="post" enctype="multipart/form-data"
+
     <!-- 도서 상세 정보 표시 -->
     <form id="bookDetailForm" >
         <input type="hidden" id="bookNo" name="bookNo">
@@ -172,7 +171,7 @@ var currentPage = 1;
 	    var $keyword = $('#keyword').val(); 
 	    console.log($keyword);
 	    $.ajax({
-	        url: 'books',
+	        url: 'api',
 	        type: 'get', 
 	        data: { keyword: $keyword, start: currentPage},
 	        success: result => {
@@ -302,7 +301,7 @@ function saveAll() {
     var bookFormData = new FormData($('#bookForm').get(0));
 
     $.ajax({
-        url: 'book/saveBook',
+        url: 'books/saveBook',
         type: 'POST',
         data: bookFormData,
         contentType: false,
@@ -327,7 +326,7 @@ function saveBookDetail() {
     bookDetailForm.append('bookNo', responseData);
     console.log(responseData);
     $.ajax({
-        url: 'book/saveBookDetail',
+        url: 'books/saveBookDetail',
         type: 'POST',
         data: bookDetailForm,
         contentType: false,

@@ -1,7 +1,5 @@
 package com.kh.bookjeok.book.model.dao;
 
-
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -39,5 +37,8 @@ public interface BookMapper {
 	
 	//isbnSelect
 	Book isbnSelect(String bookIsbn);
+	
+	//BookNo selectOne
+	Book selectBookNo(int bookNo);
 	
 }

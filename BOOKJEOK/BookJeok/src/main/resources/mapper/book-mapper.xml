@@ -185,7 +185,26 @@
 
 </select>
 
+<select id="selectBookNo" resultType="book" parameterType="_int">
+	SELECT
+			BOOK_NO bookNo,
+	        CATEGORY_ID categoryId,
+	        BOOK_TITLE bookTitle,
+	        BOOK_AUTHOR bookAuthor,
+	        BOOK_PUBLISHER bookPublisher,
+	        BOOK_PUB_DATE bookPubDate,
+	        BOOK_ISBN bookIsbn,
+	        BOOK_PRICE bookPrice,
+	        BOOK_DESCRIPTION bookDescription,
+	        BOOK_COVER bookCover,
+	        BOOK_CREATE_DATE bookCreateDate,
+	        BOOK_AMOUNT bookAmount,
+	FORM
+			BOOK
+	WHERE
+			BOOK_NO = #{bookNo}
 
+</select>
 
 
 

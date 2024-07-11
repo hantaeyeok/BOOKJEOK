@@ -22,11 +22,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping("books")
+@RequestMapping("api")
 @RequiredArgsConstructor
 public class BookApiController {
-	
-	private final BookService bookService;
 	
 	@GetMapping(produces = "application/json; charset=UTF-8")
 	public String searchAladinAPI(String keyword, String start) throws IOException {
@@ -74,23 +72,5 @@ public class BookApiController {
 		return json.toString();
 	}
 	
-	@GetMapping("/isbnCheck")
-	public ResponseEntity<Message> isbnCheck(String isbn) {
-		log.info("isbn : {}",isbn);
-		int response = bookService.isbnCheck(isbn);
-		if(response == 0) {
-            Message responseMsg = Message.builder()
-                                         .message("유효한 ISBN입니다.")
-                                         .data("ISBN 유효성 검사 성공")
-                                         .build();
-            return ResponseEntity.status(HttpStatus.OK).body(responseMsg);
-        } else {
-            Message responseMsg = Message.builder()
-                                         .message("유효하지 않은 ISBN입니다.")
-                                         .data("ISBN 유효성 검사 실패")
-                                         .build();
-            return ResponseEntity.status(HttpStatus.OK).body(responseMsg);
-        }
-		
-	}
+	
 }

@@ -9,4 +9,5 @@ public interface BookService {
 	int isbnCheck(String isbn);
 	int saveBookDetail(BookDetail bookDetail);
 	Book isbnSelect(String bookIsbn);
+	Book selectBookNo(int bookNo);
 }
