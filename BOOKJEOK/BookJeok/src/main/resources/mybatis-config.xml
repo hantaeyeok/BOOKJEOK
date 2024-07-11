@@ -8,10 +8,18 @@
 	</settings>
 
 	<typeAliases>
-		<typeAlias type="com.kh.bookjeok.member.model.vo.Member" alias="member"/>	
+		<typeAlias type="com.kh.bookjeok.book.model.vo.Book" alias="book"/>		
+		<typeAlias type="com.kh.bookjeok.book.model.vo.TopCategory" alias="topCategory"/>
+		<typeAlias type="com.kh.bookjeok.book.model.vo.LowerCategory" alias="lowerCategory"/>
+		<typeAlias type="com.kh.bookjeok.book.model.vo.MidCategory" alias="midCategory"/>
+		<typeAlias type="com.kh.bookjeok.book.model.vo.UpperCategory" alias="upperCategory"/>
+    <typeAlias type="com.kh.bookjeok.member.model.vo.Member" alias="member"/>
+    <typeAlias type="com.kh.bookjeok.qna.model.vo.Question" alias="question"/>
 	</typeAliases>
+	
 
 	<mappers>
+		<mapper resource="/mapper/book-mapper.xml"/>
 		<mapper resource="/mapper/member-mapper.xml"/>
 	</mappers>
 	

@@ -13,7 +13,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BookCategory {
+public class LowerCategory {
     private int lowerCategoryNo;
     private String lowerCategoryName;
     private Integer midCategoryNo;
