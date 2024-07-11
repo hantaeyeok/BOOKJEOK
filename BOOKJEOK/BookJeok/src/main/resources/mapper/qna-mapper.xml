@@ -17,6 +17,19 @@
 			   USER_ID userId
 	</sql>
 	
+	<sql id="selectAnswer">
+		SELECT
+		       ANSWER_NO answerNo,
+			   ANSWER_CONTENT answerContent,
+			   ANSWER_DATE answerDate,
+			   ANSWER_EDITDATE answerEditdate,
+			   ANSWER_ORIGINNAME answerOriginname,
+			   ANSWER_CHANGENAME answerChangename,
+			   ANSWER_STATUS answerStatus,
+			   USER_ID userId,
+			   QNA_NO qnaNo
+	</sql>
+	
 	<select id="findAll" resultType="question" parameterType="map">
 		<include refid="selectQuestion" />
 		 FROM
@@ -150,6 +163,88 @@
 			   QUESTION_STATUS = 'N'
 		 WHERE
 			   QNA_NO = #{qnaNo}
+	</update>
+	
+	<!-- 답변 -->
+	
+	<insert id="insertAnswer" parameterType="answer">
+		INSERT
+		  INTO
+			   ANSWER
+		  	   (
+			   ANSWER_NO,
+			   USER_ID,
+			   ANSWER_CONTENT,
+			   ANSWER_ORIGINNAME,
+			   ANSWER_CHANGENAME,
+			   QNA_NO
+			   )
+		VALUES
+			   (
+			   ANSWER_SEQ.NEXTVAL,
+			   #{userId},
+			   #{answerContent},
+			   #{answerOriginname},
+			   #{answerChangename},
+			   #{qnaNo}
+			   )
+	</insert>
+	
+	<select id="findAnswerByQnaNo" parameterType="_int" resultType="answer">
+		<include refid="selectAnswer" />
+		  FROM
+			   ANSWER
+		 WHERE
+			   QNA_NO = #{qnaNo}
+		   AND
+			   ANSWER_STATUS = 'Y'
+	</select>
+	
+	<select id="findAllAnswer" resultType="answer" parameterType="map">
+		<include refid="selectAnswer" />
+		 FROM
+			  (SELECT
+			          ANSWER_NO,
+				      ANSWER_CONTENT,
+				      ANSWER_DATE,
+				      ANSWER_EDITDATE,
+				      ANSWER_ORIGINNAME,
+				      ANSWER_CHANGENAME,
+				      ANSWER_STATUS,
+				      USER_ID,
+				      QNA_NO,
+				      ROWNUM RNUM
+			     FROM
+			     	  (SELECT
+			     	  		  ANSWER_NO,
+						      ANSWER_CONTENT,
+						      ANSWER_DATE,
+						      ANSWER_EDITDATE,
+						      ANSWER_ORIGINNAME,
+						      ANSWER_CHANGENAME,
+						      ANSWER_STATUS,
+						      USER_ID,
+						      QNA_NO
+			     	     FROM
+			     	     	  ANSWER
+			     	    WHERE
+			     	     	  ANSWER_STATUS = 'Y'
+			     	   	ORDER 
+			     	   	   BY
+			     	     	  ANSWER_NO DESC
+			     	  )
+			  )
+		WHERE
+			  RNUM BETWEEN #{startValue} AND #{endValue}
+	</select>
+	
+	<update id="deleteAnswer" parameterType="_int">
+		UPDATE
+			   ANSWER
+		   SET
+			   ANSWER_STATUS = 'N'
+		 WHERE
+			   ANSWER_NO = #{answerNo}
 	</update>
 
 </mapper>

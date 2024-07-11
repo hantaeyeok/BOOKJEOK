@@ -22,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.kh.bookjeok.member.model.vo.Member;
 import com.kh.bookjeok.model.Page;
 import com.kh.bookjeok.qna.model.service.QnaService;
+import com.kh.bookjeok.qna.model.vo.Answer;
 import com.kh.bookjeok.qna.model.vo.Question;
 import com.kh.bookjeok.template.PageTemplate;
 
@@ -96,6 +97,7 @@ public class QnaController {
 		map.put("endValue", endValue);
 		
 		List<Question> question = qnaService.findAll(map);
+		List<Answer> answer = qnaService.findAllAnswer(map);
 		
 		log.info("조회된 1대1 문의사항 개수 : {}", question.size());
 		log.info("조회된 1대1 문의사항 목록 : {}", question);
@@ -104,6 +106,7 @@ public class QnaController {
 		System.out.println("조회된 문의사항 목록" + question);
 		
 		model.addAttribute("question", question);
+		model.addAttribute("answer", answer);
 		model.addAttribute("pageInfo", pageInfo);
 		model.addAttribute("userId", userId);
 		
@@ -155,11 +158,14 @@ public class QnaController {
 	
 	@GetMapping("detail.qna")
 	public ModelAndView detail(int qnaNo, ModelAndView mv) {
-		
-		mv.addObject("question", qnaService.findById(qnaNo))
-		  .setViewName("qna/qna-detail");
-		
-		return mv;
+	    Question question = qnaService.findById(qnaNo);
+	    Answer answer = qnaService.findAnswerByQnaNo(qnaNo);
+
+	    mv.addObject("question", question);
+	    mv.addObject("answer", answer); // answer 객체를 뷰에 추가
+	    mv.setViewName("qna/qna-detail");
+	    
+	    return mv;
 	}
 	
 	@GetMapping("insertForm.question")
@@ -282,4 +288,68 @@ public class QnaController {
 		
 		return "";
 	}
+	
+	// ---------------------------------------------------------------------
+	
+	// 답변
+	@GetMapping("insertForm.answer")
+	public String insertAnswerForm() {
+		return "qna/answer-insert";
+	}
+	
+	@PostMapping("insert.answer")
+	public String insertAnswer(Answer answer,
+						 	   HttpSession session,
+						 	   Model model,
+						 	   MultipartFile upfile,
+						 	   @RequestParam("qnaNo") int qnaNo) {
+		
+		if(!upfile.getOriginalFilename().equals("")) {
+			
+			answer.setAnswerOriginname(upfile.getOriginalFilename());
+			answer.setAnswerChangename(saveFile(upfile, session));
+		}
+		
+		// QnaNo 설정
+	    answer.setQnaNo(qnaNo);
+		
+		
+		if(qnaService.insertAnswer(answer) > 0) {
+			
+			session.setAttribute("alert", "답변완료!");
+			return "redirect:detail.qna?qnaNo=" + answer.getQnaNo();
+			
+		} else {
+			
+			model.addAttribute("alert", "답변실패!");
+			return "redirect:detail.qna?qnaNo=" + answer.getQnaNo();
+		}
+	}
+	
+	@GetMapping("delete.answer")
+	public String deleteAnswer(int answerNo,
+							   String filePath,
+							   HttpSession session,
+							   Model model) {
+
+		
+		if(qnaService.deleteAnswer(answerNo) > 0) {
+			
+			if(filePath != null && !"".equals(filePath)) {
+				
+				new File(session.getServletContext().getRealPath(filePath)).delete();
+				
+			}
+			
+			session.setAttribute("alert", "답변삭제완료!");
+			
+			return "redirect:list.qna";
+			
+		} else {
+			
+			model.addAttribute("alert", "답변삭제실패!");
+			return "redirect:list.qna";
+		}
+	}
+	
 }

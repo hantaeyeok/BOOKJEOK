@@ -8,6 +8,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Service;
 
 import com.kh.bookjeok.qna.model.dao.QnaRepository;
+import com.kh.bookjeok.qna.model.vo.Answer;
 import com.kh.bookjeok.qna.model.vo.Question;
 
 import lombok.RequiredArgsConstructor;
@@ -59,5 +60,26 @@ public class QnaServiceImpl implements QnaService {
 		return qnaRepository.findByConditionAndKeyword(sqlSession, map, rowBounds);
 	}
 
+	// 답변
+	
+	@Override
+	public int insertAnswer(Answer answer) {
+		return qnaRepository.insertAnswer(sqlSession, answer);
+	}
+
+	@Override
+	public Answer findAnswerByQnaNo(int qnaNo) {
+		return qnaRepository.findAnswerByQnaNo(sqlSession, qnaNo);
+	}
+
+	@Override
+	public List<Answer> findAllAnswer(Map<String, Integer> map) {
+		return qnaRepository.findAllAnswer(sqlSession, map);
+	}
+
+	@Override
+	public int deleteAnswer(int answerNo) {
+		return qnaRepository.deleteAnswer(sqlSession, answerNo);
+	}
 	
 }

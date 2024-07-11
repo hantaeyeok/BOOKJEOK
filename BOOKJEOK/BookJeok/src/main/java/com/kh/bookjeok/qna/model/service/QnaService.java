@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.session.RowBounds;
 
+import com.kh.bookjeok.qna.model.vo.Answer;
 import com.kh.bookjeok.qna.model.vo.Question;
 
 public interface QnaService {
@@ -24,5 +25,15 @@ public interface QnaService {
 	int searchCount(Map<String, String> map);
 
 	List<Question> findByConditionAndKeyword(Map<String, String> map, RowBounds rowBounds);
+
+	// 답변 
+	
+	int insertAnswer(Answer answer);
+
+	Answer findAnswerByQnaNo(int qnaNo);
+
+	List<Answer> findAllAnswer(Map<String, Integer> map);
+
+	int deleteAnswer(int answerNo);
 
 }

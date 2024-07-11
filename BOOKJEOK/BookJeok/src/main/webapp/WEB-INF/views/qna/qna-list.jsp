@@ -96,7 +96,14 @@
 	                			<td>${ question.qnaNo }</td>
 		                        <td>${ question.questionTitle }</td>
 		                        <td>${ question.questionDate }</td>
-		                        <td>처리중</td>
+		                        <c:choose>
+					                <c:when test="${empty answer}">
+					                    <td>처리중</td>
+					                </c:when>
+					                <c:otherwise>
+					                    <td>처리완료</td>
+					                </c:otherwise>
+					            </c:choose>
 	                		</tr>
                 		</c:if>
                 	</c:forEach>

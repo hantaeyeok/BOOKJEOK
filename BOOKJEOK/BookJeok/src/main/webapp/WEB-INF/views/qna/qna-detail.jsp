@@ -26,6 +26,25 @@
         table * { margin:5px; }
         table { width:100%; }
         table#replyArea th { width: 100px; }
+        
+        .status {
+            float: right; 
+            border-radius: 20px; 
+            width: 100px; 
+            height: 30px;
+            border: 2px; 
+            font-weight: bold; 
+            color: white; 
+            text-align: center; 
+            line-height: 30px;
+        }
+        .processing {
+            background-color: blue;
+        }
+        .completed {
+            background-color: red;
+        }
+        
     </style>
 </head>
 <body>
@@ -37,11 +56,14 @@
         <div class="innerOuter">
             <h2>1대1 문의 : 상세보기</h2>
             <br>
-            <span 
-                style="float: right; border-radius: 20px; width: 100px; height: 30px;
-                border: 2px; background-color: blue; font-weight: bold; color: white; text-align: center; line-height: 30px;">
-                처리중
-            </span>
+            <c:choose>
+                <c:when test="${empty answer}">
+                    <span class="status processing">처리중</span>
+                </c:when>
+                <c:otherwise>
+                    <span class="status completed">처리완료</span>
+                </c:otherwise>
+            </c:choose>
             <br><br>
 
             <table id="contentArea" align="center" class="table">
@@ -83,9 +105,10 @@
             <hr>
             <c:if test="${sessionScope.loginUser.userId != 'admin' }">
 	            <div align="center">
-	                <!-- 해당 버튼은 사용자만이 보이도록 한다. -->
 	                <!-- 수정하기 버튼은 답변이 없을 때 활성화, 답변이 있는 경우 비활성화 -->
-	                <a class="btn btn-primary" href="updateForm.question?qnaNo=${question.qnaNo }">수정</a>
+	                <c:if test="${empty answer}">
+	                	<a class="btn btn-primary" href="updateForm.question?qnaNo=${question.qnaNo }">수정</a>
+	                </c:if>
 	                <a class="btn btn-danger" href="delete.qna?qnaNo=${question.qnaNo }">삭제</a>
 	            </div>
             </c:if>
@@ -93,29 +116,39 @@
             <hr>
             <c:if test="${sessionScope.loginUser.userId == 'admin' }">
 	            <!--해당 버튼은 관리자만 보이도록 하며, 답변등록을 하지 않은 경우에만 보이도록 한다.-->
-	            <a class="btn btn-primary" href="" style="float: right;">답변등록</a>
-	            <br><br>
+	            <c:if test="${empty answer}">
+		            <a class="btn btn-primary" href="insertForm.answer?qnaNo=${question.qnaNo }" style="float: right;">답변등록</a>
+		            <br><br>
+	            </c:if>
 	            <!--답변은 작성된 경우에만 보이도록 한다.-->
-	            <table id="replyArea" class="table" align="center">
-	                <tr>
-	                    <th>답변내용</th>
-	                    <td colspan="2"><p style="height:150px;">답변내용~</p></td>
-	                </tr>
-	                <tr>
-	                    <th>첨부파일</th>
-	                    <td colspan="2">
-	                        <a href="" download="">파일명.jpg</a>
-	                    </td>
-	                </tr>
-	            </table>
-	            <br>
-	            <hr>
-	            <div align="center">
-	                <!-- 해당 버튼은 관리자만 보이도록 한다. -->
-	                <a class="btn btn-primary" href="">답변수정</a>
-	                <a class="btn btn-danger" href="">답변삭제</a>
-	            </div>
-	            <br><br>
+	            <c:if test="${!empty answer}">
+		            <table id="answer" class="table" align="center">
+		                <tr>
+		                    <th>답변내용</th>
+		                    <td colspan="2"><p style="height:150px;">${answer.answerContent }</p></td>
+		                </tr>
+		                <tr>
+		                    <th>첨부파일</th>
+		                    <c:if test="${empty answer.answerOriginname }">
+		                    	<td colspan="3">업로드 된 파일이 존재하지 않습니다.</td>
+		                    </c:if>
+		                    <c:if test="${!empty answer.answerOriginname }">
+			                    <td colspan="3">
+			                        <a href="${ answer.answerChangename }" 
+			                           download="${ answer.answerOriginname }">
+			                           ${ answer.answerOriginname }</a>
+			                    </td>
+		                    </c:if>
+		                </tr>
+		            </table>
+		            <br>
+		            <hr>
+		            <div align="center">
+		                <a class="btn btn-primary" href="">답변수정</a>
+		                <a class="btn btn-danger" href="delete.answer?answerNo=${answer.answerNo }">답변삭제</a>
+		            </div>
+		            <br><br>
+	            </c:if>
 	            <hr>
             </c:if>
             <div align="center">

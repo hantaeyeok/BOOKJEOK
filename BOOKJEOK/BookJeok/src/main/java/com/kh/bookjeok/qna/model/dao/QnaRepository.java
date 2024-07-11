@@ -7,6 +7,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.kh.bookjeok.qna.model.vo.Answer;
 import com.kh.bookjeok.qna.model.vo.Question;
 
 @Repository
@@ -43,6 +44,24 @@ public class QnaRepository {
 	public List<Question> findByConditionAndKeyword(SqlSessionTemplate sqlSession, Map<String, String> map,
 			RowBounds rowBounds) {
 		return sqlSession.selectList("qnaMapper.findByConditionAndKeyword", map, rowBounds);
+	}
+
+	// 답변
+	
+	public int insertAnswer(SqlSessionTemplate sqlSession, Answer answer) {
+		return sqlSession.insert("qnaMapper.insertAnswer", answer);
+	}
+
+	public Answer findAnswerByQnaNo(SqlSessionTemplate sqlSession, int qnaNo) {
+		return sqlSession.selectOne("qnaMapper.findAnswerByQnaNo", qnaNo);
+	}
+
+	public List<Answer> findAllAnswer(SqlSessionTemplate sqlSession, Map<String, Integer> map) {
+		return sqlSession.selectList("qnaMapper.findAllAnswer", map);
+	}
+
+	public int deleteAnswer(SqlSessionTemplate sqlSession, int answerNo) {
+		return sqlSession.update("qnaMapper.deleteAnswer", answerNo);
 	}
 
 }
