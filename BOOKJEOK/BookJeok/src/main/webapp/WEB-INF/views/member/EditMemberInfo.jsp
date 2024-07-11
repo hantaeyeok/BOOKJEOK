@@ -244,7 +244,7 @@ select option {
 	    <form action="/member/EditMemberInfoPwd" method="post" id="pwdForm">
 	        <div class="row">
 	            <h4>회원 정보</h4>
-	            <div class="input-group input-group-icon"><input type="text" placeholder="아이디" name="userId" value="${loginUser.userId }" readonly/>
+	            <div class="input-group input-group-icon"><input type="text" id="userId" placeholder="아이디" name="userId" value="${loginUser.userId }" readonly/>
 	                <div class="input-icon"><i class="fa fa-user"></i></div>
 	            </div>
 	            
@@ -263,12 +263,27 @@ select option {
 	            <script>
 	            	function pwd_submitfc() {
 	                	const pattern = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/;
+	                	const $userId = $('#userId');
 	                	const $userPwd = $('#userPwd');
 	                	const $userPwdRetype = $('#userPwdRetype');
 	                	const $pwdForm = $('#pwdForm');
 	                	if(pattern.test($userPwd.val())) { //패스워드 정규식
 	                    	if($userPwd.val()===$userPwdRetype.val()) { //비밀번호와 비밀번호확인 일치여부
-                    			$pwdForm.submit();
+        			    		$.ajax({
+        			    			url:'EditMemberInfoPwd',
+        			    			type:'post',
+        			    			data: {
+        			    				"userId":$userId.val(),
+        			    				"userPwd":$userPwd.val()
+        			    			},
+        			    			success: result => {
+        			    				const member = result.data;
+        			    				$userPwd.val('');
+        			    				$userPwdRetype.val('');
+        			    				alert('비밀번호 수정이 완료되었습니다.');
+        			    			}
+        			    		});
+                    			//$pwdForm.submit();
 	                    	} else {
 	                    		alert('비밀번호와 비밀번호확인란이 일치하지 않습니다.');
 	                    	}
@@ -282,7 +297,6 @@ select option {
 	     <form action="/member/EditMemberInfoEtc" method="post" id="etcForm">
 	        <div class="row">
 	            <h4>세부 정보</h4>
-				<input type="hidden" placeholder="아이디" name="userId" value="${loginUser.userId }" readonly/>
 	            <div class="input-group input-group-icon"><input type="text" placeholder="이름" id="userName" name="userName" value="${loginUser.userName }" readonly />
 	                <div class="input-icon"><i class="fa fa-user"></i></div>
 	            </div>
@@ -366,15 +380,40 @@ select option {
 	           		const email_pattern = /[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]$/i;
 	           		const postnum_pattern = /^[a-z|A-Z|0-9]{5}$/;
 	           		
+	           		const $userId = $('#userId');
 	            	const $email = $('#email');
 	            	const $phone = $('#phone');
+	            	const $address = $('#address');
+	            	const $addressDetail = $('#addressDetail');
 	            	const $postnum = $('#postnum');
-	            	const $etcForm = $('#etcForm');
+	            	const $gender = $('input:radio[name="gender"]:checked');
 	            	
 	            	if(postnum_pattern.test($postnum.val())) { //우편번호 정규식
         		    	if($phone.val()=='' || phone_pattern.test($phone.val())) { //폰 정규식
         			    	if(email_pattern.test($email.val())) { //이메일 정규식
-        			    		$etcForm.submit();
+        			    		$.ajax({
+        			    			url:'EditMemberInfoEtc',
+        			    			type:'post',
+        			    			data: {
+        			    				"userId":$userId.val(),
+        			    				"email":$email.val(),
+        			    				"phone":$phone.val(),
+        			    				"postnum":$postnum.val(),
+        			    				"address":$address.val(),
+        			    				"addressDetail":$addressDetail.val(),
+        			    				"gender":$gender.val()
+        			    			},
+        			    			success: result => {
+        			    				const member = result.data;
+        			    				$email.val(member.email);
+        			    				$phone.val(member.phone);
+        			    				$postnum.val(member.postnum);
+        			    				$address.val(member.address);
+        			    				$addressDetail.val(member.addressDetail);
+        			    				$gender.val(member.gender);
+        			    				alert('세부 정보 수정이 완료되었습니다.');
+        			    			}
+        			    		});
         			    	} else {
         			    		alert('올바른 이메일 형식을 입력해주세요.');
         			    	}

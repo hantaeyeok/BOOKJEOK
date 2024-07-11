@@ -1,5 +1,7 @@
 package com.kh.bookjeok.mypage.model.vo;
 
+import com.kh.bookjeok.book.model.vo.Book;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +16,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 public class PaymentPerbook {
-	private int orderNo;
+	private String orderNo;
 	private int bookNo;
 	private int orderQuan;
+	private Book book;
 }
