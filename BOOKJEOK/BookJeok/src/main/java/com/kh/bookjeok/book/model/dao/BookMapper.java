@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.kh.bookjeok.book.model.vo.Book;
+import com.kh.bookjeok.book.model.vo.BookDetail;
 import com.kh.bookjeok.book.model.vo.LowerCategory;
 import com.kh.bookjeok.book.model.vo.MidCategory;
 import com.kh.bookjeok.book.model.vo.TopCategory;
@@ -32,5 +33,11 @@ public interface BookMapper {
 	
 	//isbnCheck
 	int isbnCheck(String isbn);
+	
+	//
+	int saveBookDetail(BookDetail bookDetail);
+	
+	//isbnSelect
+	Book isbnSelect(String bookIsbn);
 	
 }

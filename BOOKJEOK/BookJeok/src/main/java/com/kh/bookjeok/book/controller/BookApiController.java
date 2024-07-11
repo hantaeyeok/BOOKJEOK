@@ -89,7 +89,7 @@ public class BookApiController {
                                          .message("유효하지 않은 ISBN입니다.")
                                          .data("ISBN 유효성 검사 실패")
                                          .build();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseMsg);
+            return ResponseEntity.status(HttpStatus.OK).body(responseMsg);
         }
 		
 	}

@@ -15,6 +15,8 @@
 		<typeAlias type="com.kh.bookjeok.book.model.vo.LowerCategory" alias="lowerCategory"/>
 		<typeAlias type="com.kh.bookjeok.book.model.vo.MidCategory" alias="midCategory"/>
 		<typeAlias type="com.kh.bookjeok.book.model.vo.UpperCategory" alias="upperCategory"/>
+		<typeAlias type="com.kh.bookjeok.book.model.vo.BookDetail" alias="bookDetail"/>
+		
    <typeAlias type="com.kh.bookjeok.member.model.vo.Member" alias="member"/>	
 	</typeAliases>
 	

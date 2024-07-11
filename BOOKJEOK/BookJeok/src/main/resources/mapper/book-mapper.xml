@@ -57,10 +57,19 @@
     INSERT 
     INTO 
     		TOP_CATEGORY 
-    		(TOP_CATEGORY_NO, TOP_CATEGORY_NAME, CATEGORY_STATUS)
+    		(
+    		TOP_CATEGORY_NO, 
+    		TOP_CATEGORY_NAME, 
+    		CATEGORY_STATUS
+    		)
     VALUES 
-    		(top_category_seq.NEXTVAL, #{topCategoryName}, 'Y')
+    		(
+    		 top_category_seq.NEXTVAL, 
+    		 #{topCategoryName}, 
+    		 'Y'
+    		 )
 </insert>
+
 
 <!-- UpperCategory 조회 -->
 <select id="selectUpperCategoryByNameAndParentId" resultType="upperCategory" parameterType="map" >
@@ -147,9 +156,34 @@
 			BOOK_ISBN = #{isbn}
 </select>
 
+<insert id="saveBookDetail" parameterType="bookDetail">
+	INSERT
+	INTO
+			BOOK_DETAIL
+			(
+			DETAIL_NO,
+			BOOK_NO,
+			DETAIL_IMAGE,
+			DETAIL_DESCRIPTION
+			)
+	VALUES
+			(
+			DETAIL_NO_SEQ.NEXTVAL,
+			#{bookNo},
+			#{detailImage},
+			#{detailDescription}
+			)
+</insert>
 
+<select id="isbnSelect" resultType="book" parameterType="String">
+	SELECT
+			BOOK_NO bookNo
+	FROM
+			BOOK
+	WHERE
+			BOOK_ISBN = #{isbn}
 
-
+</select>
 
 
 
