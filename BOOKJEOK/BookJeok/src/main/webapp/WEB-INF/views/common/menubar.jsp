@@ -21,16 +21,25 @@
         <div class="header_wrapper columns">
             <nav id="global-navigation">
                 <div class="gnb_wrap">
-                    <div class="column is-5">
-                        <div class="anb_wrap"><img src="https://cdn-icons-png.flaticon.com/512/94/94225.png" alt=""></div>
-                        <ul class="gnb_list">
-                            <li class="gnb_items">노트북</li>
-                            <li class="gnb_items">스마트폰</li>
-                            <li class="gnb_items">태블릿</li>
-                            <li class="gnb_items">스마트워치</li>
-                            <li class="gnb_items">이어폰</li>
-                        </ul>
-                    </div>
+                     <c:choose>
+		            	<c:when test="${ sessionScope.loginUser eq null }">
+		            		<%-- ${ empty sessionScope.loginUser } --%>
+			                <!-- 로그인 전 -->
+			                <a href="member/joinform">회원가입</a>
+			                <a href="member/loginform">로그인</a>
+		                </c:when>
+		                <c:otherwise>
+			                <!-- 로그인 후 -->
+			                <label>${ sessionScope.loginUser.userName }님 환영합니다</label> &nbsp;&nbsp;
+			                <a href="#">마이페이지</a>
+			                <a href="#">로그아웃</a>
+		                </c:otherwise>
+	                </c:choose>
+	                <div id="header_2">
+			            <ul>
+			                <li><a href="../list.qna">1대1문의</a></li>
+			            </ul>
+			        </div>
                     <div class="seacrh_wrap column is-6">
                         <div class="search_bar">
                             <form class="search-container">

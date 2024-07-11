@@ -32,7 +32,7 @@ public class MemberController {
 			System.out.println("로그인 실패");
 		}
 		
-		return null;
+		return "main";
 	}
 	
 	@PostMapping("join")

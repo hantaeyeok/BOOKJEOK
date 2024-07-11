@@ -30,14 +30,27 @@
             margin : auto;
             text-align: center;
         }
-        #img-area > img{
+        
+        #img-area > img {
             width : 80%;
         }
+        
+        #deleteButton {
+        	border-radius: 2px; 
+        	border-width: 1px; 
+        	border-color: gray;
+            box-shadow: 0.5px 0.5px rgba(0.5px,0.5px,0.5px,0.5px);
+        }
+        
+        #cancelButton {
+        	display : none;
+        }
+        
     </style>
 </head>
 <body>
         
-    <!-- <jsp:include page="" /> -->
+    <jsp:include page="../common/menubar.jsp" />
 
     <div class="content">
         <br><br>
@@ -45,7 +58,8 @@
             <h2>1대1 문의 : 문의 수정하기</h2>
             <br>
 
-            <form id="enrollForm" method="post" action="update.question" enctype="multipart/form-data">
+            <form id="enrollForm" method="post" action="update.question?qnaNo=${question.qnaNo}" enctype="multipart/form-data">
+                <input type="hidden" value="${question.qnaNo }" id="qnaNo">
                 <table align="center">
                     <tr>
                         <th><label for="title">제목</label></th>
@@ -65,20 +79,81 @@
                         <th><label for="upfile">첨부파일</label></th>
                         <td>
                             <input type="file" id="upfile" class="form-control-file border" name="reUpfile" accept=".zip">
-                            <c:if test="${ not empty question.questionOriginname }">
-                            	<a href="${ question.questionChangename }" download="${ question.questionOriginname }">${ question.questionOriginname }</a>
-                            	<input type="hidden" name="questionChangename" value="${ question.questionChangename }" />
-                				<input type="hidden" name="questionOriginname" value="${ question.questionOriginname }" />
-                				<button style="border-radius: 2px; border-width: 1px; 
-                            	border-color: gray; box-shadow: 0.5px 0.5px rgba(0.5px,0.5px,0.5px,0.5px);">파일 제거</button>
-                            </c:if>
+                            <button type="button"
+                                    id="cancelButton" 
+                                    class="btn btn-danger btn-sm" 
+                                    onclick="clearFile()">파일 선택취소</button>
                         </td>
+                    </tr>
+                    <tr>
+                    	<th></th>
+                    	<td>
+                    		<c:if test="${ not empty question.questionOriginname }">
+                            	<a href="${ question.questionChangename }" 
+                            	   download="${ question.questionOriginname }">
+                            	   ${ question.questionOriginname }</a>
+                            	<input type="hidden" name="questionChangename" 
+                            	       value="${ question.questionChangename }" />
+                				<input type="hidden" name="questionOriginname"
+                					   id="fileName" 
+                				       value="${ question.questionOriginname }" />
+                				<button type="button" id="deleteButton">파일 제거</button>
+                            </c:if>
+                    	</td>
                     </tr>
                     <tr>
                         <th></th>
                         <td><small style="color: red; font-weight: bold;">※ 첨부 파일은 ZIP파일만 업로드가 가능합니다.</small></td>
                     </tr>
                 </table>
+                <script>
+			        const upfile = document.getElementById('upfile');
+			        const cancelButton = document.getElementById('cancelButton');
+			
+			        // 파일 선택 이벤트 리스너
+			        upfile.addEventListener('change', function() {
+			            if (upfile.files.length > 0) {
+			            	cancelButton.style.display = 'inline-block'; // 파일이 선택되면 삭제 버튼 표시
+			            } else {
+			            	cancelButton.style.display = 'none'; // 파일이 선택되지 않으면 삭제 버튼 숨김
+			            }
+			        });
+			
+			        // 파일 선택 취소 버튼 클릭 시 호출되는 함수
+			        function clearFile() {
+			            upfile.value = ''; // 파일 선택 취소
+			            cancelButton.style.display = 'none'; // 버튼 숨김
+			        }
+			    </script>
+			    
+			    <script>
+			 		// (첨부되어 있는) 파일 삭제 버튼 클릭 시 호출되는 함수
+			    	$('#deleteButton').click(() => {
+			    		deleteFile();
+			    	});
+			 		
+			 		function deleteFile() {
+			 			
+			 			var qnaNo = $('#qnaNo').val();
+			 			var fileName = $('#fileName').val();
+			 			var filePath = '/resources/uploadFiles/' + fileName;
+			 			
+			 			console.log(filePath);
+			 			
+			 			$.ajax({
+			 				url : 'delete-file',
+			 				data : {
+			 					qnaNo : qnaNo,
+			 					filePath : filePath
+			 				},
+			 				type : 'get',
+			 				success : result => {
+			 					console.log(result);
+			 				}
+			 			});
+			 		}
+			    </script>
+			    
                 <br>
 
                 <div align="center">

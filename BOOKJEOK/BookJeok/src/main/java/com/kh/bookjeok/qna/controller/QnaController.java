@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.kh.bookjeok.member.model.vo.Member;
 import com.kh.bookjeok.model.Page;
 import com.kh.bookjeok.qna.model.service.QnaService;
 import com.kh.bookjeok.qna.model.vo.Question;
@@ -37,10 +38,16 @@ public class QnaController {
 	@GetMapping("list.qna")
 	public String list(@RequestParam(value="page", defaultValue="1") int page,
 					   Model model,
-					   Page pageInfo) {
+					   Page pageInfo,
+					   HttpSession session,
+					   Member member) {
 		
-		log.info("Received request for list.qna with page: {}", page);
-		System.out.println(page);
+		Member loginUser = (Member)session.getAttribute("loginUser");
+		String userId = loginUser.getUserId();
+		
+		//log.info("Received request for list.qna with page: {}", page);
+		System.out.println("Received request for list.qna with page: " + page);
+		
 		
 		// paging
 		
@@ -98,6 +105,7 @@ public class QnaController {
 		
 		model.addAttribute("question", question);
 		model.addAttribute("pageInfo", pageInfo);
+		model.addAttribute("userId", userId);
 		
 		return "qna/qna-list";
 	}
@@ -175,12 +183,12 @@ public class QnaController {
 		if(qnaService.insertQuestion(question) > 0) {
 			
 			session.setAttribute("alert", "문의완료!");
-			return "redirect:questionList";
+			return "redirect:list.qna";
 			
 		} else {
 			
 			model.addAttribute("alert", "문의실패!");
-			return "redirect:questionList";
+			return null;
 		}
 	}
 	
@@ -230,12 +238,12 @@ public class QnaController {
 		if(qnaService.updateQuestion(question) > 0) {
 			
 			session.setAttribute("alert", "문의수정완료!");
-			return "redirect:qna-detail?qnaNo=" + question.getQnaNo();
+			return "redirect:detail.qna?qnaNo=" + question.getQnaNo();
 			
 		} else {
 			
 			session.setAttribute("alert", "문의수정실패!");
-			return "redirect:qna-detail?qnaNo=" + question.getQnaNo();
+			return "redirect:detail.qna?qnaNo=" + question.getQnaNo();
 		}
 	}
 	
@@ -247,7 +255,7 @@ public class QnaController {
 		
 		if(qnaService.deleteQna(qnaNo) > 0) {
 			
-			if(!"".equals(filePath)) {
+			if(filePath != null && !"".equals(filePath)) {
 				
 				new File(session.getServletContext().getRealPath(filePath)).delete();
 				
@@ -255,16 +263,16 @@ public class QnaController {
 			
 			session.setAttribute("alert", "문의삭제완료!");
 			
-			return "redirect:questionList";
+			return "redirect:list.qna";
 			
 		} else {
 			
 			model.addAttribute("alert", "문의삭제실패!");
-			return "redirect:questionList";
+			return "redirect:list.qna";
 		}
 	}
 	
-	@PostMapping
+	@GetMapping("delete-file")
 	public String deleteFile(int qnaNo,
 							 String filePath,
 							 HttpSession session,

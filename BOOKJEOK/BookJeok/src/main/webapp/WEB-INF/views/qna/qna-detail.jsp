@@ -30,7 +30,7 @@
 </head>
 <body>
         
-    <!-- <jsp:include page="" /> -->
+    <jsp:include page="../common/menubar.jsp" />
 
     <div class="content">
         <br><br>
@@ -59,50 +59,65 @@
                 </tr>
                 <tr>
                     <th>내용</th>
-                    <td colspan="4"><p style="height:150px;">${ question.questionContent }</p></td>
+                    <td colspan="4">
+                    	<p style="white-space: pre-wrap;">
+                    		${ question.questionContent }
+                    	</p>
+                    </td>
                 </tr>
                 <tr>
                     <th>첨부파일</th>
-                    <td colspan="3">
-                        <a href="" download="">파일명.jpg</a>
-                    </td>
+                    <c:if test="${empty question.questionOriginname }">
+                    	<td colspan="3">업로드 된 파일이 존재하지 않습니다.</td>
+                    </c:if>
+                    <c:if test="${!empty question.questionOriginname }">
+	                    <td colspan="3">
+	                        <a href="${ question.questionChangename }" 
+	                           download="${ question.questionOriginname }">
+	                           ${ question.questionOriginname }</a>
+	                    </td>
+                    </c:if>
                 </tr>
             </table>
             <br>
             <hr>
-            <div align="center">
-                <!-- 해당 버튼은 사용자만이 보이도록 한다. -->
-                <!-- 수정하기 버튼은 답변이 없을 때 활성화, 답변이 있는 경우 비활성화 -->
-                <a class="btn btn-primary" href="updateForm.question?qnaNo=${question.qnaNo }">수정</a>
-                <a class="btn btn-danger" href="delete.qna?qnaNo=${question.qnaNo }">삭제</a>
-            </div>
+            <c:if test="${sessionScope.loginUser.userId != 'admin' }">
+	            <div align="center">
+	                <!-- 해당 버튼은 사용자만이 보이도록 한다. -->
+	                <!-- 수정하기 버튼은 답변이 없을 때 활성화, 답변이 있는 경우 비활성화 -->
+	                <a class="btn btn-primary" href="updateForm.question?qnaNo=${question.qnaNo }">수정</a>
+	                <a class="btn btn-danger" href="delete.qna?qnaNo=${question.qnaNo }">삭제</a>
+	            </div>
+            </c:if>
             <br><br><br>
             <hr>
-            <!--해당 버튼은 관리자만 보이도록 하며, 답변등록을 하지 않은 경우에만 보이도록 한다.-->
-            <a class="btn btn-primary" href="" style="float: right;">답변등록</a>
-            <br><br>
-            <!--답변은 작성된 경우에만 보이도록 한다.-->
-            <table id="replyArea" class="table" align="center">
-                <tr>
-                    <th>답변내용</th>
-                    <td colspan="2"><p style="height:150px;">답변내용~</p></td>
-                </tr>
-                <tr>
-                    <th>첨부파일</th>
-                    <td colspan="2">
-                        <a href="" download="">파일명.jpg</a>
-                    </td>
-                </tr>
-            </table>
-            <br>
-            <hr>
-            <div align="center">
-                <!-- 해당 버튼은 관리자만 보이도록 한다. -->
-                <a class="btn btn-primary" href="">답변수정</a>
-                <a class="btn btn-danger" href="">답변삭제</a>
-            </div>
-            <br><br>
-            <hr>
+            <c:if test="${sessionScope.loginUser.userId == 'admin' }">
+	            <!--해당 버튼은 관리자만 보이도록 하며, 답변등록을 하지 않은 경우에만 보이도록 한다.-->
+	            <a class="btn btn-primary" href="" style="float: right;">답변등록</a>
+	            <br><br>
+	            <!--답변은 작성된 경우에만 보이도록 한다.-->
+	            <table id="replyArea" class="table" align="center">
+	                <tr>
+	                    <th>답변내용</th>
+	                    <td colspan="2"><p style="height:150px;">답변내용~</p></td>
+	                </tr>
+	                <tr>
+	                    <th>첨부파일</th>
+	                    <td colspan="2">
+	                        <a href="" download="">파일명.jpg</a>
+	                    </td>
+	                </tr>
+	            </table>
+	            <br>
+	            <hr>
+	            <div align="center">
+	                <!-- 해당 버튼은 관리자만 보이도록 한다. -->
+	                <a class="btn btn-primary" href="">답변수정</a>
+	                <a class="btn btn-danger" href="">답변삭제</a>
+	            </div>
+	            <br><br>
+	            <hr>
+            </c:if>
             <div align="center">
                 <a class="btn btn-secondary" href="list.qna" style="width: 100px;">목록</a>
             </div>

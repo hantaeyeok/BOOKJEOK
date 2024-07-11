@@ -42,9 +42,9 @@
     </style>
 </head>
 <body>
-    <!--  
-    <jsp:include page="" />
-	-->
+
+	<jsp:include page="../common/menubar.jsp" />
+	
     <div class="content">
         <br><br>
         <div class="innerOuter" style="padding:5% 10%;">
@@ -91,12 +91,14 @@
                 		</c:when>
                 	</c:choose>
                 	<c:forEach items="${ question }" var="question">
-                		<tr class="qna-detail" id="qnaNo-${ question.qnaNo }">
-                			<td>${ question.qnaNo }</td>
-	                        <td>${ question.questionTitle }</td>
-	                        <td>${ question.questionDate }</td>
-	                        <td>처리중</td>
-                		</tr>
+                		<c:if test="${ question.userId == userId or userId == 'admin' }">
+	                		<tr class="qna-detail" id="qnaNo-${ question.qnaNo }">
+	                			<td>${ question.qnaNo }</td>
+		                        <td>${ question.questionTitle }</td>
+		                        <td>${ question.questionDate }</td>
+		                        <td>처리중</td>
+	                		</tr>
+                		</c:if>
                 	</c:forEach>
                 </tbody>
             </table>
@@ -183,8 +185,10 @@
                 </ul>
             </div>
             <br>
-            <a class="btn btn-primary" style="float:right;" href="insertForm.question">문의하기</a>
-            <br><br>
+            <c:if test="${ sessionScope.loginUser.userId != 'admin' }">
+	            <a class="btn btn-primary" style="float:right;" href="insertForm.question">문의하기</a>
+	            <br><br>
+            </c:if>
         </div>
         <br><br>
 
