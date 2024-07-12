@@ -1,5 +1,6 @@
 package com.kh.bookjeok.book.model.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -40,5 +41,12 @@ public interface BookMapper {
 	
 	//BookNo selectOne
 	Book selectBookNo(int bookNo);
+	
+	
+	List<Book> keywrodByBook(String bookKeyword);
+	List<UpperCategory> upperCategoryBytopNo(Integer topCategoryNo);
+	List<TopCategory> topCategoryAll();
+	List<MidCategory> midCategoryByupperNo(Integer upperCategoryNo);
+	List<LowerCategory> lowerCategoryBymidCategoryNo(Integer midCategory);
 	
 }

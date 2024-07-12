@@ -8,32 +8,27 @@ import java.net.URL;
 
 import org.json.JSONObject;
 import org.json.XML;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.kh.bookjeok.book.model.service.BookService;
-import com.kh.bookjeok.common.model.vo.Message;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping("api")
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class BookApiController {
 	
-	@GetMapping(produces = "application/json; charset=UTF-8")
-	public String searchAladinAPI(String keyword, String start) throws IOException {
+	@GetMapping( produces = "application/json; charset=UTF-8")
+	public String searchAladinAPI(@RequestParam("keyword") String keyword,@RequestParam("start") int start) throws IOException {
 
 		StringBuilder sb = new StringBuilder();
 		String ttbkey = "ttbgksxodur11530001";
 		int maxResults = 5;
-		log.info(keyword);
-		
+
 		sb.append("http://www.aladin.co.kr/ttb/api/ItemSearch.aspx");
 		sb.append("?ttbkey=");
 		sb.append(ttbkey);

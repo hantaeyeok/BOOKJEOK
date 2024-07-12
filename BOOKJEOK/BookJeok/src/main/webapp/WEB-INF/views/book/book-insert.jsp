@@ -10,8 +10,13 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
+
+<jsp:include page="../common/menubar.jsp" />
+
 <div class="container my-5">
     <h2>도서 등록 페이지</h2>
+    
+    
     <!-- Modal -->
     <div class="modal fade" id="bookModal" tabindex="-1" role="dialog" aria-labelledby="bookModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -86,6 +91,16 @@ document.getElementById('coverType').addEventListener('change', function() {
     }
 });
 
+function previewCoverImage(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            $('#coverPreview').attr('src', e.target.result);
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
 </script>
             <div class="col-md-6">
                 <div class="form-group">
@@ -112,10 +127,32 @@ document.getElementById('coverType').addEventListener('change', function() {
             </div>
         </div>
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-3">
                 <div class="form-group">
-                    <label for="category">카테고리</label>
-                    <input type="text" class="form-control" id="category" name="categoryString" required>
+                    <label for="topCategory">상위 카테고리</label>
+                    <select class="form-control" id="topCategory" onchange="fetchUpperCategories()"></select>
+                    <input type="text" class="form-control" id="topCategoryInput" name="topCategory" style="display:none;" placeholder="직접 입력">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="upperCategory">중위 카테고리</label>
+                    <select class="form-control" id="upperCategory" onchange="fetchMidCategories()"></select>
+                    <input type="text" class="form-control" id="upperCategoryInput" name="upperCategory" style="display:none;" placeholder="직접 입력">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="midCategory">하위 카테고리</label>
+                    <select class="form-control" id="midCategory" onchange="fetchLowerCategories()"></select>
+                    <input type="text" class="form-control" id="midCategoryInput" name="midCategory" style="display:none;" placeholder="직접 입력">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="lowerCategory">최하위 카테고리</label>
+                    <select class="form-control" id="lowerCategory"></select>
+                    <input type="text" class="form-control" id="lowerCategoryInput" name="lowerCategory" style="display:none;" placeholder="직접 입력">
                 </div>
             </div>
         </div>
@@ -169,10 +206,10 @@ var currentPage = 1;
 
 	function searchBooks() {
 	    var $keyword = $('#keyword').val(); 
-	    console.log($keyword);
+	   
 	    $.ajax({
-	        url: 'api',
-	        type: 'get', 
+	        url: '/bookjeok/api',
+	        type: 'GET', 
 	        data: { keyword: $keyword, start: currentPage},
 	        success: result => {
 	            console.log(result.object);
@@ -250,7 +287,7 @@ var currentPage = 1;
 	    }
 		
 	    $.ajax({
-	        url: 'books/isbnCheck',
+	        url: 'isbnCheck',
 	        type: 'GET',
 	        data: { isbn: isbn },
 	        success: response => {
@@ -279,6 +316,8 @@ var currentPage = 1;
 	            saveAll();
 	        }
 	    });
+	    
+	    fetchTopCategories();
 	});
 
 
@@ -291,17 +330,117 @@ var currentPage = 1;
 	}
 
 </script>
-    detailFormData.append('bookNo', responseData);
+<script>
+function fetchTopCategories() {
+    $.ajax({
+        url: 'top',
+        type: 'GET',
+        success: response => {
+            $('#topCategory').html('<option value="">선택</option><option value="custom">직접 입력</option>');
+            response.forEach(category => {
+                $('#topCategory').append(`<option value="${category.TOP_CATEGORY_NO}">${category.TOP_CATEGORY_NAME}</option>`);
+            });
+        }
+    });
+}
+
+function fetchUpperCategories() {
+    var topCategoryNo = $('#topCategory').val();
+    if (topCategoryNo && topCategoryNo !== 'custom') {
+        $.ajax({
+            url: 'upper'+${topCategoryNo},
+            type: 'GET',
+            success: response => {
+                $('#upperCategory').html('<option value="">선택</option><option value="custom">직접 입력</option>');
+                response.forEach(category => {
+                    $('#upperCategory').append(`<option value="${category.UPPER_CATEGORY_NO}">${category.UPPER_CATEGORY_NAME}</option>`);
+                });
+            }
+        });
+    } else {
+        $('#upperCategory').html('<option value="">선택</option><option value="custom">직접 입력</option>');
+    }
+    toggleCustomInput('topCategory');
+}
+
+function fetchMidCategories() {
+    var upperCategoryNo = $('#upperCategory').val();
+    if (upperCategoryNo && upperCategoryNo !== 'custom') {
+        $.ajax({
+            url: 'mid'+ ${upperCategoryNo},
+            type: 'GET',
+            success: response => {
+                $('#midCategory').html('<option value="">선택</option><option value="custom">직접 입력</option>');
+                response.forEach(category => {
+                    $('#midCategory').append(`<option value="${category.MID_CATEGORY_NO}">${category.MID_CATEGORY_NAME}</option>`);
+                });
+            }
+        });
+    } else {
+        $('#midCategory').html('<option value="">선택</option><option value="custom">직접 입력</option>');
+    }
+    toggleCustomInput('upperCategory');
+}
+
+function fetchLowerCategories() {
+    var midCategoryNo = $('#midCategory').val();
+    if (midCategoryNo && midCategoryNo !== 'custom') {
+        $.ajax({
+            url: 'lower'+${midCategoryNo},
+            type: 'GET',
+            success: response => {
+                $('#lowerCategory').html('<option value="">선택</option><option value="custom">직접 입력</option>');
+                response.forEach(category => {
+                    $('#lowerCategory').append(`<option value="${category.LOWER_CATEGORY_NO}">${category.LOWER_CATEGORY_NAME}</option>`);
+                });
+            }
+        });
+    } else {
+        $('#lowerCategory').html('<option value="">선택</option><option value="custom">직접 입력</option>');
+    }
+    toggleCustomInput('midCategory');
+}
+
+function toggleCustomInput(categoryLevel) {
+    var selectElement = $('#' + categoryLevel);
+    var inputElement = $('#' + categoryLevel + 'Input');
+
+    if (selectElement.val() === 'custom') {
+        inputElement.show();
+        inputElement.attr('name', categoryLevel);
+        selectElement.attr('name', '');
+    } else {
+        inputElement.hide();
+        inputElement.attr('name', '');
+        selectElement.attr('name', categoryLevel);
+    }
+}
+
+</script>
 
 <script>
 let responseData;
 
 //도서 정보와 상세 정보를 순차적으로 저장
 function saveAll() {
+	var topCategory = $('#topCategory').val() === 'custom' ? $('#topCategoryInput').val() : $('#topCategory option:selected').text();
+    var upperCategory = $('#upperCategory').val() === 'custom' ? $('#upperCategoryInput').val() : $('#upperCategory option:selected').text();
+    var midCategory = $('#midCategory').val() === 'custom' ? $('#midCategoryInput').val() : $('#midCategory option:selected').text();
+    var lowerCategory = $('#lowerCategory').val() === 'custom' ? $('#lowerCategoryInput').val() : $('#lowerCategory option:selected').text();
+    
+    var categoryString = topCategory;
+    if (upperCategory) categoryString += '>' + upperCategory;
+    if (midCategory) categoryString += '>' + midCategory;
+    if (lowerCategory) categoryString += '>' + lowerCategory;
+    
+    $('#categoryString').val(categoryString);
+	
+	
+	
     var bookFormData = new FormData($('#bookForm').get(0));
 
     $.ajax({
-        url: 'books/saveBook',
+        url: 'saveBook',
         type: 'POST',
         data: bookFormData,
         contentType: false,
@@ -326,7 +465,7 @@ function saveBookDetail() {
     bookDetailForm.append('bookNo', responseData);
     console.log(responseData);
     $.ajax({
-        url: 'books/saveBookDetail',
+        url: 'saveBookDetail',
         type: 'POST',
         data: bookDetailForm,
         contentType: false,
@@ -344,7 +483,15 @@ function saveBookDetail() {
     });
 }
 
-
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            $('#imagePreview img').attr('src', e.target.result);
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
 
 
 

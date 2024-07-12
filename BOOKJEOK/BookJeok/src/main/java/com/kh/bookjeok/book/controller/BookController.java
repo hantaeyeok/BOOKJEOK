@@ -1,22 +1,30 @@
 package com.kh.bookjeok.book.controller;
 
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.bookjeok.book.model.service.BookCategoryService;
 import com.kh.bookjeok.book.model.service.BookService;
 import com.kh.bookjeok.book.model.vo.Book;
 import com.kh.bookjeok.book.model.vo.BookDetail;
+import com.kh.bookjeok.book.model.vo.LowerCategory;
+import com.kh.bookjeok.book.model.vo.MidCategory;
+import com.kh.bookjeok.book.model.vo.TopCategory;
+import com.kh.bookjeok.book.model.vo.UpperCategory;
 import com.kh.bookjeok.common.model.FileUploadService;
 import com.kh.bookjeok.common.model.vo.Message;
 
@@ -24,17 +32,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Controller
-@RequestMapping("books")
+@RestController
+@RequestMapping("book")
 @RequiredArgsConstructor
 public class BookController {
-	
+
 	private final BookService bookService;
 	private final FileUploadService fileUploadService;
 	private final BookCategoryService bookCategoryService;
 	
-	@ResponseBody
-	@GetMapping("/isbnCheck")
+	@GetMapping("isbnCheck")
 	public ResponseEntity<Message> isbnCheck(String isbn) {
 		log.info("isbn : {}",isbn);
 		int response = bookService.isbnCheck(isbn);
@@ -53,9 +60,8 @@ public class BookController {
         }
 		
 	}
-	
-	@ResponseBody
-	@PostMapping("/saveBook")
+
+	@PostMapping("saveBook")
 	public ResponseEntity<Message> saveBook(
 	        Book book,
 	        @RequestParam(required = false) String bookCoverText,
@@ -94,9 +100,8 @@ public class BookController {
 																.build());
 		}
 	}
-	
-	@ResponseBody
-	@PostMapping("/saveBookDetail")
+
+	@PostMapping("saveBookDetail")
 	public ResponseEntity<Message> saveBookDetail(
 				@RequestParam("bookNo") int bookNo,
 				@RequestParam(required = false) MultipartFile detailImage,
@@ -134,20 +139,32 @@ public class BookController {
 		}
 	}
 	
-	public String category() {
-		
-		
-		
-		
+	
+	@GetMapping("search")
+	public List<Book> keywordByBook(String bookKeyword) {
+		return bookService.keywrodByBook(bookKeyword);
 	}
 	
 	
+	@GetMapping("top")
+	public List<TopCategory> topCategoryAll(){
+		return bookService.topCategoryAll();
+	}
 	
+	@GetMapping("upper/{topCategoryNo}")
+	public List<UpperCategory> upperCategoryBytopNo(@PathVariable Integer topCategoryNo){
+		return bookService.upperCategoryBytopNo(topCategoryNo);
+	}
 	
+	@GetMapping("mid/{upperCategoryNo}")
+	public List<MidCategory> midCategoryByupperNo(@PathVariable Integer upperCategoryNo){
+		return bookService.midCategoryByupperNo(upperCategoryNo);
+	}
 	
-	
-	
-	
+	@GetMapping("lower/{midCategoryNo}")
+	public List<LowerCategory> lowerCategoryBymidCategoryNo(@PathVariable Integer midCategory){
+		return bookService.lowerCategoryBymidCategoryNo(midCategory);
+	}
 	
 	
 	

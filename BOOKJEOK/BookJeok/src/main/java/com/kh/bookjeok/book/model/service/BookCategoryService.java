@@ -104,4 +104,11 @@ public class BookCategoryService {
 	    
         return categoryId;
     }
+    
+    
+    public String categoryPull() {
+    	
+    	
+    	
+    }
 }

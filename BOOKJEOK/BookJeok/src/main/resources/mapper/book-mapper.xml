@@ -207,7 +207,104 @@
 </select>
 
 
+<select id="keywrodByBook" resultType="book" parameterType="String">
+	  SELECT 
+			BOOK_NO bookNo,
+			CATEGORY_ID categoryId,
+			BOOK_TITLE bookTitle,
+			BOOK_AUTHOR bookAuthor,
+			BOOK_PUBLISHER bookPublisher,
+			BOOK_PUB_DATE bookPubDate,
+			BOOK_ISBN bookIsbn, 
+			BOOK_PRICE bookPrice,
+			BOOK_DESCRIPTION bookDescription,
+			BOOK_COVER bookCover,
+			BOOK_CREATE_DATE  bookCreateDate,
+			BOOK_AMOUNT bookAmount,
+			BOOK_STATUS bookStatus
+	 FROM (
+	        SELECT
+		            BOOK_NO,
+		            CATEGORY_ID,
+		            BOOK_TITLE,
+		            BOOK_AUTHOR,
+		            BOOK_PUBLISHER,
+		            BOOK_PUB_DATE,
+		            BOOK_ISBN, 
+		            BOOK_PRICE,
+		            BOOK_DESCRIPTION,
+		            BOOK_COVER,
+		            BOOK_CREATE_DATE,
+		            BOOK_AMOUNT,
+		            BOOK_STATUS,
+		            ROWNUM RNUM
+	        FROM
+	           		BOOK
+	        WHERE
+		            BOOK_STATUS = 'Y'
+	        AND 
+	        		(BOOK_TITLE LIKE '%' || #{bookKeyword} || '%' OR BOOK_AUTHOR LIKE '%' || #{bookKeyword} || '%')
+       		
+	    )
+	WHERE 
+   			RNUM BETWEEN 1 AND 5
+</select> 
+
+<select>
+	SELECT
+			TOP_CATEGORY_NO ,
+			TOP_CATEGORY_NAME ,
+			CATEGORY_STATUS ,
+	FROM
+			TOP_CATEGORY
+	WHERE
+			CATEGORY_STATUS = 'Y'	
+
+</select>
+	
+<select>
+	SELECT
+			UPPER_CATEGORY_NO ,
+			UPPER_CATEGORY_NAME ,
+			TOP_CATEGORY_NO ,
+			CATEGORY_STATUS 
+	FROM
+			UPPER_CATEGORY
+	WHERE
+			TOP_CATEGORY_NO = #{topCategoryNo}
+	AND
+			CATEGORY_STATUS = 'Y'
+</select>	
 
 
+<select>
+	SELECT
+			MID_CATEGORY_NO ,
+			MID_CATEGORY_NAME ,
+			UPPER_CATEGORY_NO ,
+			CATEGORY_STATUS 
+	FORM
+			MID_CATEGORY
+	WHERE
+			UPPER_CATEGORY_NO = #{upperCategoryNo}
+	AND
+			CATEGORY_STATUS = 'Y'
+			
+</select>
 
+
+<select>
+	SELECT
+			LOWER_CATEGORY_NO ,
+			LOWER_CATEGORY_NAME ,
+			MID_CATEGORY_NO ,
+			CATEGORY_STATUS		
+	FROM
+			LOWER_CATEGORY
+	WHERE
+			MID_CATEGORY_NO = #{midCategoryNo}
+	AND
+			CATEGORY_STATUS = 'Y'
+			
+</select>
 </mapper>
