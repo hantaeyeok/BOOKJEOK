@@ -44,8 +44,8 @@ public interface BookMapper {
 	
 	
 	List<Book> keywrodByBook(String bookKeyword);
-	List<UpperCategory> upperCategoryBytopNo(Integer topCategoryNo);
 	List<TopCategory> topCategoryAll();
+	List<UpperCategory> upperCategoryBytopNo(Integer topCategoryNo);
 	List<MidCategory> midCategoryByupperNo(Integer upperCategoryNo);
 	List<LowerCategory> lowerCategoryBymidCategoryNo(Integer midCategory);
 	

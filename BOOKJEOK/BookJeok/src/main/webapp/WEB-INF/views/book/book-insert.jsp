@@ -348,7 +348,7 @@ function fetchUpperCategories() {
     var topCategoryNo = $('#topCategory').val();
     if (topCategoryNo && topCategoryNo !== 'custom') {
         $.ajax({
-            url: 'upper'+${topCategoryNo},
+            url: 'upper/'+${topCategoryNo},
             type: 'GET',
             success: response => {
                 $('#upperCategory').html('<option value="">선택</option><option value="custom">직접 입력</option>');
@@ -367,7 +367,7 @@ function fetchMidCategories() {
     var upperCategoryNo = $('#upperCategory').val();
     if (upperCategoryNo && upperCategoryNo !== 'custom') {
         $.ajax({
-            url: 'mid'+ ${upperCategoryNo},
+            url: 'mid/'+ ${upperCategoryNo},
             type: 'GET',
             success: response => {
                 $('#midCategory').html('<option value="">선택</option><option value="custom">직접 입력</option>');
@@ -386,7 +386,7 @@ function fetchLowerCategories() {
     var midCategoryNo = $('#midCategory').val();
     if (midCategoryNo && midCategoryNo !== 'custom') {
         $.ajax({
-            url: 'lower'+${midCategoryNo},
+            url: 'lower/'+${midCategoryNo},
             type: 'GET',
             success: response => {
                 $('#lowerCategory').html('<option value="">선택</option><option value="custom">직접 입력</option>');

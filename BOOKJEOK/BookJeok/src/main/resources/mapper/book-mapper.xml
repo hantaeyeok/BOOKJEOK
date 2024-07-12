@@ -250,11 +250,11 @@
    			RNUM BETWEEN 1 AND 5
 </select> 
 
-<select>
+<select id="topCategoryAll" resultType="topCategory" >
 	SELECT
-			TOP_CATEGORY_NO ,
-			TOP_CATEGORY_NAME ,
-			CATEGORY_STATUS ,
+			TOP_CATEGORY_NO topCategoryNo,
+			TOP_CATEGORY_NAME topCategoryName,
+			CATEGORY_STATUS categoryStatus
 	FROM
 			TOP_CATEGORY
 	WHERE
@@ -262,12 +262,12 @@
 
 </select>
 	
-<select>
+<select id="upperCategoryBytopNo" resultType="upperCategory" parameterType="Integer">
 	SELECT
-			UPPER_CATEGORY_NO ,
-			UPPER_CATEGORY_NAME ,
-			TOP_CATEGORY_NO ,
-			CATEGORY_STATUS 
+			UPPER_CATEGORY_NO upperCategoryNo,
+			UPPER_CATEGORY_NAME upperCategoryName,
+			TOP_CATEGORY_NO topCategoryNo,
+			CATEGORY_STATUS categoryStatus
 	FROM
 			UPPER_CATEGORY
 	WHERE
@@ -277,12 +277,12 @@
 </select>	
 
 
-<select>
+<select id="midCategoryByupperNo" resultType="midCategory" parameterType="Integer">
 	SELECT
-			MID_CATEGORY_NO ,
-			MID_CATEGORY_NAME ,
-			UPPER_CATEGORY_NO ,
-			CATEGORY_STATUS 
+			MID_CATEGORY_NO midCategoryNo,
+			MID_CATEGORY_NAME midCategoryName,
+			UPPER_CATEGORY_NO upperCategoryNo,
+			CATEGORY_STATUS categoryStatus
 	FORM
 			MID_CATEGORY
 	WHERE
@@ -293,12 +293,12 @@
 </select>
 
 
-<select>
+<select id="lowerCategoryBymidCategoryNo" resultType="lowerCategory" parameterType="Integer">
 	SELECT
-			LOWER_CATEGORY_NO ,
-			LOWER_CATEGORY_NAME ,
-			MID_CATEGORY_NO ,
-			CATEGORY_STATUS		
+			LOWER_CATEGORY_NO lowerCategoryNo,
+			LOWER_CATEGORY_NAME lowerCategoryName,
+			MID_CATEGORY_NO midCategoryNo,
+			CATEGORY_STATUS	categoryStatus	
 	FROM
 			LOWER_CATEGORY
 	WHERE

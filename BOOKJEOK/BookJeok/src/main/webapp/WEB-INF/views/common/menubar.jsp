@@ -7,11 +7,12 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
-	 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<title>menubar</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
     <header>
@@ -26,57 +27,55 @@
         </div>
     </header>
     
-<script>
-
+  <script>
     $(document).ready(function() {
-    	$('#searchInput').on('input', function() {
-            var $bookKeyword = $('#bookKeyword').val();
+        $('#searchInput').on('input', function() {
+            var bookKeyword = $('#searchInput').val(); // 검색어를 입력받는 요소의 값을 가져옴
             if (bookKeyword.length > 0) {
                 searchBookDB(bookKeyword);
             } else {
                 $('#searchResults').empty().removeClass('show');
-        	}
-    	})
+            }
+        });
+        
+        $('#searchButtonDB').on('click', function() {
+            var bookKeyword = $('#searchInput').val();
+            if (bookKeyword.length > 0) {
+                window.location.href = '/bookjeok/book/search?bookKeyword=' + bookKeyword;
+            }
+        });
+    });
+    
+    function searchBookDB(bookKeyword) {
+        $.ajax({
+            url : '/bookjeok/book/search',
+            type : 'GET',
+            data : { bookKeyword : bookKeyword },
+            success : result => {
+                console.log(result);
+                displayResults(result);
+            },
+            error : e => {
+                console.log("메뉴바 ajax 오류오류오류오류오류로유로");
+            }
+        });
     }
-    	
-  	 $('#searchButtonDB').on('click', function() {
- 	     var bookKeyword = $('#searchInput').val();
- 	     if (bookKeyword.length > 0) {
- 	          window.location.href = '/bookjeok/book/search?bookKeyword=' + bookKeyword;
- 	     }
-	 });	
-   	 
-  	function searchBookDB($bookKeyword) {
-  		$.ajax({
-			url : '/bookjeok/book/search',
-			type : 'GET',
-			data : { bookKeyword : $bookKeyword},
-			success : result => {
-				console.log(result);
-				displayResults(result);
-			},
-			error : e => {
-				console.log("메뉴바 ajax 오류오류오류오류오류로유로")
-			}
-		});
-	}
-  		 
-	function displayResults(books) {
-		var $searchResults =  $('#searchResults');
-		$searchResults.empty();
-		if(books.length > 0){
-			books.forEach(function (book) {
+    
+    function displayResults(books) {
+        var $searchResults =  $('#searchResults');
+        $searchResults.empty();
+        if (books.length > 0) {
+            books.forEach(function(book) {
                 var item = $('<a class="dropdown-item" href="/books/' + book.bookNo + '"><img src="' + book.cover + '" style="width:100px;height:150px;">' + book.bookTitle + ' - ' + book.bookAuthor + '</a>');
                 $searchResults.append(item);
-			});
-		} else{
+            });
+        } else {
             $searchResults.append('<a class="dropdown-item disabled" href="#">검색 결과가 없습니다.</a>');
-		}
-		if (!$searchResults.hasClass('show')) {
+        }
+        if (!$searchResults.hasClass('show')) {
             $searchResults.addClass('show');
         }
-	}
-
+    }
     </script>
 
 </body>
