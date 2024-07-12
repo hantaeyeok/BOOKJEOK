@@ -90,7 +90,7 @@
                     	<td>
                     		<c:if test="${ not empty question.questionOriginname }">
                             	<a href="${ question.questionChangename }" 
-                            	   download="${ question.questionOriginname }">
+                            	   download="${ question.questionOriginname }" id="file">
                             	   ${ question.questionOriginname }</a>
                             	<input type="hidden" name="questionChangename" 
                             	       value="${ question.questionChangename }" />
@@ -133,24 +133,8 @@
 			    	});
 			 		
 			 		function deleteFile() {
-			 			
-			 			var qnaNo = $('#qnaNo').val();
-			 			var fileName = $('#fileName').val();
-			 			var filePath = '/resources/uploadFiles/' + fileName;
-			 			
-			 			console.log(filePath);
-			 			
-			 			$.ajax({
-			 				url : 'delete-file',
-			 				data : {
-			 					qnaNo : qnaNo,
-			 					filePath : filePath
-			 				},
-			 				type : 'get',
-			 				success : result => {
-			 					console.log(result);
-			 				}
-			 			});
+			 			file.style.display = 'none';
+			 			deleteButton.style.display = 'none';
 			 		}
 			    </script>
 			    

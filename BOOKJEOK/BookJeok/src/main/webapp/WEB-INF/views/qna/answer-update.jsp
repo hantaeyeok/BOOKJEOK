@@ -51,7 +51,7 @@
             <br>
 
             <form id="enrollForm" method="post" action="update.answer?answerNo=${answer.answerNo}" enctype="multipart/form-data">
-            <input type="hidden" name="qnaNo" value="${param.qnaNo}">
+            <input type="hidden" name="qnaNo" value="${answer.qnaNo}">
                 <table align="center">
                     <tr>
                         <th><label for="writer">작성자</label></th>

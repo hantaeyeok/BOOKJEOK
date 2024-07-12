@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -104,6 +105,7 @@ public class QnaController {
 		
 		System.out.println("조회된 문의사항 개수" + question.size());
 		System.out.println("조회된 문의사항 목록" + question);
+		System.out.println("answer : " + answer);
 		
 		model.addAttribute("question", question);
 		model.addAttribute("answer", answer);
@@ -331,7 +333,6 @@ public class QnaController {
 							   String filePath,
 							   HttpSession session,
 							   Model model) {
-
 		
 		if(qnaService.deleteAnswer(answerNo) > 0) {
 			
@@ -341,8 +342,9 @@ public class QnaController {
 				
 			}
 			
-			session.setAttribute("alert", "답변삭제완료!");
+			System.out.println("filePath : "+ filePath);
 			
+			session.setAttribute("alert", "답변삭제완료!");
 			return "redirect:list.qna";
 			
 		} else {
@@ -350,6 +352,7 @@ public class QnaController {
 			model.addAttribute("alert", "답변삭제실패!");
 			return "redirect:list.qna";
 		}
+		
 	}
 	
 	@GetMapping("updateForm.answer")
@@ -365,15 +368,12 @@ public class QnaController {
 	public String updateAnswer(Answer answer,
 						 	   MultipartFile reUpfile,
 						 	   HttpSession session,
-						 	   @RequestParam("qnaNo") int qnaNo) {
+						 	   int qnaNo) {
 		
 		if(!reUpfile.getOriginalFilename().equals("")) {
 			answer.setAnswerOriginname(reUpfile.getOriginalFilename());
 			answer.setAnswerChangename(saveFile(reUpfile, session));
 		}
-		
-		// QnaNo 설정
-	    answer.setQnaNo(qnaNo);
 		
 		if(qnaService.updateAnswer(answer) > 0) {
 			

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="qnaMapper">
+<mapper namespace="com.kh.bookjeok.qna.model.dao.QnaMapper">
 
 	<sql id="selectQuestion">
 		SELECT
@@ -203,39 +203,9 @@
 	<select id="findAllAnswer" resultType="answer" parameterType="map">
 		<include refid="selectAnswer" />
 		 FROM
-			  (SELECT
-			          ANSWER_NO,
-				      ANSWER_CONTENT,
-				      ANSWER_DATE,
-				      ANSWER_EDITDATE,
-				      ANSWER_ORIGINNAME,
-				      ANSWER_CHANGENAME,
-				      ANSWER_STATUS,
-				      USER_ID,
-				      QNA_NO,
-				      ROWNUM RNUM
-			     FROM
-			     	  (SELECT
-			     	  		  ANSWER_NO,
-						      ANSWER_CONTENT,
-						      ANSWER_DATE,
-						      ANSWER_EDITDATE,
-						      ANSWER_ORIGINNAME,
-						      ANSWER_CHANGENAME,
-						      ANSWER_STATUS,
-						      USER_ID,
-						      QNA_NO
-			     	     FROM
-			     	     	  ANSWER
-			     	    WHERE
-			     	     	  ANSWER_STATUS = 'Y'
-			     	   	ORDER 
-			     	   	   BY
-			     	     	  ANSWER_NO DESC
-			     	  )
-			  )
+			  ANSWER
 		WHERE
-			  RNUM BETWEEN #{startValue} AND #{endValue}
+			  ANSWER_STATUS = 'Y'
 	</select>
 	
 	<update id="deleteAnswer" parameterType="_int">

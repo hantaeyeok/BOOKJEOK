@@ -96,12 +96,18 @@
 	                			<td>${ question.qnaNo }</td>
 		                        <td>${ question.questionTitle }</td>
 		                        <td>${ question.questionDate }</td>
-		                        <c:choose>
-					                <c:when test="${empty answer}">
-					                    <td>처리중</td>
+							    <c:set var="isProcessed" value="false"/>
+					            <c:forEach var="answer" items="${answer}">
+					                <c:if test="${question.qnaNo == answer.qnaNo}">
+					                    <c:set var="isProcessed" value="true"/>
+					                </c:if>
+					            </c:forEach>
+					            <c:choose>
+					                <c:when test="${isProcessed == 'true'}">
+					                    <td>처리완료</td>
 					                </c:when>
 					                <c:otherwise>
-					                    <td>처리완료</td>
+					                    <td>처리중</td>
 					                </c:otherwise>
 					            </c:choose>
 	                		</tr>
