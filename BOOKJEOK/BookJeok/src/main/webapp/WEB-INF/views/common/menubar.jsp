@@ -66,7 +66,7 @@
         $searchResults.empty();
         if (books.length > 0) {
             books.forEach(function(book) {
-                var item = $('<a class="dropdown-item" href="/books/' + book.bookNo + '"><img src="' + book.cover + '" style="width:100px;height:150px;">' + book.bookTitle + ' - ' + book.bookAuthor + '</a>');
+                var item = $('<a class="dropdown-item" href="/bookjeok/book/' + book.bookNo + '"><img src="' + book.cover + '" style="width:100px;height:150px;">' + book.bookTitle + ' - ' + book.bookAuthor + '</a>');
                 $searchResults.append(item);
             });
         } else {

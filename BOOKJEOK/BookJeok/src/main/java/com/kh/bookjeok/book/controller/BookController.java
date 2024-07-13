@@ -150,25 +150,46 @@ public class BookController {
 	public List<TopCategory> topCategoryAll(){
 		return bookService.topCategoryAll();
 	}
-	
+	/*
 	@GetMapping("upper/{topCategoryNo}")
-	public List<UpperCategory> upperCategoryBytopNo(@PathVariable Integer topCategoryNo){
-		return bookService.upperCategoryBytopNo(topCategoryNo);
+	public List<UpperCategory> upperCategoryBytopNo(@PathVariable int topCategoryNo){
+		Integer topCategoryNoInteger = (Integer) topCategoryNo;
+		List<UpperCategory> category = bookService.upperCategoryBytopNo(topCategoryNoInteger);
+		return category;
 	}
 	
 	@GetMapping("mid/{upperCategoryNo}")
-	public List<MidCategory> midCategoryByupperNo(@PathVariable Integer upperCategoryNo){
-		return bookService.midCategoryByupperNo(upperCategoryNo);
+	public List<MidCategory> midCategoryByupperNo(@PathVariable int upperCategoryNo){
+		Integer upperCategoryNoInteger = (Integer) upperCategoryNo;
+		List<MidCategory> category = bookService.midCategoryByupperNo(upperCategoryNoInteger);
+		return category;
 	}
 	
 	@GetMapping("lower/{midCategoryNo}")
-	public List<LowerCategory> lowerCategoryBymidCategoryNo(@PathVariable Integer midCategory){
-		return bookService.lowerCategoryBymidCategoryNo(midCategory);
+	public List<LowerCategory> lowerCategoryBymidCategoryNo(@PathVariable int midCategory){
+		Integer midCategoryNoInteger = (Integer) midCategory;
+		List<LowerCategory> category = bookService.lowerCategoryBymidCategoryNo(midCategoryNoInteger);
+		return category;
+	}
+	*/
+	
+	@GetMapping("upper/{topCategoryNo}")
+	public List<UpperCategory> upperCategoryBytopNo(@PathVariable("topCategoryNo") int topCategoryNo){
+	    return bookService.upperCategoryBytopNo(topCategoryNo);
+	}
+
+	@GetMapping("mid/{upperCategoryNo}")
+	public List<MidCategory> midCategoryByupperNo(@PathVariable("upperCategoryNo") int upperCategoryNo){
+	    return bookService.midCategoryByupperNo(upperCategoryNo);
+	}
+
+	@GetMapping("lower/{midCategoryNo}")
+	public List<LowerCategory> lowerCategoryBymidCategoryNo(@PathVariable("midCategoryNo") int midCategoryNo){
+	    return bookService.lowerCategoryBymidCategoryNo(midCategoryNo);
 	}
 	
 	
-	
-	
+	//
 	
 	
 	

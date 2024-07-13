@@ -26,12 +26,21 @@ public class BookForwardController {
 	public String insertBook() {
 		return "book/book-insert";
 	}
-	
+	/*
 	@GetMapping("/{bookNo}")
 	public String updateBook(@PathVariable int bookNo, Model model) {
 		model.addAttribute("book",bookService.selectBookNo(bookNo));
 		return "book/book-update";
 	}
+	*/
+	@GetMapping("2")
+	public String insertBook2() {
+		return "book/book-insert2";
+	}
 	
-	
+	@GetMapping("{bookNo}")
+	public String getBookNo(@PathVariable int bookNo, Model model) {
+		model.addAttribute("book",bookService.selectBookNo(bookNo));
+		return "book/book-getBookNo";
+	}
 }

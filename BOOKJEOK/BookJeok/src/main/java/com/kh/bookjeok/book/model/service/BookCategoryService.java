@@ -106,9 +106,4 @@ public class BookCategoryService {
     }
     
     
-    public String categoryPull() {
-    	
-    	
-    	
-    }
 }
