@@ -1,19 +1,20 @@
 package com.kh.bookjeok.book.controller;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,8 +22,10 @@ import com.kh.bookjeok.book.model.service.BookCategoryService;
 import com.kh.bookjeok.book.model.service.BookService;
 import com.kh.bookjeok.book.model.vo.Book;
 import com.kh.bookjeok.book.model.vo.BookDetail;
+import com.kh.bookjeok.book.model.vo.BookReview;
 import com.kh.bookjeok.book.model.vo.LowerCategory;
 import com.kh.bookjeok.book.model.vo.MidCategory;
+import com.kh.bookjeok.book.model.vo.ReviewAvg;
 import com.kh.bookjeok.book.model.vo.TopCategory;
 import com.kh.bookjeok.book.model.vo.UpperCategory;
 import com.kh.bookjeok.common.model.FileUploadService;
@@ -190,8 +193,57 @@ public class BookController {
 	
 	
 	//
-	
-	
+	 @PostMapping("review")
+	    public ResponseEntity<Message> saveReview(
+	            @RequestParam int bookNo,
+	            @RequestParam String userId,
+	            @RequestParam String reviewContext,
+	            @RequestParam int reviewRating) {
+	        BookReview review = BookReview.builder()
+	                .bookNo(bookNo)
+	                .userId(userId)
+	                .reviewContext(reviewContext)
+	                .reviewRating(reviewRating)
+	                .build();
+
+	        int result = bookService.saveReview(review);
+	        if (result > 0) {
+	            Message responseMsg = Message.builder()
+	                    .message("리뷰 등록 성공")
+	                    .data(review)
+	                    .build();
+	            return ResponseEntity.status(HttpStatus.OK).body(responseMsg);
+	        } else {
+	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder()
+	                    .message("리뷰 등록 실패")
+	                    .build());
+	        }
+	    }
+	 
+	 
+	@GetMapping("reviews/{bookNo}")
+    public ResponseEntity<List<BookReview>> getReviews(@PathVariable int bookNo) {
+        List<BookReview> reviews = bookService.selectBookReviewBybookNo(bookNo);
+        return ResponseEntity.ok(reviews);
+    }
+	 
+	 
+	 @GetMapping("reviewAvg/{bookNo}")
+	    public ResponseEntity<Message> getReviewSummary(@PathVariable int bookNo) {
+	        List<ReviewAvg> reviewAvg = bookService.reviewAvg(bookNo);
+	        int totalReviews = reviewAvg.stream().mapToInt(ReviewAvg::getCount).sum();
+
+	        List<ReviewAvg> reviewSummary = reviewAvg.stream().map(avg -> {
+	            avg.setPercentage((double) avg.getCount() / totalReviews * 100);
+	            return avg;
+	        }).collect(Collectors.toList());
+
+	        Message responseMsg = Message.builder()
+	                .data(reviewSummary)
+	                .message("리뷰 요약 성공")
+	                .build();
+	        return ResponseEntity.status(HttpStatus.OK).body(responseMsg);
+	    }
 	
 	
 }

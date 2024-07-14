@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 import com.kh.bookjeok.book.model.dao.BookMapper;
 import com.kh.bookjeok.book.model.vo.Book;
 import com.kh.bookjeok.book.model.vo.BookDetail;
+import com.kh.bookjeok.book.model.vo.BookReview;
 import com.kh.bookjeok.book.model.vo.LowerCategory;
 import com.kh.bookjeok.book.model.vo.MidCategory;
+import com.kh.bookjeok.book.model.vo.ReviewAvg;
 import com.kh.bookjeok.book.model.vo.TopCategory;
 import com.kh.bookjeok.book.model.vo.UpperCategory;
 
@@ -68,6 +70,26 @@ public class BookServiceImple implements BookService{
 	@Override
 	public List<LowerCategory> lowerCategoryBymidCategoryNo(Integer midCategory) {
 		return bookMapper.lowerCategoryBymidCategoryNo(midCategory);
+	}
+
+	@Override
+	public BookDetail selectBookDetailBybookNo(int bookNo) {
+		return bookMapper.selectBookDetailBybookNo(bookNo);
+	}
+
+	@Override
+	public List<BookReview> selectBookReviewBybookNo(int bookNo) {
+		return bookMapper.selectBookReviewBybookNo(bookNo);
+	}
+
+	@Override
+	public int saveReview(BookReview review) {
+		return bookMapper.saveReview(review);
+	}
+
+	@Override
+	public List<ReviewAvg> reviewAvg(int bookNo) {
+		return bookMapper.reviewAvg(bookNo);
 	}
 	
 	

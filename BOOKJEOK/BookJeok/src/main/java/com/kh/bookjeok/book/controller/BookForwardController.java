@@ -41,6 +41,8 @@ public class BookForwardController {
 	@GetMapping("{bookNo}")
 	public String getBookNo(@PathVariable int bookNo, Model model) {
 		model.addAttribute("book",bookService.selectBookNo(bookNo));
+		model.addAttribute("bookDetail",bookService.selectBookDetailBybookNo(bookNo));
+		model.addAttribute("bookReview",bookService.selectBookReviewBybookNo(bookNo));
 		return "book/book-getBookNo";
 	}
 }

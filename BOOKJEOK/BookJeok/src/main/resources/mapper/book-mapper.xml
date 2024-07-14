@@ -198,7 +198,7 @@
 	        BOOK_DESCRIPTION bookDescription,
 	        BOOK_COVER bookCover,
 	        BOOK_CREATE_DATE bookCreateDate,
-	        BOOK_AMOUNT bookAmount,
+	        BOOK_AMOUNT bookAmount
 	FROM
 			BOOK
 	WHERE
@@ -307,4 +307,61 @@
 			CATEGORY_STATUS = 'Y'
 			
 </select>
+
+<select id="selectBookDetailBybookNo" resultType="bookDetail" parameterType="_int">
+	SELECT
+			DETAIL_NO detailNo,
+			BOOK_NO bookNo,
+			DETAIL_IMAGE detailImage, 
+			DETAIL_DESCRIPTION detailDescription	
+	FROM
+			BOOK_DETAIL
+	WHERE
+			BOOK_NO = #{bookNo}
+
+</select>
+<!-- 리뷰 삽입 -->
+<insert id="saveReview" parameterType="bookReview">
+    INSERT INTO BOOK_REVIEW 
+    (REVIEW_NO, USER_ID, ORDER_NO, BOOK_NO, REVIEW_CONTEXT, REVIEW_RATING, REVIEW_CREATE_DATE, REVIEW_UPDATE_DATE, REVIEW_STATUS)
+    VALUES 
+    (BOOK_REVIEW_SEQ.NEXTVAL, #{userId}, #{orderNo}, #{bookNo}, #{reviewContext}, #{reviewRating}, SYSDATE, NULL, 'Y')
+</insert>
+
+<!-- 특정 도서의 리뷰 선택 -->
+<select id="selectBookReviewBybookNo" parameterType="int" resultType="bookReview">
+    SELECT 
+        REVIEW_NO reviewNo, 
+        USER_ID userId, 
+        ORDER_NO orderNo, 
+        BOOK_NO bookNo, 
+        REVIEW_CONTEXT reviewContext, 
+        REVIEW_RATING reviewRating, 
+        REVIEW_CREATE_DATE reviewCreateDate, 
+        REVIEW_UPDATE_DATE reviewUpdateDate, 
+        REVIEW_STATUS reviewStatus
+    FROM 
+        BOOK_REVIEW
+    WHERE 
+        BOOK_NO = #{bookNo}
+    AND 
+        REVIEW_STATUS = 'Y'
+    ORDER BY 
+        REVIEW_CREATE_DATE DESC
+</select>
+
+
+<select id="reviewAvg" parameterType="int" resultType="reviewAvg">
+     SELECT 
+         REVIEW_RATING rating, COUNT(*) count
+     FROM 
+         BOOK_REVIEW 
+     WHERE 
+         BOOK_NO = #{bookNo}
+     AND 
+         REVIEW_STATUS = 'Y'
+     GROUP BY 
+         REVIEW_RATING
+ </select>
+
 </mapper>
