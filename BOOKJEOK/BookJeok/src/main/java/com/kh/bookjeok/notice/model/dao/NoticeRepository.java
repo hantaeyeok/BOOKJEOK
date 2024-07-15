@@ -1,4 +1,4 @@
-package com.kh.bookjeok.notice.model.repository;
+package com.kh.bookjeok.notice.model.dao;
 
 import java.util.List;
 import java.util.Map;

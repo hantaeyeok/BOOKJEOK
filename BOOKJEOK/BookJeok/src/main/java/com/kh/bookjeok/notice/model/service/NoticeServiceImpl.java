@@ -7,7 +7,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Service;
 
-import com.kh.bookjeok.notice.model.repository.NoticeRepository;
+import com.kh.bookjeok.notice.model.dao.NoticeRepository;
 import com.kh.bookjeok.notice.model.vo.Notice;
 import com.kh.bookjeok.notice.model.vo.NoticeFile;
 
