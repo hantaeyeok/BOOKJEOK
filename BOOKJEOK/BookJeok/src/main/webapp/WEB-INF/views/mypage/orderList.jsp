@@ -72,8 +72,31 @@ border-left: solid 1px #CCC; padding:0px 10px; display:flex; align-items:center;
 							
 						</td>
 						<td>${order.paymentPrice}(${order.mileageGet })</td>
-						<td>${order.paymentStatus }</td>
-						<td><button type="button" class="btn btn-secondary" onclick="alert('123');" disabled>환불불가</button></td>
+						<c:choose>
+							<c:when test="${order.paymentStatus eq '1'}">
+								<td>배송전</td>
+							</c:when>
+							<c:when test="${order.paymentStatus eq '2'}">
+								<td>배송중</td>
+							</c:when>
+							<c:when test="${order.paymentStatus eq '3'}">
+								<td>배송 완료</td>
+							</c:when>
+							<c:when test="${order.paymentStatus eq '4'}">
+								<td>환불중</td>
+							</c:when>
+							<c:otherwise>
+								<td>환불완료</td>
+							</c:otherwise>
+						</c:choose>
+						<c:choose>
+							<c:when test="${order.paymentStatus eq '1'}">
+								<td><button type="button" class="btn btn-primary" onclick="alert('123');">환불가능</button></td>
+							</c:when>
+							<c:otherwise>
+								<td><button type="button" class="btn btn-secondary" onclick="alert('123');" disabled>환불불가</button></td>
+							</c:otherwise>
+						</c:choose>
 					</tr>
 					<!-- 줄 단위 블럭 끝 -->
 				</c:forEach>
