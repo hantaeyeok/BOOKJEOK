@@ -22,6 +22,12 @@ public class MemberController {
 	private final MemberService memberService;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 	
+	@GetMapping("logout")
+	public String logout(Member member, HttpSession session) {
+		session.removeAttribute("loginUser");
+		return "redirect:/";
+	}
+	
 	@PostMapping("login")
 	public String login(Member member, HttpSession session) {
 		Member loginUser;
