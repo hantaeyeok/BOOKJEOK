@@ -26,5 +26,6 @@ public class Notice {
 	private String noticeStatus;
 	private Date noticeDate;
 	private List<NoticeFile> noticeFileList;
+
 	
 }
