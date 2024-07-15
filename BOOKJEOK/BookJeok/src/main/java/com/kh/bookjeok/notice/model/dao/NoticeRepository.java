@@ -1,5 +1,5 @@
 package com.kh.bookjeok.notice.model.dao;
 
-public class NoticeMapper {
+public class NoticeRepository {
 
 }
