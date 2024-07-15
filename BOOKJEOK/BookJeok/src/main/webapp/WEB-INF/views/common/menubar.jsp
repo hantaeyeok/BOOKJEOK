@@ -38,6 +38,7 @@
 	                <div id="header_2">
 			            <ul>
 			                <li><a href="../list.qna">1대1문의</a></li>
+			                <li><a href="../list.clubboard">독서모임게시판</a></li>
 			            </ul>
 			        </div>
                     <div class="seacrh_wrap column is-6">

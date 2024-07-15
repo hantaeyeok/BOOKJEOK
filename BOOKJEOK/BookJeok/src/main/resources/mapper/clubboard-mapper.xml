@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.bookjeok.clubboard.model.dao.ClubboardMapper">
+
+	<sql id="selectClubboard">
+		SELECT
+    		   CLUBBOARD_NO clubboardNo,
+		       CLUBBOARD_TITLE clubboardTitle,
+		       BOOKCLUB_NAME bookclubName, 
+		       CLUBBOARD_CONTENT clubboardContent,
+		       USER_ID userId,
+		       CLUBBOARD_ORIGINNAME clubboardOriginname,
+		       CLUBBOARD_CHANGENAME clubboardChangename,
+		       CLUB_STATUS clubStatus,
+		       CLUB_NUMBER clubNumber,
+		       CLUB_PERIOD clubPeriod,
+		       CLUBBOARD_VISITED clubboardVisited,
+		       CLUBBOARD_DATE clubboardDate,
+		       CLUBBOARD_STATUS clubboardStatus
+	</sql>
+	
+	<select id="findAllClubboard" resultType="clubboard" parameterType="map">
+		<include refid="selectClubboard" />
+		  FROM
+			   (
+			   SELECT
+			   		  CLUBBOARD_NO,
+				      CLUBBOARD_TITLE,
+				      BOOKCLUB_NAME, 
+				      CLUBBOARD_CONTENT,
+				      USER_ID,
+				      CLUBBOARD_ORIGINNAME,
+				      CLUBBOARD_CHANGENAME,
+				      CLUB_STATUS,
+				      CLUB_NUMBER,
+				      CLUB_PERIOD,
+				      CLUBBOARD_VISITED,
+				      CLUBBOARD_DATE,
+				      CLUBBOARD_STATUS,
+			   		  ROWNUM RNUM
+			   	 FROM
+			   	 	  (
+			   	 	  SELECT
+			   	 	  		CLUBBOARD_NO,
+						    CLUBBOARD_TITLE,
+						    BOOKCLUB_NAME, 
+						    CLUBBOARD_CONTENT,
+						    USER_ID,
+						    CLUBBOARD_ORIGINNAME,
+						    CLUBBOARD_CHANGENAME,
+						    CLUB_STATUS,
+						    CLUB_NUMBER,
+						    CLUB_PERIOD,
+						    CLUBBOARD_VISITED,
+						    CLUBBOARD_DATE,
+						    CLUBBOARD_STATUS
+				   	   FROM
+				   		    CLUBBOARD
+				   	  WHERE
+				   	  		CLUBBOARD_STATUS = 'Y'
+				   	  ORDER
+				   	  	 BY
+				   	  		CLUBBOARD_NO DESC
+			   	 	  )
+			   		  
+			   )
+		 WHERE
+			   RNUM BETWEEN #{startValue} AND #{endValue}
+	</select>
+	
+	<select id="findByClubStatus" resultType="clubboard" parameterType="map">
+		<include refid="selectClubboard" />
+		  FROM
+			   (
+			   SELECT
+			   		  CLUBBOARD_NO,
+				      CLUBBOARD_TITLE,
+				      BOOKCLUB_NAME, 
+				      CLUBBOARD_CONTENT,
+				      USER_ID,
+				      CLUBBOARD_ORIGINNAME,
+				      CLUBBOARD_CHANGENAME,
+				      CLUB_STATUS,
+				      CLUB_NUMBER,
+				      CLUB_PERIOD,
+				      CLUBBOARD_VISITED,
+				      CLUBBOARD_DATE,
+				      CLUBBOARD_STATUS,
+			   		  ROWNUM RNUM
+			   	 FROM
+			   	 	  (
+			   	 	  SELECT
+			   	 	  		CLUBBOARD_NO,
+						    CLUBBOARD_TITLE,
+						    BOOKCLUB_NAME, 
+						    CLUBBOARD_CONTENT,
+						    USER_ID,
+						    CLUBBOARD_ORIGINNAME,
+						    CLUBBOARD_CHANGENAME,
+						    CLUB_STATUS,
+						    CLUB_NUMBER,
+						    CLUB_PERIOD,
+						    CLUBBOARD_VISITED,
+						    CLUBBOARD_DATE,
+						    CLUBBOARD_STATUS
+				   	   FROM
+				   		    CLUBBOARD
+				   	  WHERE
+				   	  		CLUBBOARD_STATUS = 'Y'
+				   	  	AND
+				   	  		CLUB_STATUS = #{clubStatus}
+				   	  ORDER
+				   	  	 BY
+				   	  		CLUBBOARD_NO DESC
+			   	 	  )
+			   		  
+			   )
+		 WHERE
+			   RNUM BETWEEN #{startValue} AND #{endValue}
+	</select>
+	
+	<select id="clubboardCount" resultType="_int">
+		SELECT
+			   COUNT(CLUBBOARD_NO)
+		  FROM
+			   CLUBBOARD
+		 WHERE
+			   CLUBBOARD_STATUS = 'Y'
+	</select>
+
+	<insert id="insertClubboard" parameterType="clubboard">
+		INSERT
+		  INTO
+			   CLUBBOARD
+			   (
+			   CLUBBOARD_NO,
+		       CLUBBOARD_TITLE,
+		       BOOKCLUB_NAME, 
+		       CLUBBOARD_CONTENT,
+		       USER_ID,
+		       CLUBBOARD_ORIGINNAME,
+		       CLUBBOARD_CHANGENAME,
+		       CLUB_NUMBER,
+		       CLUB_PERIOD
+			   )
+		VALUES
+			   (
+			   CLUBBOARD_SEQ.NEXTVAL,
+			   #{clubboardTitle},
+			   #{bookclubName},
+			   #{clubboardContent},
+			   #{userId},
+			   #{clubboardOriginname},
+			   #{clubboardChangename},
+			   #{clubNumber},
+			   #{clubPeriod}
+			   )
+		
+	</insert>
+
+</mapper>

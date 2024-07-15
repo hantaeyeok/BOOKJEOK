@@ -196,7 +196,7 @@ public class QnaController {
 		} else {
 			
 			model.addAttribute("alert", "문의실패!");
-			return null;
+			return "redirect:list.qna";
 		}
 	}
 	

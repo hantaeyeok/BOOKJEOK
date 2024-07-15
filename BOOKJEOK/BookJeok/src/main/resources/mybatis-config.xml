@@ -13,9 +13,10 @@
 		<typeAlias type="com.kh.bookjeok.book.model.vo.LowerCategory" alias="lowerCategory"/>
 		<typeAlias type="com.kh.bookjeok.book.model.vo.MidCategory" alias="midCategory"/>
 		<typeAlias type="com.kh.bookjeok.book.model.vo.UpperCategory" alias="upperCategory"/>
-    <typeAlias type="com.kh.bookjeok.member.model.vo.Member" alias="member"/>
-    <typeAlias type="com.kh.bookjeok.qna.model.vo.Question" alias="question"/>
-    <typeAlias type="com.kh.bookjeok.qna.model.vo.Answer" alias="answer"/>
+	    <typeAlias type="com.kh.bookjeok.member.model.vo.Member" alias="member"/>
+	    <typeAlias type="com.kh.bookjeok.qna.model.vo.Question" alias="question"/>
+	    <typeAlias type="com.kh.bookjeok.qna.model.vo.Answer" alias="answer"/>
+	    <typeAlias type="com.kh.bookjeok.clubboard.model.vo.Clubboard" alias="clubboard"/>
 	</typeAliases>
 	
 
@@ -23,6 +24,7 @@
 		<mapper resource="/mapper/book-mapper.xml"/>
 		<mapper resource="/mapper/member-mapper.xml"/>
 		<mapper resource="/mapper/qna-mapper.xml" />
+		<mapper resource="/mapper/clubboard-mapper.xml" />
 	</mappers>
 	
 </configuration>
