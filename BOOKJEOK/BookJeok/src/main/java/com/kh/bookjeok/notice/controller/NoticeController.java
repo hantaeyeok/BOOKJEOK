@@ -384,7 +384,7 @@ public class NoticeController {
 	   }
 
 	// changeName 생성 메서드 만들기
-	   public String saveFile(MultipartFile upfile, HttpSession session) {
+	/*   public String saveFile(MultipartFile upfile, HttpSession session) {
 		   String originName = upfile.getOriginalFilename();
 	       
 	       String ext = originName.substring(originName.lastIndexOf('.'));
@@ -408,7 +408,7 @@ public class NoticeController {
 	       }
 	       
 	       return "resources/uploadFiles/" + changeName;
-	    }
+	    }*/
 	   
 
 
@@ -417,20 +417,9 @@ public class NoticeController {
 	   
 	   
 	   
+
 	   
 	   
 	   
 	   
-	   
-	   
-	   
-	   
-	   
-	   
-	   
-	   
-	   
-	   
-	   
-	   
-}
+
