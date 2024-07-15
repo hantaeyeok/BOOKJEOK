@@ -37,33 +37,33 @@
             <h2>게시글 수정하기</h2>
             <br>
 
-            <form id="updateForm" method="post" action="board-update.do" enctype="multipart/form-data">
+            <form id="updateForm" method="post" action="notice-update.do" enctype="multipart/form-data">
                 <table algin="center">
                     <tr>
                         <th><label for="title">제목</label></th>
-                        <td><input type="text" id="title" class="form-control" value="${ board.boardTitle }" name="boardTitle" required></td>
+                        <td><input type="text" id="title" class="form-control" value="${ notice.noticeTitle }" name="noticeTitle" required></td>
                     </tr>
                     <tr>
                         <th><label for="writer">작성자</label></th>
-                        <td><input type="text" id="writer" class="form-control" value="${ board.boardWriter }" name="boardWriter" readonly></td>
+                        <td><input type="text" id="writer" class="form-control" value="${ notice.userId }" name="userId" readonly></td>
                     </tr> 
                     <tr>
                         <th><label for="upfile">첨부파일</label></th>
                         <td>
                             <input type="file" id="upfile" class="form-control-file border" name="reUpFile">
                             
-                            <c:if test="S${ not empty board.originName }">	<!-- 첨부파일이 있을 때만 -->
+                            <c:if test="S${ not empty notice.originName }">	<!-- 첨부파일이 있을 때만 -->
 	                            현재 업로드된 파일 : 
-	                            <a href="${ board.changeName }" download="${ board.originName }">${ board.originName }</a>
-				                <input type="hidden" name="changeName" value="${ board.changeName }" />
-				                <input type="hidden" name="originName" value="${ board.originName }" />
+	                            <a href="${ notice.changeName }" download="${ notice.originName }">${ notice.originName }</a>
+				                <input type="hidden" name="changeName" value="${ notice.changeName }" />
+				                <input type="hidden" name="originName" value="${ notice.originName }" />
                             </c:if>
                             
                         </td>
                     </tr>
                     <tr>
                         <th><label for="content">내용</label></th>
-                        <td><textarea id="content" class="form-control" rows="10" style="resize:none;" name="boardContent" required>${ board.boardContent }</textarea></td>
+                        <td><textarea id="content" class="form-control" rows="10" style="resize:none;" name="noticeContent" required>${ notice.noticeContent }</textarea></td>
                     </tr>
                 </table>
                 <br>
@@ -73,7 +73,7 @@
                     <button type="reset" class="btn btn-danger">이전으로</button>
                 </div>
 
-                <input type="hidden" name="boardNo" value="${ board.boardNo }" />
+                <input type="hidden" name="noticeNo" value="${ notice.noticeNo }" />
                 
             </form>
         </div>
@@ -81,7 +81,7 @@
 
     </div>
     
-    <jsp:include page="../common/footer.jsp" />
+
     
 </body>
 </html>

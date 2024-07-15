@@ -49,11 +49,11 @@
                 <table algin="center">
                     <tr>
                         <th><label for="title">제목</label></th>
-                        <td><input type="text" id="title" class="form-control" name="boardTitle" required></td>
+                        <td><input type="text" id="title" class="form-control" name="noticeTitle" required></td>
                     </tr>
                     <tr>
                         <th><label for="writer">작성자</label></th>
-                        <td><input type="text" id="writer" class="form-control" value="${sessionScope.loginUser.userId }" name="boardWriter" readonly></td>
+                        <td><input type="text" id="writer" class="form-control" value="${sessionScope.loginUser.userId }" name="userId" readonly></td>
                     </tr>
                     <tr>
                         <th><label for="upfile">첨부파일</label></th>
@@ -61,7 +61,7 @@
                     </tr>
                     <tr>
                         <th><label for="content">내용</label></th>
-                        <td><textarea id="content" class="form-control" rows="10" style="resize:none;" name="boardContent" required></textarea></td>
+                        <td><textarea id="content" class="form-control" rows="10" style="resize:none;" name="noticeContent" required></textarea></td>
                     </tr>
                     <tr>
                         <th colspan="2">
@@ -73,22 +73,9 @@
                 </table>
                 <br>
                 <script>
-                	//이미지 불러오기 함수
-                	//onchange : 무언가 변화가 일어날 때 수행됨
+
                 	function loadImg(inputFile) {
-                		
-                		// inputFile : 현재 change가 일어난 <input type="file"> 요소 객체
-                		// console.log(inputFile);
-                		
-                		// [] : 배열 / {} : 객체	// 둘 다 객체긴 한데 쉽게 생각해서 그렇다는 말
-                		
-                		//console.log(inputFile.files);	// object 객체
-                		
-                		// files 속성 : 업로드된 파일의 정보가 들어있음
-                		
-                		// inputFile.files.length : 1 == 파일이 첨부, 0 선택취소
-                		// => 파일의 존재 유무를 알 수 있음
-                		// 파일 첨부시 inputFile.files[0]에 선택된 파일의 정보가 있음!!!!!!!!!!!!!!!!!
+
                 		
                 		if(inputFile.files.length) {	//파일이 첨부되었다면
                 			
@@ -133,7 +120,7 @@
 
     </div>
     
-    <jsp:include page="../common/footer.jsp" />
+
     
 </body>
 </html>
