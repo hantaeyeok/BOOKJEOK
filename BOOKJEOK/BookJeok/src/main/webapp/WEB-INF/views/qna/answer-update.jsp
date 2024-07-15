@@ -100,6 +100,7 @@
                 <script>
 			        const upfile = document.getElementById('upfile');
 			        const cancelButton = document.getElementById('cancelButton');
+			        let fileRemoved = false;
 			
 			        // 파일 선택 이벤트 리스너
 			        upfile.addEventListener('change', function() {
@@ -123,26 +124,30 @@
 			    		deleteFile();
 			    	});
 			 		
-			 		function deleteFile() {
-			 			
-			 			var qnaNo = $('#qnaNo').val();
-			 			var fileName = $('#fileName').val();
-			 			var filePath = '/resources/uploadFiles/' + fileName;
-			 			
-			 			console.log(filePath);
-			 			
-			 			$.ajax({
-			 				url : 'delete-file',
-			 				data : {
-			 					qnaNo : qnaNo,
-			 					filePath : filePath
-			 				},
-			 				type : 'get',
-			 				success : result => {
-			 					console.log(result);
-			 				}
-			 			});
-			 		}
+			    	$('#deleteButton').click(() => {
+			            var qnaNo = $('[name="qnaNo"]').val();
+			            var fileName = $('#fileName').val();
+			            var filePath = '/resources/uploadFiles/' + fileName;
+
+			            $.ajax({
+			                url: 'delete-file',
+			                type: 'POST',
+			                data: { qnaNo: qnaNo, filePath: filePath },
+			                success: result => {
+			                    if (result.success) {
+			                        $('#fileName').remove();
+			                        $('#deleteButton').remove();
+			                        fileRemoved = true;
+			                        alert('파일이 제거되었습니다.');
+			                    } else {
+			                        alert('파일 제거에 실패했습니다.');
+			                    }
+			                },
+			                error: () => {
+			                    alert('파일 제거 중 오류가 발생했습니다.');
+			                }
+			            });
+			        });
 			    </script>
 			    
                 <br>

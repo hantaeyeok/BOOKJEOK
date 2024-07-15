@@ -83,15 +83,19 @@
                     </tr>
                 </thead>
                 <tbody>
+                	<c:forEach items="${ question }" var="question">
                 	<c:choose>
-                		<c:when test="${ question.size() == 0 }">
+                		<c:when test="${ empty question 
+                		or (sessionScope.loginUser.userId != question.userId
+                		and sessionScope.loginUser.userId != 'admin')}">
                 			<tr>
                 				<td colspan="4">조회된 문의가 없습니다.</td>
                 			</tr>
                 		</c:when>
                 	</c:choose>
-                	<c:forEach items="${ question }" var="question">
-                		<c:if test="${ question.userId == userId or userId == 'admin' }">
+                	
+                		<c:if test="${ question.userId == sessionScope.loginUser.userId 
+                		or sessionScope.loginUser.userId == 'admin' }">
 	                		<tr class="qna-detail" id="qnaNo-${ question.qnaNo }">
 	                			<td>${ question.qnaNo }</td>
 		                        <td>${ question.questionTitle }</td>
@@ -163,7 +167,7 @@
                     		<c:otherwise>
 	                    		<li class="page-item">
 		                    		<a class="page-link" 
-		                    		   href="search.qna.do?page=${ p }&condition=${condition}&keyword=${keyword}"
+		                    		   href="search.qna?page=${ p }&condition=${condition}&keyword=${keyword}"
 		                    		   >${ p }</a>
 		                    	</li>
                     		</c:otherwise>

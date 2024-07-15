@@ -82,9 +82,7 @@
                 <tr>
                     <th>내용</th>
                     <td colspan="4">
-                    	<p style="white-space: pre-wrap;">
-                    		${ question.questionContent }
-                    	</p>
+                    	${ question.questionContent }
                     </td>
                 </tr>
                 <tr>

@@ -73,9 +73,6 @@
           FROM
                QUESTION
          WHERE
-         <if test="condition  == 'status'">
-               QUESTION_STATUS    
-         </if>
          <if test="condition == 'title'">
          	   QUESTION_TITLE
          </if>

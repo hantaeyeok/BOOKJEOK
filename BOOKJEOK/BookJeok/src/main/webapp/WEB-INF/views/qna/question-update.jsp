@@ -97,7 +97,8 @@
                 				<input type="hidden" name="questionOriginname"
                 					   id="fileName" 
                 				       value="${ question.questionOriginname }" />
-                				<button type="button" id="deleteButton">파일 제거</button>
+                				<a href="delete-file?qnaNo=${question.qnaNo}&filePath=${question.questionChangename}" 
+                				class="btn btn-danger">파일 제거</a>
                             </c:if>
                     	</td>
                     </tr>
@@ -137,7 +138,7 @@
 			 			deleteButton.style.display = 'none';
 			 		}
 			    </script>
-			    
+			   
                 <br>
 
                 <div align="center">

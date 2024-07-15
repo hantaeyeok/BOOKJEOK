@@ -200,31 +200,6 @@ public class QnaController {
 		}
 	}
 	
-	public String saveFile(MultipartFile upfile, HttpSession session) {
-		
-		String originname = upfile.getOriginalFilename();
-		
-		String ext = originname.substring(originname.lastIndexOf("."));
-		
-		int num = (int)(Math.random() * 900) + 100;
-		
-		String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-		
-		String savePath = session.getServletContext().getRealPath("resources/uploadFiles/");
-		
-		String changename = "BOOKJEOK_" + currentTime + "_" + num + ext;
-		
-		try {
-			upfile.transferTo(new File(savePath + changename));
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return "resources/uploadFiles/" + changename;
-	}
-	
 	@GetMapping("updateForm.question")
 	public ModelAndView updateForm(ModelAndView mv, int qnaNo) {
 		
@@ -238,7 +213,7 @@ public class QnaController {
 						 		 MultipartFile reUpfile,
 						 		 HttpSession session) {
 		
-		if(!reUpfile.getOriginalFilename().equals("")) {
+		if(reUpfile != null && !reUpfile.getOriginalFilename().equals("")) {
 			question.setQuestionOriginname(reUpfile.getOriginalFilename());
 			question.setQuestionChangename(saveFile(reUpfile, session));
 		}
@@ -278,17 +253,6 @@ public class QnaController {
 			model.addAttribute("alert", "문의삭제실패!");
 			return "redirect:list.qna";
 		}
-	}
-	
-	@GetMapping("delete-file")
-	public String deleteFile(int qnaNo,
-							 String filePath,
-							 HttpSession session,
-							 Model model) {
-		
-		new File(session.getServletContext().getRealPath(filePath)).delete();
-		
-		return "";
 	}
 	
 	// ---------------------------------------------------------------------
@@ -386,5 +350,52 @@ public class QnaController {
 			return "redirect:detail.qna?qnaNo=" + answer.getQnaNo();
 		}
 	}
+	
+	//---------------------------------------------------------------------
+	
+	// 파일 관련 컨트롤러
+	
+	public String saveFile(MultipartFile upfile, HttpSession session) {
+		
+		String originname = upfile.getOriginalFilename();
+		
+		String ext = originname.substring(originname.lastIndexOf("."));
+		
+		int num = (int)(Math.random() * 900) + 100;
+		
+		String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+		
+		String savePath = session.getServletContext().getRealPath("resources/uploadFiles/");
+		
+		String changename = "BOOKJEOK_" + currentTime + "_" + num + ext;
+		
+		try {
+			upfile.transferTo(new File(savePath + changename));
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return "resources/uploadFiles/" + changename;
+	}
+	
+	@GetMapping("delete-file")
+    public String deleteFile(@RequestParam int qnaNo, 
+                             @RequestParam String filePath, 
+                             HttpSession session, 
+                             Model model) {
+
+        if (new File(session.getServletContext().getRealPath(filePath)).delete()) {
+            // 성공적으로 삭제되었음을 클라이언트에 전달
+            model.addAttribute("fileDeleted", true);
+        } else {
+            // 삭제 실패 정보를 클라이언트에 전달
+            model.addAttribute("fileDeleted", false);
+        }
+
+        // 다시 수정 페이지로 리다이렉트
+        return "redirect:update.question?questionNo=" + qnaNo;
+    }
 	
 }
