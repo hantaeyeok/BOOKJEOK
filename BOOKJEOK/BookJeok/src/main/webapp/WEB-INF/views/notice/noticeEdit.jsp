@@ -34,7 +34,7 @@
 
 <body>
 
-    <jsp:include page="" />  
+
 
     <!--공지사항 테이블 구간-->  
 
@@ -68,7 +68,6 @@
 
     </div>
 
-    <jsp:include page="" />
 
 </body>
 </html>
