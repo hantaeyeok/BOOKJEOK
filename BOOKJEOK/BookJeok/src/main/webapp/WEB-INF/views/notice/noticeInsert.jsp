@@ -11,7 +11,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <style>
         .content {
-            background-color:rgb(247, 245, 245);
+            background-color:rgb(247, 245, 245); 
             width:80%;
             margin:auto;
         }
@@ -23,233 +23,117 @@
             background-color:white;
         }
 
-        #noticeList {text-align:center;}
-        #noticeList>tbody>tr:hover {cursor:pointer;}
-
-        #pagingArea {width:fit-content; margin:auto;}
-        
-        #searchForm {
-            width:80%;
-            margin:auto;
+        #enrollForm>table {width:100%;}
+        #enrollForm>table * {margin:5px;}
+        #img-area{
+            width : 100%;
+            margin : auto;
+            text-align: center;
         }
-        #searchForm>* {
-            float:left;
-            margin:5px;
+        #img-area > img{
+            width : 80%;
         }
-        .select {width:20%;}
-        .text {width:53%;}
-        .searchBtn {width:20%;}
     </style>
 </head>
 <body>
-    
+        
     <jsp:include page="../common/menubar.jsp" />
 
     <div class="content">
         <br><br>
-        <div class="innerOuter" style="padding:5% 10%;">
-            <h2>게시판</h2>
+        <div class="innerOuter">
+            <h2>게시글 작성하기</h2>
             <br>
-            
-            	<!-- 로그인 후 상태일 경우만 보여지는 글쓰기 버튼 -->
-            	<a class="btn btn-secondary" style="float:right;" href="noticeForm.do">글쓰기</a>
-            <br>
-            <br>
-            <table id="noticeList" class="table table-hover" align="center">
-                <thead>
+
+            <form id="enrollForm" method="post" action="insertForm.do" enctype="multipart/form-data">
+                <table algin="center">
                     <tr>
-                        <th>글번호</th>
-                        <th>제목</th>
-                        <th>작성자</th>
-                        <th>조회수</th>
-                        <th>작성일</th>
-                        <th>첨부파일</th>
+                        <th><label for="title">제목</label></th>
+                        <td><input type="text" id="title" class="form-control" name="boardTitle" required></td>
                     </tr>
-                </thead>
-                <tbody>
-                
-                   <c:choose>
-                      <c:when test="${noticeList.size() == 0 }">
-                         <tr>
-                            <td colspan="6">조회된 결과가 존재하지 않습니다.</td>
-                         </tr>
-                      </c:when>
-                   </c:choose>
-                    <c:forEach items="${ noticeList }" var="notice">
-                       <tr class="notice-detail" id="noticeNo-${ notice.noticeNo }">
-                          <td>${ notice.noticeNo }</td>
-                          <td>${ notice.noticeTitle }</td>
-                          <td>${ notice.userId }</td>
-                          <td>${ notice.visited }</td>
-                          <td>${ notice.createDate }</td>
-                          <td>
-                             <c:if test="${ not empty board.originName }">
-                                ♨   
-                             </c:if>
-                          </td>
-                       </tr>
-                    </c:forEach>
-                </tbody>
-            </table>
-            <br>
-            <script>
-            /*
-//          $(() => {
-            	// <js 고려요소>
-            	// 1번. 어떤 친구들을		== evnetTarget
-            	// 2번. 언제				== eventType
-            	
-          		// console.log($('.board-detail'));		// event 줄 대상
-          		
-          		// .addEventListener() --> 권장사항		// 쓰면 베스트이긴 한데 클라이언트 요구에 따라 못 쓸 경우도 존재
-          		// on이벤트 속성
-          		// 익명함수 대입~
-          		// 인라인방식
-          		
-          		// $
-          		// .on()	=> jQuery 중 권장
-          		// 이벤트타입()
-//         		$('.board-detail').click(e => {		// tr요소에 클릭 이벤트 달아 둠.
-          			// alert('ㅎㅇㅎㅇ');
-          			// URL변경
-          			// console.log(window);		// js에서의 window = 자바에서의 Object클래스(최상위클래스)
-          			
-          			// window.console.log('adfads');
-          			// console이고 alert이고 전부 window에서 빠져나온 것임
+                    <tr>
+                        <th><label for="writer">작성자</label></th>
+                        <td><input type="text" id="writer" class="form-control" value="${sessionScope.loginUser.userId }" name="boardWriter" readonly></td>
+                    </tr>
+                    <tr>
+                        <th><label for="upfile">첨부파일</label></th>
+                        <td><input type="file" id="upfile" class="form-control-file border" name="upfile" onchange="loadImg(this);"></td>
+                    </tr>
+                    <tr>
+                        <th><label for="content">내용</label></th>
+                        <td><textarea id="content" class="form-control" rows="10" style="resize:none;" name="boardContent" required></textarea></td>
+                    </tr>
+                    <tr>
+                        <th colspan="2">
+                            <div id="img-area">
+                                <img id="kakao" src="https://t1.kakaocdn.net/friends/www/talk/kakaofriends_talk_2018.png" alt="카카오친구들">
+                            </div>
+                        </th>
+                    </tr>
+                </table>
+                <br>
+                <script>
+                	//이미지 불러오기 함수
+                	//onchange : 무언가 변화가 일어날 때 수행됨
+                	function loadImg(inputFile) {
+                		
+                		// inputFile : 현재 change가 일어난 <input type="file"> 요소 객체
+                		// console.log(inputFile);
+                		
+                		// [] : 배열 / {} : 객체	// 둘 다 객체긴 한데 쉽게 생각해서 그렇다는 말
+                		
+                		//console.log(inputFile.files);	// object 객체
+                		
+                		// files 속성 : 업로드된 파일의 정보가 들어있음
+                		
+                		// inputFile.files.length : 1 == 파일이 첨부, 0 선택취소
+                		// => 파일의 존재 유무를 알 수 있음
+                		// 파일 첨부시 inputFile.files[0]에 선택된 파일의 정보가 있음!!!!!!!!!!!!!!!!!
+                		
+                		if(inputFile.files.length) {	//파일이 첨부되었다면
+                			
+                			// 선택된 파일을 읽어서 영역에 미리보기(화면에 띄워줌)
+                			// 파일을 읽어들일 FileReader 객체 생성
+                			const reader = new FileReader();
+                		
+                			// reader객체를 가지고 파일을 읽어들이는 메소드를 호출
+                			reader.readAsDataURL(inputFile.files[0]);
+                			
+                			// 해당 파일을 read하는 순간 파일만의 고유한 거어어어업나 긴 url이 만들어짐
+                			// url을 src속성의 값으로 부여할 것
+                			
+                			// 파일 읽기가 완료되면 실행할 핸들러 정의
+                			reader.onload = e => {
+                				
+                				// e.target ==> eventTarget (eventTarget : 이벤트가 발생한 대상)
+                				// console.log(e.target);
+                				
+                				document.getElementById('kakao').src = e.target.result;
+                			};
+                			
+                		}
+                		else {
+                			
+                			document.getElementById('kakao').src = "https://t1.kakaocdn.net/friends/www/talk/kakaofriends_talk_2018.png"
+                		}
+                		
+                		// 보편적으로 js 쓸 때 아래에 코드가 더 들어오면 끝에 ';'를 붙인다. (코드가 있다고 알려주려는 의도)
+                		
+                		
+                	}
+                </script>
 
-          		// $('.board-detail').on('click', handler())
-          		// console.dir(pagingArea);
-          		
-          		/* <js 객체 쓰기>
-          		const student = {
-          			name : '홍길동',
-          			grade : 1
-          		};
-          		*/
-          		
-          		//console.log(student);
-          		
-          		// student.grade = 2;
-          		
-          		//console.log(student);
-          		//location.href = '리터럴값';
-          		
-          		/* ★ 이벤트가 발생한 타겟을 찾아가는 방법 ★ */
-          		//console.log(e.target);	// 현재 이벤트가 발생했을 때 어떤 td를 선택했는지
-          		//console.log(e.currentTarget.id.split('-')[1]);	// 실제로 이벤트가 달려서 이벤트를 동작시키는 요소(여기선 tr)
-          		
-          		// ★★★ jQuery메서드를 이용해 타겟의 자식 요소를 찾아가겠다?
-          		// console.log(e.currentTarget); => 자바스크립트 방식 선택
-          		// console.log($(e.currentTarget).children().eq(0).text());	// => jQuery 방식 선택
-//          		location.href = 'board-detail?boardNo=' + e.currentTarget.id.split('-')[1];
-          			// children() : 자식요소 선택 메서드
-          			// eq('자식요소인덱스(0~)') 메서드 : 여기서는 <tr>아래 첫 번째 <td> 요소
-          			// text() : 거기에 있는 text
-          			
-          			// find('선택자') <-- 활용도가 가장 높음
-          			// children() (jQuery에 정의되어 있는 메서드)
-          		
-          		//location.href = 'board-detail';
-//         		});
-//            });
-            $(() =>{
-                  $('.board-detail').click(e => {
-                	  location.href = 'board-detail?boardNo=' + e.currentTarget.id.split('-')[1];
-                  });
-               });
-            </script>
-
-            <div id="pagingArea">
-			    <ul class="pagination">
-			        <c:choose>
-			            <c:when test="${ pageInfo.startPage eq pageInfo.currentPage }">
-			                <li class="page-item disabled">
-			                    <a class="page-link" href="#">이전</a>
-			                </li>
-			            </c:when>
-			            <c:otherwise>
-			                <c:choose>
-			                    <c:when test="${ empty condition }">
-			                        <li class="page-item">
-			                            <a class="page-link" href="boardList?page=${ pageInfo.currentPage - 1 }">이전</a>
-			                        </li>
-			                    </c:when>
-			                    <c:otherwise>
-			                        <li class="page-item">
-			                            <a class="page-link" href="search.do?page=${ pageInfo.currentPage - 1 }&condition=${condition}&keyword=${keyword}">이전</a>
-			                        </li>
-			                    </c:otherwise>
-			                </c:choose>
-			            </c:otherwise>
-			        </c:choose>
-			        <c:forEach begin="${ pageInfo.startPage }" end="${ pageInfo.endPage }" var="p">
-			            <c:choose>
-			                <c:when test="${ empty condition }">
-			                    <li class="page-item ${ pageInfo.currentPage eq p ? 'active' : '' }">
-			                        <a class="page-link" href="boardList?page=${ p }">${ p }</a>
-			                    </li>
-			                </c:when>
-			                <c:otherwise>
-			                    <li class="page-item ${ pageInfo.currentPage eq p ? 'active' : '' }">
-			                        <a class="page-link" href="search.do?page=${ p }&condition=${condition}&keyword=${keyword}">${ p }</a>
-			                    </li>
-			                </c:otherwise>
-			            </c:choose>
-			        </c:forEach>
-			        <c:choose>
-			            <c:when test="${ pageInfo.maxPage eq pageInfo.currentPage }">
-			                <li class="page-item disabled">
-			                    <a class="page-link" href="boardList?page=${ pageInfo.currentPage + 1 }">다음</a>
-			                </li>
-			            </c:when>
-			            <c:otherwise>
-			                <c:choose>
-			                    <c:when test="${ empty condition }">
-			                        <li class="page-item">
-			                            <a class="page-link" href="boardList?page=${ pageInfo.currentPage + 1 }">다음</a>
-			                        </li>
-			                    </c:when>
-			                    <c:otherwise>
-			                        <li class="page-item">
-			                            <a class="page-link" href="search.do?page=${ pageInfo.currentPage + 1 }&condition=${condition}&keyword=${keyword}">다음</a>
-			                        </li>
-			                    </c:otherwise>
-			                </c:choose>
-			            </c:otherwise>
-			        </c:choose>
-			    </ul>
-			</div>
-
-            <br clear="both"><br>
-
-            <form id="searchForm" action="search.do" method="get" align="center">
-                <div class="select">
-                    <select class="custom-select" name="condition">
-                        <option value="writer">작성자</option>
-                        <option value="title">제목</option>
-                        <option value="content">내용</option>
-                    </select>
+                <div align="center">
+                    <button type="submit" class="btn btn-primary">등록하기</button>
+                    <button type="reset" class="btn btn-danger">취소하기</button>
                 </div>
-                <div class="text">
-                    <input type="text" class="form-control" name="keyword" value="${ keyword }">
-                </div>
-                <button type="submit" class="searchBtn btn btn-secondary">검색</button>
             </form>
-            
-            <br><br>
-            
-            <script>
-	            $(() => {
-	            	$('#searchForm option[value="${condition }"]').attr('selected',true);
-	            });
-            </script>
-            
         </div>
         <br><br>
 
     </div>
-
-
-
+    
+    <jsp:include page="../common/footer.jsp" />
+    
 </body>
 </html>

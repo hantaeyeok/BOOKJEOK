@@ -196,7 +196,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		   <result column="NOTICE_DATE" property="noticeDate" />
 		   <collection resultMap="noticeFileResultSet" property="noticeFileList" />
 		</resultMap>
-		<resultMap id="noticeFileResultSet" type="notieFile">
+		<resultMap id="noticeFileResultSet" type="noticeFile">
 			<id     column="NOTICE_NO"        property="noticeNo" />
 		   <result column="NOTICE_IMG_ORIGINNAME"   property="noticeImgOriginName" />
 		   <result column="NOTICE_IMG_CHANGENAME"   property="noticeImgChangeName" />
