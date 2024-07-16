@@ -24,5 +24,7 @@ public interface MemberMapper{
 	// 아이디 중복체크(SELECT)
 	int idCheck(String idCheck);
 	int emailCheck(String emailCheck);
+
+	Member getMemberByEmail(Member member);
 	
 }

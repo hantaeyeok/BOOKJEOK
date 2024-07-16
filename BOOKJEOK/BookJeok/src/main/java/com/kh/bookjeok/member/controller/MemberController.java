@@ -1,7 +1,14 @@
 package com.kh.bookjeok.member.controller;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.kh.bookjeok.common.model.Message;
 import com.kh.bookjeok.member.model.service.MemberService;
 import com.kh.bookjeok.member.model.vo.Member;
 
@@ -21,6 +29,72 @@ import lombok.RequiredArgsConstructor;
 public class MemberController {
 	private final MemberService memberService;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
+	
+	@Autowired
+	private JavaMailSender sender;
+	
+	@ResponseBody
+	@PostMapping("findId")
+	public ResponseEntity<Message> findId(Member member) {
+		MimeMessage message = sender.createMimeMessage();
+		MimeMessageHelper helper;
+		try {
+			helper = new MimeMessageHelper(message, false, "UTF-8");
+	
+			Member memberFind=memberService.getMemberByEmail(member);
+			if (memberFind!=null && member.getUserName().equals(memberFind.getUserName())) {
+				helper.setSubject("북적북적 - 아이디 찾기");
+				helper.setText("<h1>아이디 찾기</h1><p>회원님의 아이디는</p><h3>"+memberFind.getUserId()+"</h3><p>입니다.</p>",true);
+				helper.setTo(memberFind.getEmail());
+				sender.send(message);
+				return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+																		.data("success")
+																	    .message("데이터 전송완료")
+																	    .build());
+			} else {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder()
+																				 .data("fail")
+																			     .message("데이터 전송실패")
+																			     .build());
+			}
+		} catch (MessagingException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder()
+															    .data("fail")
+															    .message("이메일 전송실패")
+															    .build());
+			}
+	}
+	
+	@ResponseBody
+	@PostMapping("findPwd")
+	public ResponseEntity<Message> findPwd(Member member){
+		MimeMessage message = sender.createMimeMessage();
+		MimeMessageHelper helper;
+		try {
+			helper = new MimeMessageHelper(message, false, "UTF-8");
+			Member memberFind=memberService.getMemberByEmail(member);
+			if (memberFind!=null && member.getUserId().equals(memberFind.getUserId())) {
+				helper.setSubject("북적북적 - 아이디 찾기");
+				helper.setText("<h1>아이디 찾기</h1><p>회원님의 아이디는</p><h3>"+memberFind.getUserId()+"</h3><p>입니다.</p>",true);
+				helper.setTo(memberFind.getEmail());
+				sender.send(message);
+				return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+																		.data("success")
+																	    .message("데이터 전송완료")
+																	    .build());
+			} else {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder()
+																				 .data("fail")
+																			     .message("데이터 전송실패")
+																			     .build());
+			}
+		} catch (MessagingException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder()
+																.data("fail")
+															    .message("이메일 전송실패")
+															    .build());
+		}
+	}
 	
 	@GetMapping("logout")
 	public String logout(Member member, HttpSession session) {

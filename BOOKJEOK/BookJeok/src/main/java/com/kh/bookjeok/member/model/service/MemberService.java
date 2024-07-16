@@ -25,5 +25,7 @@ public interface MemberService {
 	int idCheck(String idCheck);
 	int emailCheck(String emailCheck);
 
+	Member getMemberByEmail(Member member);
+
 	
 }

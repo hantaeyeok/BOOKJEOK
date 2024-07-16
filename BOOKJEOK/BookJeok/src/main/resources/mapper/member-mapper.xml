@@ -3,6 +3,28 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.bookjeok.member.model.dao.MemberMapper">
+	
+	<select id="getMemberByEmail" parameterType="member" resultType="member">
+		SELECT
+				m.USER_ID userId,
+				m.USER_PWD userPwd,
+				m.USER_NAME userName,
+				m.ENROLL_DATE enrollDate,
+				m.MODIFY_DATE modifyDate,
+				m.STATUS status,
+				m.MILEAGE mileage,
+				e.EMAIL email
+		FROM
+				MEMBER m
+			LEFT JOIN
+				MEMBER_EMAIL e
+			ON
+				m.USER_ID = e.USER_ID
+		WHERE
+				e.EMAIL = #{email}
+		AND
+				m.STATUS = 'Y'
+	</select>
 	<update id="updatePwd">
 		UPDATE
 				MEMBER

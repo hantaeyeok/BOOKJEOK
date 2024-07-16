@@ -84,6 +84,13 @@ public class MemberServiceImp1 implements MemberService{
 	}
 
 
+	@Override
+	public Member getMemberByEmail(Member member) {
+		// TODO Auto-generated method stub
+		return memberMapper.getMemberByEmail(member);
+	}
+
+
 
 
 
