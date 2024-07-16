@@ -90,11 +90,8 @@
 	            </form>
 	            
 	            <script>
-	            	function postSubmit(el) {
-
-	            		
-	            		const attrValue = '수정하기' === el ? 'noticeUpdateForm.do' : 'noticeDelete.do';
-	            		
+	            	function postSubmit(el) {	       
+	            		const attrValue = '수정하기' === el ? 'noticeUpdateForm.do' : 'noticeDelete.do';            		
 	            		$('#postForm').attr('action', attrValue).submit();
 	            	}
 	            </script>
@@ -106,12 +103,6 @@
         <br><br>
 
     </div>
-    
-    <script>
-    
-
-    
-
-    
+ 
 </body>
 </html>

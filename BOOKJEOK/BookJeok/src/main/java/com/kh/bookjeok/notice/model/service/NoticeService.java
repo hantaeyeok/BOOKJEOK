@@ -33,7 +33,7 @@ public interface NoticeService {
 			int delete(int boardNo);
 			
 			// 게시글 수정하기
-			int update(Notice notice);
+			int update(NoticeFile noticeFile);
 			
 
 }

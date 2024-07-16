@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.bookjeok.common.template.PageInfo;
+import com.kh.bookjeok.model.Page;
 import com.kh.bookjeok.notice.model.service.NoticeService;
 import com.kh.bookjeok.notice.model.vo.Notice;
 import com.kh.bookjeok.notice.model.vo.NoticeFile;
@@ -133,14 +134,12 @@ public class NoticeController {
 	      int boardLimit = 10;
 	      
         
-	      PageInfo pageInfo = PageTemplate.getPageInfo(searchCount,
+	      Page pageInfo = PageTemplate.getPageInfo(searchCount,
 	                                        currentPage,
 	                                        pageLimit,
 	                                        boardLimit);
 	      
 	      
-	      // MyBatis에서 제공하는 >>>RowBounds()<<<
-	      // offset, limit
 	      RowBounds rowBounds = new RowBounds((currentPage - 1) * boardLimit, boardLimit);
 	      
 	      
@@ -167,12 +166,12 @@ public class NoticeController {
 	      return "notice/noticeList";
 	   }
 	   
-/*
+
 	   @PostMapping("insertForm.do")
-	   public String insert(NoticeFile noticeFile, MultipartFile upfile, HttpSession session, Model model) {   //MultipartFile[] 여러 개의 파일이 배열로 한번에 들어옴
+	   public String insert(Notice notice, NoticeFile noticeFile, MultipartFile upfile, HttpSession session, Model model) {   //MultipartFile[] 여러 개의 파일이 배열로 한번에 들어옴
 	      
 	      
-	      if(!upfile.getNoticeOriginalName().equals("")) {
+	      if(!upfile.getOriginalFilename().equals("")) {
 	         
 	         noticeFile.setNoticeOriginName(upfile.getOriginalFilename());
 	         noticeFile.setNoticeChangeName(saveFile(upfile, session));
@@ -202,7 +201,7 @@ public class NoticeController {
 
 	      
 
-	   }*/
+	   }
 	   
 
 
@@ -221,12 +220,6 @@ public class NoticeController {
 		   }
 		   return mv;
 	   }
-	   
-	   
-	   
-	   
-	   
-	   
 
 	   @PostMapping("notice-delete")
 	   public String deleteById(int noticeNo,
@@ -257,22 +250,21 @@ public class NoticeController {
 		   return mv;
 	   }
 	   
-	   @PostMapping("notice-update")
+	   @PostMapping("noticeFile-update")
 	   public String update(NoticeFile noticeFile,
 			   				MultipartFile reUpFile,
 			   				HttpSession session) {
 		   
 
-		   if(!reUpFile.getOriginalFilename().equals("")) {	//새로 올린 파일의 원래파일명이 빈문자열과 같지 않다면 = 기존 파일이 존재한다면
-			   
-			   noticeFile.setOriginName(reUpFile.getOriginalFilename());
-			   noticeFile.setChangeName(saveFile(reUpFile, session));
+		   if(!reUpFile.getOriginalFilename().equals("")) {	  
+			   noticeFile.setNoticeOriginName(reUpFile.getOriginalFilename());
+			   noticeFile.setNoticeChangeName(saveFile(reUpFile, session));
 		   }
 		   
-		   if(noticeService.update(notice) > 0) {
+		   if(noticeService.update(noticeFile) > 0) {
 			   
 			   session.setAttribute("alertMsg", "수정 완료");
-			   return "redirect:notice-detail?noticeNo="+notice.getNoticeNo();
+			   return "redirect:notice-detail?noticeNo="+noticeFile.getNoticeNo();
 			   
 		   } else {
 			   
@@ -282,7 +274,7 @@ public class NoticeController {
 	   }
 
 	// changeName 생성 메서드 만들기
-	/*   public String saveFile(MultipartFile upfile, HttpSession session) {
+	     public String saveFile(MultipartFile upfile, HttpSession session) {
 		   String originName = upfile.getOriginalFilename();
 	       
 	       String ext = originName.substring(originName.lastIndexOf('.'));
@@ -291,7 +283,7 @@ public class NoticeController {
 	       //math * 숫자는 범위이고 뒤에 + 정수는 시작값 소수점을 버리기 위해 int로 형변환
 	       int num =(int)(Math.random() * 900) + 100;
 	       
-	       String currentTime= new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());         
+	       String currentTime= new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(num));         
 	       
 	       String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/");
 	       
@@ -306,7 +298,7 @@ public class NoticeController {
 	       }
 	       
 	       return "resources/uploadFiles/" + changeName;
-	    }*/
+	    } 
 	}
 	   
 	   
