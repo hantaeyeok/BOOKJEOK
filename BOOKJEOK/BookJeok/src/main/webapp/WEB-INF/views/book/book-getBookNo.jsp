@@ -81,14 +81,26 @@
 
     <div id="review-section" class="mt-4">
         <h4>리뷰 요약</h4>
-        <div class="progress mb-2" id="review-summary-container">
+        <div id="review-summary-container">
             <!-- 리뷰 요약이 여기에 동적으로 추가됩니다. -->
         </div>
 
         <h4>리뷰 목록</h4>
+        <div class="form-group">
+            <label for="sortBy">정렬:</label>
+            <select class="form-control" id="sortBy">
+                <option value="latest">최신순</option>
+                <option value="rating">별점순</option>
+            </select>
+        </div>
         <div class="list-group" id="review-list-container">
             <!-- 리뷰 목록이 여기에 동적으로 추가됩니다. -->
         </div>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center" id="pagination-container">
+                <!-- 페이지 번호가 여기에 동적으로 추가됩니다. -->
+            </ul>
+        </nav>
         <button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#reviewModal">리뷰 작성</button>
     </div>
 
@@ -104,8 +116,8 @@
             <input type="text" id="quantity" value="1">
             <button class="btn btn-secondary" onclick="increaseQuantity()">+</button>
         </span>
-        <button class="btn btn-primary">장바구니</button>
-        <button class="btn btn-success">구매하기</button>
+        <button class="btn btn-primary" onclick="addToCart()">장바구니</button>
+        <button class="btn btn-success" onclick="purchase()">구매하기</button>
     </div>
 
     <!-- 리뷰 모달 -->
@@ -197,14 +209,22 @@
         });
     }
 
-    function fetchReviews() {
+    function fetchReviews(page = 1) {
         var bookNo = ${book.bookNo};
+        var sortBy = $('#sortBy').val();
         $.ajax({
             url: 'reviews/' + bookNo,
             type: 'GET',
+            data: {
+                page: page,
+                pageSize: 10,
+                sortBy: sortBy
+            },
             success: function(response) {
                 $('#review-list-container').empty();
-                var reviews = response;
+                var reviews = response.data.reviews;
+                var pageInfo = response.data.pageInfo;
+
                 if (reviews && reviews.length > 0) {
                     for (var i = 0; i < reviews.length; i++) {
                         var review = reviews[i];
@@ -227,6 +247,9 @@
                 } else {
                     $('#review-list-container').append('<div class="list-group-item">리뷰가 없습니다.</div>');
                 }
+
+                // 페이지네이션 업데이트
+                updatePagination(pageInfo);
             },
             error: function() {
                 alert('리뷰를 가져오는 중 오류가 발생했습니다.');
@@ -242,23 +265,56 @@
             success: function(response) {
                 $('#review-summary-container').empty();
                 var reviewSummary = response.data;
-                if (reviewSummary && reviewSummary.length > 0) {
-                    for (var i = 0; i < reviewSummary.length; i++) {
-                        var summary = reviewSummary[i];
-                        $('#review-summary-container').append(
-                            '<div class="progress mb-2">' +
-                            '<div class="progress-bar bg-primary" role="progressbar" style="width: ' + summary.percentage + '%;">' + summary.percentage.toFixed(2) + '%</div>' +
-                            '</div>'
-                        );
-                    }
-                } else {
-                    $('#review-summary-container').append('<div class="progress mb-2">리뷰 요약이 없습니다.</div>');
+
+                // 1점부터 5점까지의 비율을 표시합니다.
+                for (var i = 1; i <= 5; i++) {
+                    var percentage = reviewSummary[i] || 0; // 각 평점에 대한 비율을 가져옵니다.
+                    $('#review-summary-container').append(
+                        '<div class="progress mb-2">' +
+                        '<div class="progress-bar bg-primary" role="progressbar" style="width: ' + percentage + '%;">' + Math.floor(percentage) + '%</div>' +
+                        '</div>'
+                    );
                 }
             },
             error: function() {
                 alert('리뷰 요약을 가져오는 중 오류가 발생했습니다.');
             }
         });
+    }
+
+    function updatePagination(pageInfo) {
+        $('#pagination-container').empty();
+
+        // 이전 버튼
+        if (pageInfo.currentPage > 1) {
+            $('#pagination-container').append(
+                '<li class="page-item">' +
+                '<a class="page-link" href="#" aria-label="Previous" onclick="fetchReviews(' + (pageInfo.currentPage - 1) + ')">' +
+                '<span aria-hidden="true">&laquo;</span>' +
+                '</a>' +
+                '</li>'
+            );
+        }
+
+        // 페이지 번호
+        for (var i = pageInfo.startPage; i <= pageInfo.endPage; i++) {
+            $('#pagination-container').append(
+                '<li class="page-item ' + (i === pageInfo.currentPage ? 'active' : '') + '">' +
+                '<a class="page-link" href="#" onclick="fetchReviews(' + i + ')">' + i + '</a>' +
+                '</li>'
+            );
+        }
+
+        // 다음 버튼
+        if (pageInfo.currentPage < pageInfo.maxPage) {
+            $('#pagination-container').append(
+                '<li class="page-item">' +
+                '<a class="page-link" href="#" aria-label="Next" onclick="fetchReviews(' + (pageInfo.currentPage + 1) + ')">' +
+                '<span aria-hidden="true">&raquo;</span>' +
+                '</a>' +
+                '</li>'
+            );
+        }
     }
 
     $(document).ready(function() {
@@ -272,10 +328,56 @@
             $(this).addClass('active');
         });
 
-        updateTotalPrice();
-        fetchReviews();
+        $('#sortBy').change(function() {
+            fetchReviews();
+        });
+        
         fetchReviewSummary();
+        fetchReviews();
+        updateTotalPrice();
     });
+
+    function addToCart() {
+        var bookNo = ${book.bookNo};
+        var quantity = parseInt($('#quantity').val());
+
+        $.ajax({
+            url: '/bookjeok/cart/add',
+            type: 'POST',
+            data: {
+                bookNo: bookNo,
+                quantity: quantity
+            },
+            success: function(response) {
+                if (response.message === '장바구니에 추가되었습니다.') {
+                    if (confirm('장바구니에 추가되었습니다. 장바구니로 이동하시겠습니까?')) {
+                        window.location.href = 'cart';
+                    }
+                } else {
+                    alert('장바구니 추가 실패');
+                }
+            },
+            error: function() {
+                alert('장바구니 추가 중 오류가 발생했습니다.');
+            }
+        });
+    }
+/*
+    function purchase() {
+        var bookNo = ${book.bookNo};
+        var quantity = parseInt($('#quantity').val());
+
+        if (!${sessionScope.user}) {
+            if (confirm('로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?')) {
+                window.location.href = 'login';
+            }
+        } else {
+            if (confirm('구매하기로 이동하시겠습니까?')) {
+                window.location.href = 'purchase?bookNo=' + bookNo + '&quantity=' + quantity;
+            }
+        }
+    }
+    */
 </script>
 </body>
 </html>

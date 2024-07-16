@@ -58,4 +58,7 @@ public interface BookMapper {
 	
 	List<ReviewAvg> reviewAvg(int bookNo);
 	
+	int countReviews(int bookNo);
+	List<BookReview> selectBookReviewByBookNo(Map<String, Object> params);
+	
 }

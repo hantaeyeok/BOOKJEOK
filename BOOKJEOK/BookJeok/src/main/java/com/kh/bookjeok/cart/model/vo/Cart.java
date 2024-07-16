@@ -1,4 +1,4 @@
-package com.kh.bookjeok.book.model.vo;
+package com.kh.bookjeok.cart.model.vo;
 
 
 import lombok.AllArgsConstructor;
@@ -14,9 +14,12 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReviewAvg {
+public class Cart {
+	
+	private int cartNo;
+	private int bookNo;
+	private String userId;
+	private int cartTotal;
+	private int cartAmount;
 
-    private int rating;
-    private int count;
-    private double percentage;
 }

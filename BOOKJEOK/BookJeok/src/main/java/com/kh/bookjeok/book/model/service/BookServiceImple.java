@@ -1,6 +1,7 @@
 package com.kh.bookjeok.book.model.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -90,6 +91,16 @@ public class BookServiceImple implements BookService{
 	@Override
 	public List<ReviewAvg> reviewAvg(int bookNo) {
 		return bookMapper.reviewAvg(bookNo);
+	}
+
+	@Override
+	public int countReviews(int bookNo) {
+		return bookMapper.countReviews(bookNo);
+	}
+
+	@Override
+	public List<BookReview> selectBookReviewByBookNo(Map<String, Object> params) {
+		return bookMapper.selectBookReviewByBookNo(params);
 	}
 	
 	

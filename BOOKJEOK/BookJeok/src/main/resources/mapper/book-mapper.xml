@@ -364,4 +364,44 @@
          REVIEW_RATING
  </select>
 
+
+<select id="selectBookReviewByBookNo" resultType="bookReview">
+    SELECT 
+    		REVIEW_NO reviewNo, 
+	        USER_ID userId, 
+	        ORDER_NO orderNo, 
+	        BOOK_NO bookNo, 
+	        REVIEW_CONTEXT reviewContext, 
+	        REVIEW_RATING reviewRating, 
+	        REVIEW_CREATE_DATE reviewCreateDate, 
+	        REVIEW_UPDATE_DATE reviewUpdateDate, 
+	        REVIEW_STATUS reviewStatus 
+    FROM 
+    		BOOK_REVIEW
+    WHERE 
+    		BOOK_NO = #{bookNo}
+    AND 
+    		REVIEW_STATUS = 'Y'
+    ORDER BY
+        <choose>
+            <when test="sortBy == 'latest'">
+                REVIEW_CREATE_DATE DESC
+            </when>
+            <when test="sortBy == 'rating'">
+                REVIEW_RATING DESC
+            </when>
+        </choose>
+</select>
+
+<select id="countReviews" resultType="int">
+    SELECT 
+    		COUNT(*)
+    FROM 
+    		BOOK_REVIEW
+    WHERE 
+    		BOOK_NO = #{bookNo}
+    AND 
+    		REVIEW_STATUS = 'Y'
+</select>
+
 </mapper>

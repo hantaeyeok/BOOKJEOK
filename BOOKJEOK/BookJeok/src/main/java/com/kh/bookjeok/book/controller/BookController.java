@@ -1,6 +1,5 @@
 package com.kh.bookjeok.book.controller;
 
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +29,7 @@ import com.kh.bookjeok.book.model.vo.TopCategory;
 import com.kh.bookjeok.book.model.vo.UpperCategory;
 import com.kh.bookjeok.common.model.FileUploadService;
 import com.kh.bookjeok.common.model.vo.Message;
+import com.kh.bookjeok.common.template.PageInfo;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -221,28 +221,79 @@ public class BookController {
 	    }
 	 
 	 
-	@GetMapping("reviews/{bookNo}")
-    public ResponseEntity<List<BookReview>> getReviews(@PathVariable int bookNo) {
-        List<BookReview> reviews = bookService.selectBookReviewBybookNo(bookNo);
-        return ResponseEntity.ok(reviews);
-    }
+	 @GetMapping("reviews/{bookNo}")
+	    public ResponseEntity<Message> getReviews(@PathVariable int bookNo,
+	                                              @RequestParam(required = false, defaultValue = "1") int page,
+	                                              @RequestParam(required = false, defaultValue = "10") int pageSize,
+	                                              @RequestParam(required = false, defaultValue = "latest") String sortBy) {
+	        // 전체 리뷰 목록을 가져dha
+	        Map<String, Object> params = new HashMap<>();
+	        params.put("bookNo", bookNo);
+	        params.put("sortBy", sortBy);
+	        List<BookReview> allReviews = bookService.selectBookReviewByBookNo(params);
+
+	        // 페이징 처리
+	        int totalReviews = allReviews.size();
+	        PageInfo pageInfo = PageInfo.getPageInfo(totalReviews, page, 10, pageSize);
+
+	        int start = pageInfo.getStartValue();
+	        int end = Math.min(pageInfo.getEndValue(), totalReviews);
+	        List<BookReview> paginatedReviews = allReviews.subList(start, end);
+
+	        // 응답 메시지 구성
+	        Map<String, Object> responseMap = new HashMap<>();
+	        responseMap.put("reviews", paginatedReviews);
+	        responseMap.put("pageInfo", pageInfo);
+
+	        Message responseMsg = Message.builder()
+	                                     .data(responseMap)
+	                                     .message("리뷰 조회 성공")
+	                                     .build();
+
+	        return ResponseEntity.status(HttpStatus.OK).body(responseMsg);
+	    }
 	 
 	 
 	 @GetMapping("reviewAvg/{bookNo}")
 	    public ResponseEntity<Message> getReviewSummary(@PathVariable int bookNo) {
-	        List<ReviewAvg> reviewAvg = bookService.reviewAvg(bookNo);
-	        int totalReviews = reviewAvg.stream().mapToInt(ReviewAvg::getCount).sum();
-
-	        List<ReviewAvg> reviewSummary = reviewAvg.stream().map(avg -> {
-	            avg.setPercentage((double) avg.getCount() / totalReviews * 100);
-	            return avg;
-	        }).collect(Collectors.toList());
-
+	        List<ReviewAvg> reviewAvgList = bookService.reviewAvg(bookNo);
+	        
+	        // 전체 리뷰 수를 계산
+	        int totalReviews = 0;
+	        for (ReviewAvg reviewAvg : reviewAvgList) {
+	            totalReviews += reviewAvg.getCount();
+	        }
+	        
+	        // 각 평점의 비율을 계산
+	        for (ReviewAvg reviewAvg : reviewAvgList) {
+	            double percentage = (double) reviewAvg.getCount() / totalReviews * 100;
+	            reviewAvg.setPercentage(percentage);
+	        }
+	        
+	        // 1점부터 5점 map에 담아서 전달
+	        Map<Integer, Double> ratingPercentageMap = new HashMap<>();
+	        for (int i = 1; i <= 5; i++) {
+	        	//평점이 없는경우 0.0 반환하기 위해 선언.
+	            boolean found = false;
+	            for (ReviewAvg reviewAvg : reviewAvgList) {
+	                if (reviewAvg.getRating() == i) {
+	                    ratingPercentageMap.put(i, reviewAvg.getPercentage());
+	                    found = true;
+	                    break;
+	                }
+	            }
+	            
+	            if (!found) {
+	                ratingPercentageMap.put(i, 0.0);
+	            }
+	        }
+	        
+	       
 	        Message responseMsg = Message.builder()
-	                .data(reviewSummary)
+	                .data(ratingPercentageMap)
 	                .message("리뷰 요약 성공")
 	                .build();
-	        return ResponseEntity.status(HttpStatus.OK).body(responseMsg);
+            return ResponseEntity.status(HttpStatus.OK).body(responseMsg);
 	    }
 	
 	

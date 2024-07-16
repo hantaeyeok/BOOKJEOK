@@ -1,6 +1,7 @@
 package com.kh.bookjeok.book.model.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.kh.bookjeok.book.model.vo.Book;
 import com.kh.bookjeok.book.model.vo.BookDetail;
@@ -31,4 +32,7 @@ public interface BookService {
 	
 	int saveReview(BookReview review);
 	List<ReviewAvg> reviewAvg(int bookNo);
+	
+	int countReviews(int bookNo);
+    List<BookReview> selectBookReviewByBookNo(Map<String, Object> params);
 }

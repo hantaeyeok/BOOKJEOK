@@ -19,13 +19,17 @@
    		<typeAlias type="com.kh.bookjeok.member.model.vo.Member" alias="member"/>	
    		<typeAlias type="com.kh.bookjeok.book.model.vo.BookReview" alias="bookReview"/>	
    		<typeAlias type="com.kh.bookjeok.book.model.vo.ReviewAvg" alias="reviewAvg"/>	
-		
+   		<typeAlias type="com.kh.bookjeok.cart.model.vo.Cart" alias="cart"/>	
+
+   		
 	</typeAliases>
 	
 
 	<mappers>
 		<mapper resource="/mapper/book-mapper.xml"/>
 		<mapper resource="/mapper/member-mapper.xml"/>
+		<mapper resource="/mapper/cart-mapper.xml"/>
+
 	</mappers>
 	
 </configuration>
