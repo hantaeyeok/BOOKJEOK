@@ -80,7 +80,7 @@
                             totalPrice += cart.bookPrice * cart.cartAmount;
                         });
                         $('#totalPrice').text(totalPrice);
-                        $('#finalPrice').text(totalPrice); // 배송비 등 추가 금액이 있으면 조정
+                        $('#finalPrice').text(totalPrice); 
                         $('#mileage').text(totalPrice * 0.1); // 마일리지 적립 예: 10%
                     }
                 },
