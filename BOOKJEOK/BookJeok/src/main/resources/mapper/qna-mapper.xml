@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qnaMapper">
+
+	<sql id="selectQuestion">
+		SELECT
+		       QNA_NO qnaNo,
+			   QUESTION_TITLE questionTitle,
+			   QUESTION_CONTENT questionContent,
+			   QUESTION_DATE questionDate,
+			   QUESTION_EDITDATE questionEditdate,
+			   QUESTION_ORIGINNAME questionOriginname,
+			   QUESTION_CHANGENAME questionChangename,
+			   QUESTION_STATUS questionStatus,
+			   USER_ID userId
+	</sql>
+	
+	<select id="findAll" resultType="question" parameterType="map">
+		<include refid="selectQuestion" />
+		 FROM
+			  (SELECT
+			          QNA_NO,
+				      QUESTION_TITLE,
+				      QUESTION_CONTENT,
+				      QUESTION_DATE,
+				      QUESTION_EDITDATE,
+				      QUESTION_ORIGINNAME,
+				      QUESTION_CHANGENAME,
+				      QUESTION_STATUS,
+				      USER_ID,
+				      ROWNUM RNUM
+			     FROM
+			     	  (SELECT
+			     	  		  QNA_NO,
+				      		  QUESTION_TITLE,
+						      QUESTION_CONTENT,
+						      QUESTION_DATE,
+						      QUESTION_EDITDATE,
+						      QUESTION_ORIGINNAME,
+						      QUESTION_CHANGENAME,
+						      QUESTION_STATUS,
+						      USER_ID
+			     	     FROM
+			     	     	  QUESTION
+			     	    WHERE
+			     	     	  QUESTION_STATUS = 'Y'
+			     	   	ORDER 
+			     	   	   BY
+			     	     	  QNA_NO DESC
+			     	  )
+			  )
+		WHERE
+			  RNUM BETWEEN #{startValue} AND #{endValue}
+	</select>
+	<select id="searchCount" parameterType="hashmap" resultType="_int">
+		SELECT
+               COUNT(QNA_NO)
+          FROM
+               QUESTION
+         WHERE
+         <if test="condition  == 'status'">
+               QUESTION_STATUS    
+         </if>
+         <if test="condition == 'title'">
+         	   QUESTION_TITLE
+         </if>
+               LIKE '%' || #{keyword} || '%'
+	</select>
+	
+	<select id="findByConditionAndKeyword" parameterType="hashmap" resultType="question">
+		<include refid="selectQuestion" />
+		  FROM
+			   QUESTION
+		 WHERE
+		<choose>
+			<when test="condition == 'status'">
+			   QUESTION_STATUS
+			</when>
+			<otherwise>
+			   QUESTION_TITLE
+			</otherwise>
+		</choose>
+		       LIKE '%' || #{keyword} || '%'
+		 ORDER
+			BY
+			   QNA_NO DESC
+	</select>
+	
+	<select id="qnaCount" resultType="_int">
+		SELECT
+			   COUNT(QNA_NO)
+		  FROM
+			   QUESTION
+		 WHERE
+			   QUESTION_STATUS = 'Y'
+	</select>
+
+	<insert id="insertQuestion" parameterType="question">
+		INSERT
+		  INTO
+			   QUESTION
+		  	   (
+			   QNA_NO,
+			   QUESTION_TITLE,
+			   USER_ID,
+			   QUESTION_CONTENT,
+			   QUESTION_ORIGINNAME,
+			   QUESTION_CHANGENAME
+			   )
+		VALUES
+			   (
+			   QNA_SEQ.NEXTVAL,
+			   #{questionTitle},
+			   #{userId},
+			   #{questionContent},
+			   #{questionOriginname},
+			   #{questionChangename}
+			   )
+	</insert>
+	
+	<select id="findById" parameterType="_int" resultType="question">
+		<include refid="selectQuestion" />
+		  FROM
+			   QUESTION
+		 WHERE
+			   QNA_NO = #{qnaNo}
+		   AND
+			   QUESTION_STATUS = 'Y'
+	</select>
+	
+	<update id="updateQuestion" parameterType="question">
+		UPDATE
+			   QUESTION
+		   SET
+			   QUESTION_TITLE = #{questionTitle},
+			   QUESTION_CONTENT = #{questionContent},
+			   QUESTION_ORIGINNAME = #{questionOriginname},
+			   QUESTION_CHANGENAME = #{questionChangename},
+			   QUESTION_EDITDATE = SYSDATE
+		 WHERE
+			   QNA_NO = #{qnaNo}
+	</update>
+	
+	<update id="deleteQna" parameterType="_int">
+		UPDATE
+			   QUESTION
+		   SET
+			   QUESTION_STATUS = 'N'
+		 WHERE
+			   QNA_NO = #{qnaNo}
+	</update>
+
+</mapper>

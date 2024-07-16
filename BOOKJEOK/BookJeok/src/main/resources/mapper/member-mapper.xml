@@ -3,21 +3,103 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.bookjeok.member.model.dao.MemberMapper">
+	<update id="updatePwd">
+		UPDATE
+				MEMBER
+			SET
+				USER_PWD=#{userPwd}
+		WHERE
+				USER_ID=#{userId}
+	</update>
+	
+	<update id="updatePhone" parameterType="member">
+		UPDATE
+				MEMBER_PHONE
+			SET
+				PHONE=#{phone}
+		WHERE
+				USER_ID=#{userId}
+	</update>
+	<update id="updateAddress" parameterType="member">
+		UPDATE
+				MEMBER_ADDRESS
+			SET
+				ADDRESS=#{address},
+				ADDRESS_DETAIL=#{addressDetail},
+				POSTNUM=#{postnum}
+		WHERE
+				USER_ID=#{userId}
+	</update>
+	<update id="updateEmail" parameterType="member">
+		UPDATE
+				MEMBER_EMAIL
+			SET
+				EMAIL=#{email}
+		WHERE
+				USER_ID=#{userId}
+	</update>
+	<update id="updateGender" parameterType="member">
+		UPDATE
+				MEMBER_GENDER
+			SET
+				GENDER=#{gender}
+		WHERE
+				USER_ID=#{userId}
+	</update>
+	
+	<select id="idCheck" parameterType="string" resultType="_int">
+		SELECT
+			COUNT(*)
+		FROM
+			MEMBER
+		WHERE
+			USER_ID = #{idCheck}
+	</select>
+	<select id="emailCheck" parameterType="string" resultType="_int">
+		SELECT
+			COUNT(*)
+		FROM
+			MEMBER_EMAIL
+		WHERE
+			EMAIL = #{emailCheck}
+	</select>
 	<select id="login" parameterType="member" resultType="member">
 		SELECT
-				USER_ID userId,
-				USER_PWD userPwd,
-				USER_NAME userName,
-				ENROLL_DATE enrollDate,
-				MODIFY_DATE modifyDate,
-				STATUS status,
-				MILEAGE mileage
+				m.USER_ID userId,
+				m.USER_PWD userPwd,
+				m.USER_NAME userName,
+				m.ENROLL_DATE enrollDate,
+				m.MODIFY_DATE modifyDate,
+				m.STATUS status,
+				m.MILEAGE mileage,
+				e.EMAIL email,
+				p.PHONE phone,
+				a.ADDRESS address,
+				a.ADDRESS_DETAIL addressDetail,
+				a.POSTNUM postnum,
+				g.GENDER gender
 		FROM
-				MEMBER
+				MEMBER m
+			LEFT JOIN
+				MEMBER_EMAIL e
+			ON
+				m.USER_ID = e.USER_ID
+			LEFT JOIN
+				MEMBER_PHONE p
+			ON
+				m.USER_ID = p.USER_ID
+			LEFT JOIN
+				MEMBER_ADDRESS a
+			ON
+				m.USER_ID = a.USER_ID
+			LEFT JOIN
+				MEMBER_GENDER g
+			ON
+				m.USER_ID = g.USER_ID
 		WHERE
-				USER_ID = #{userId}
+				m.USER_ID = #{userId}
 		AND
-				STATUS = 'Y'
+				m.STATUS = 'Y'
 	</select>
 	<insert id="insertMem" parameterType="member">
 		INSERT ALL
@@ -40,6 +122,7 @@
 					#{userId},
 					#{email}
 					)
+			<if test='address!=null and !"".equals(address)'>
 			INTO
 					MEMBER_ADDRESS
 				VALUES
@@ -49,6 +132,8 @@
 					#{addressDetail},
 					#{postnum}
 					)
+			</if>
+			<if test='gender!=null and !"".equals(gender)'>
 			INTO
 					MEMBER_GENDER
 				VALUES
@@ -56,6 +141,8 @@
 					#{userId},
 					#{gender}
 					)
+			</if>
+			<if test='phone!=null and !"".equals(phone)'>
 			INTO
 					MEMBER_PHONE
 				VALUES
@@ -63,6 +150,7 @@
 					#{userId},
 					#{phone}
 					)
+			</if>
 			SELECT 1 FROM DUAL
 	</insert>
 </mapper>

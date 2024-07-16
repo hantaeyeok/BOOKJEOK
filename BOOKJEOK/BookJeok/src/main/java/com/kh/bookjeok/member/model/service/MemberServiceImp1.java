@@ -11,18 +11,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MemberServiceImp1 implements MemberService{
 
-	private final MemberMapper MemberMapper;
+	private final MemberMapper memberMapper;
 	
 	@Override
 	public Member login(Member member) {
 		// TODO Auto-generated method stub
-		return MemberMapper.login(member);
+		return memberMapper.login(member);
 	}
+
 	
 	@Override
 	public int insertMem(Member member) {
 		// TODO Auto-generated method stub
-		return MemberMapper.insertMem(member);
+		return memberMapper.insertMem(member);
 	}
 
 	@Override
@@ -30,7 +31,13 @@ public class MemberServiceImp1 implements MemberService{
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
+	
+	@Override
+	public int updatePwd(Member member) {
+		// TODO Auto-generated method stub
+		return memberMapper.updatePwd(member);
+	}
+	
 	@Override
 	public int delete(String string) {
 		// TODO Auto-generated method stub
@@ -40,7 +47,40 @@ public class MemberServiceImp1 implements MemberService{
 	@Override
 	public int idCheck(String idCheck) {
 		// TODO Auto-generated method stub
-		return 0;
+		return memberMapper.idCheck(idCheck);
+	}
+	@Override
+	public int emailCheck(String emailCheck) {
+		// TODO Auto-generated method stub
+		return memberMapper.emailCheck(emailCheck);
+	}
+
+
+	@Override
+	public int updatePhone(Member member) {
+		// TODO Auto-generated method stub
+		return memberMapper.updatePhone(member);
+	}
+
+
+	@Override
+	public int updateEmail(Member member) {
+		// TODO Auto-generated method stub
+		return memberMapper.updateEmail(member);
+	}
+
+
+	@Override
+	public int updateGender(Member member) {
+		// TODO Auto-generated method stub
+		return memberMapper.updateGender(member);
+	}
+
+
+	@Override
+	public int updateAddress(Member member) {
+		// TODO Auto-generated method stub
+		return memberMapper.updateAddress(member);
 	}
 
 

@@ -17,9 +17,9 @@ public class MemberForwarding {
 	public String join() {
 		return "member/join";
 	}
-	
-	@GetMapping("editMemberInfo")
-	public String editMemberInfo() {
-		return "member/EditMemberInfo";
+		
+	@GetMapping("editMemberInfoBfr")
+	public String editMemberInfoBfr() {
+		return "member/EditMemberInfoBfr";
 	}
 }
