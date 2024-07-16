@@ -46,6 +46,9 @@
     </style>
 </head>
 <body>
+
+<jsp:include page="../common/menubar.jsp" />
+
 <div class="container my-5">
     <h2 class="mb-4">도서 상세 페이지</h2>
     <div class="row mb-4">
@@ -351,7 +354,7 @@
             success: function(response) {
                 if (response.message === '장바구니에 추가되었습니다.') {
                     if (confirm('장바구니에 추가되었습니다. 장바구니로 이동하시겠습니까?')) {
-                        window.location.href = 'cart';
+                        window.location.href = '/bookjeok/cart/cartList';
                     }
                 } else {
                     alert('장바구니 추가 실패');

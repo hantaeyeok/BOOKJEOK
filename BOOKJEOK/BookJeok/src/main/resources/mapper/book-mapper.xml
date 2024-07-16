@@ -404,4 +404,19 @@
     		REVIEW_STATUS = 'Y'
 </select>
 
+
+<select id="getBookPrice" resultType="_int">
+	SELECT
+			BOOK_PRICE bookPrice
+	FROM
+			BOOK
+	WHERE
+			BOOK_NO = #{bookNo}
+</select>
+
+
+
+
+
+
 </mapper>

@@ -38,11 +38,7 @@ public class BookApiController {
 		sb.append("&start=");
 		sb.append(start);
 		sb.append("&SearchTarget=Book&output=xml&Version=20131101");
-		
-		log.info("url : {}",sb);
-		System.out.println(sb);
-		
-		
+
 		HttpURLConnection urlConnection = null;
 		StringBuilder responseData = new StringBuilder();
 
@@ -55,17 +51,11 @@ public class BookApiController {
 		    responseData.append(line); 
 	    }
 		
-	    // XML 응답을 JSON으로 변환 --> pom.xml org.json 라이브러리 추가 -> xml to json 파싱
-	    JSONObject json = XML.toJSONObject(responseData.toString());
-		log.info(responseData.toString());
-		log.info("json ToString {}",json.toString());
-		System.out.println(json.toString());
+	    JSONObject json = XML.toJSONObject(responseData.toString());// XML 응답을 JSON으로 변환 --> pom.xml org.json 라이브러리 추가 -> xml to json 파싱
   	
 		br.close();
 	    urlConnection.disconnect();
 	    
 		return json.toString();
 	}
-	
-	
 }

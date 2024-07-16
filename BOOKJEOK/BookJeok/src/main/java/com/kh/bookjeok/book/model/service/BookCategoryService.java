@@ -25,8 +25,7 @@ public class BookCategoryService {
     @Transactional
     public Integer saveCategory(String categoryString) {
     	
-        String[] categoryLevels = categoryString.split(">");
-        //국내도서>어린이>동화/명작/고전>책읽기/글쓰기
+        String[] categoryLevels = categoryString.split(">"); //국내도서>어린이>동화/명작/고전>책읽기/글쓰기
         
         Integer categoryId = null;
         Integer topNo =null, upperNo = null, midNo = null, lowerNo = null; 

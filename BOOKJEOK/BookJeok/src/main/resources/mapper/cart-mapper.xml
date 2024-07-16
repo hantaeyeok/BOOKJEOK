@@ -21,23 +21,20 @@
         )
     </insert>
 
-    <!-- 장바구니 항목 업데이트 -->
-    <update id="updateCartQuantity" parameterType="cart">
-        UPDATE CART
-        SET CART_AMOUNT = #{cartAmount}
-        WHERE USER_ID = #{userId}
-        AND BOOK_NO = #{bookNo}
-    </update>
 
     <!-- 장바구니 항목 삭제 -->
-    <delete id="deleteFromCart" parameterType="map">
-        DELETE FROM CART
-        WHERE USER_ID = #{userId}
-        AND BOOK_NO = #{bookNo}
+    <delete id="deleteCart" parameterType="map">
+        DELETE 
+        FROM 
+        		CART
+        WHERE 
+        		USER_ID = #{userId}
+        AND 
+        		BOOK_NO = #{bookNo}
     </delete>
 
     <!-- 장바구니 항목 조회 -->
-    <select id="selectCartItems" parameterType="string" resultType="cart">
+    <select id="getCartItems" parameterType="string" resultType="cart">
         SELECT 
             CART_NO cartNo,
             BOOK_NO bookNo,
@@ -78,14 +75,61 @@
 
 	<!-- 구매 성공하면 지워야할 구문이에요 -->
     <!-- 장바구니 항목 구매 -->
-    <delete id="purchaseItems" parameterType="map">
-        DELETE 
-        FROM 
-        		CART
-        WHERE 
-        		USER_ID = #{userId}
-        AND 
-        		BOOK_NO = #{bookNo}
-    </delete>
+<delete id="purchaseItems" parameterType="map">
+    DELETE 
+    FROM 
+    		CART
+    WHERE 
+    		USER_ID = #{userId}
+    AND 
+    		BOOK_NO = #{bookNo}
+</delete>
+<select id="bookAndCartByBookNo" resultType="com.kh.bookjeok.cart.model.vo.BookAndCart">
+	 SELECT
+        b.BOOK_NO bookNo,
+        b.BOOK_TITLE bookTitle,
+        b.BOOK_AUTHOR bookAuthor,
+        b.BOOK_PUBLISHER bookPublisher,
+        b.BOOK_PUB_DATE bookPubDate,
+        b.BOOK_ISBN bookIsbn,
+        b.BOOK_PRICE bookPrice,
+        b.BOOK_DESCRIPTION bookDescription,
+        b.BOOK_COVER bookCover,
+        b.BOOK_CREATE_DATE bookCreateDate,
+        b.BOOK_UPDATE_DATE bookUpdateDate,
+        b.BOOK_AMOUNT bookAmount,
+        b.BOOK_STATUS bookStatus,
+        b.CATEGORY_ID categoryId,
+        c.CART_NO cartNo,
+        c.USER_ID userId,
+        c.CART_TOTAL cartTotal,
+        c.CART_AMOUNT cartAmount
+    FROM
+        BOOK b
+    JOIN
+        CART c ON b.BOOK_NO = c.BOOK_NO
+    WHERE
+        b.BOOK_NO = #{bookNo}
+    AND
+        c.USER_ID = #{userId}
+</select>
+
+ <!-- 장바구니 수량 업데이트 -->
+<update id="updateCartQuantity">
+    UPDATE 
+    		CART
+    SET 
+    		CART_AMOUNT = #{cartAmount},
+        	CART_TOTAL = (SELECT 
+        							BOOK_PRICE 
+      						FROM 
+      								BOOK 
+    						WHERE 
+    								BOOK_NO = #{bookNo}) * #{cartAmount}
+    WHERE 
+    		USER_ID = #{userId}
+    AND 
+    		BOOK_NO = #{bookNo}
+</update>
 
 </mapper>

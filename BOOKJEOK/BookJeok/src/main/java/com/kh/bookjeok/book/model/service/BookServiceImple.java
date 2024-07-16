@@ -102,6 +102,11 @@ public class BookServiceImple implements BookService{
 	public List<BookReview> selectBookReviewByBookNo(Map<String, Object> params) {
 		return bookMapper.selectBookReviewByBookNo(params);
 	}
+
+	@Override
+	public int getBookPrice(int bookNo) {
+		return bookMapper.getBookPrice(bookNo);
+	}
 	
 	
 	

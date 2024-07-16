@@ -35,4 +35,6 @@ public interface BookService {
 	
 	int countReviews(int bookNo);
     List<BookReview> selectBookReviewByBookNo(Map<String, Object> params);
+    
+    int getBookPrice(int bookNo);
 }

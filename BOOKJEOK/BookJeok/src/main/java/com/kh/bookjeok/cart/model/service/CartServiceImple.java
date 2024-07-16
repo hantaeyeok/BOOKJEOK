@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.kh.bookjeok.cart.model.dao.CartMapper;
+import com.kh.bookjeok.cart.model.vo.BookAndCart;
 import com.kh.bookjeok.cart.model.vo.Cart;
 
 import lombok.RequiredArgsConstructor;
@@ -36,5 +37,16 @@ public class CartServiceImple implements CartService {
 		return cartMapper.deleteCart(userId, bookNo);
 	}
 
+	@Override
+	public BookAndCart bookAndCartByBookNo(String userId, int bookNo) {
+		return cartMapper.bookAndCartByBookNo(userId,bookNo);
+	}
+
+	@Override
+	public int updateCartQuantity(Map<String, Object> param) {
+		return cartMapper.updateCartQuantity(param);
+	}
+
+	
 	
 }

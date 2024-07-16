@@ -74,33 +74,6 @@
                     <img id="coverPreview" src="http://via.placeholder.com/150x150" class="img-fluid" alt="책 표지 미리보기">
                 </div>
             </div>
-            <script>
-				document.getElementById('coverType').addEventListener('change', function() {
-				    var coverType = document.getElementById('coverType').value;
-				    var textInput = document.getElementById('bookCoverText');
-				    var fileInput = document.getElementById('bookCoverFile');
-				
-				    if (coverType === 'basic') {
-				        textInput.name = 'bookCoverText';
-				        fileInput.style.display = 'none';
-				        fileInput.name = '';
-				    } else if (coverType === 'custom') {
-				        fileInput.style.display = '';
-				        fileInput.name = 'bookCoverFile';
-				        textInput.name = '';
-				    }
-				});
-				
-				function previewCoverImage(input) {
-				    if (input.files && input.files[0]) {
-				        var reader = new FileReader();
-				        reader.onload = function(e) {
-				            $('#coverPreview').attr('src', e.target.result);
-				        }
-				        reader.readAsDataURL(input.files[0]);
-				    }
-				}
-            </script>
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="title">책제목</label>
@@ -125,12 +98,12 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="row">
             <div class="col-md-3">
                 <div class="form-group">
                     <label for="topCategory">상위 카테고리</label>
-                    <select class="form-control" id="topCategory" onchange="fetchUpperCategories(); toggleCustomInput('topCategory');">
+                    <select class="form-control" id="topCategory" onchange="fetchTopCategories()">
                         <option value="">선택</option>
                         <option value="custom">직접 입력</option>
                     </select>
@@ -140,21 +113,22 @@
             <div class="col-md-3">
                 <div class="form-group">
                     <label for="upperCategory">중위 카테고리</label>
-                    <select class="form-control" id="upperCategory" onchange="fetchMidCategories(); toggleCustomInput('upperCategory');"></select>
+                    <select class="form-control" id="upperCategory"onchange="fetchUpperCategories()"></select>
                     <input type="text" class="form-control mt-2" id="upperCategoryInput" name="upperCategory" style="display:none;" placeholder="직접 입력">
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="form-group">
                     <label for="midCategory">하위 카테고리</label>
-                    <select class="form-control" id="midCategory" onchange="fetchLowerCategories(); toggleCustomInput('midCategory');"></select>
+                    <select class="form-control" id="midCategory" onchange="fetchMidCategories()"></select>
                     <input type="text" class="form-control mt-2" id="midCategoryInput" name="midCategory" style="display:none;" placeholder="직접 입력">
                 </div>
             </div>
+            
             <div class="col-md-3">
                 <div class="form-group">
                     <label for="lowerCategory">최하위 카테고리</label>
-                    <select class="form-control" id="lowerCategory" onchange="toggleCustomInput('lowerCategory');"></select>
+                    <select class="form-control" id="lowerCategory"  onchange="fetchLowerCategories()"></select>
                     <input type="text" class="form-control mt-2" id="lowerCategoryInput" name="lowerCategory" style="display:none;" placeholder="직접 입력">
                 </div>
             </div>
@@ -206,8 +180,21 @@
 </div>
 
 <script>
-var currentPage = 1;
+$(document).ready(function() {
+    $('#saveAllbtn').on('click', function(event) {
+        if (!isIsbnValid) {
+            event.preventDefault();
+            alert('ISBN 유효성 검사를 통과해야 합니다.');
+        } else {
+            saveAll();
+        }
+    });
 
+    //top 카테고리 value가
+    fetchTopCategories();
+});
+
+var currentPage = 1;
 function searchBooks() {
     var $keyword = $('#keyword').val(); 
    
@@ -216,14 +203,19 @@ function searchBooks() {
         type: 'GET', 
         data: { keyword: $keyword, start: currentPage},
         success: result => {
-            console.log(result.object);
             const items = result.object.item; 
-            console.log(items);
+            /*
             let rows = '';
-
             for (let i = 0; i < items.length; i++) {
                 rows += buildBookRow(items[i]);
             }
+            */
+            let rows = items.map(item => {
+                return buildBookRow(item);
+            }).join('');
+            
+            // map 함수로 각 item에 대해 buildBookRow를 적용하고, 반환된 배열을 join 함수로 문자열로 결합
+
             $('#modalBookResults').html(rows);
             $('#bookModal').modal('show'); 
         }
@@ -253,11 +245,11 @@ function buildBookRow(item) {
 
 function closeModal() {
     $('#bookModal').modal('hide');
+    // hide close
 }
 
 function selectBook(tr) {
     var $tr = $(tr);
-    var categories = $tr.data('category').split('>');
     $('#coverPreview').attr('src', $tr.data('cover'));
     $('#title').val($tr.data('title'));
     $('#author').val($tr.data('author'));
@@ -267,30 +259,24 @@ function selectBook(tr) {
     $('#description').val($tr.data('description'));
     $('#price').val($tr.data('price'));
     $('#bookCoverText').val($tr.data('cover'));
-    
-    setCategory('topCategory', categories[0]);
-    setCategory('upperCategory', categories[1]);
-    setCategory('midCategory', categories[2]);
-    setCategory('lowerCategory', categories[3]);
-}
 
-function setCategory(categoryId, categoryValue) {
-    var categorySelect = $('#' + categoryId);
-    var categoryInput = $('#' + categoryId + 'Input');
+    var categories = $tr.data('category').split('>');
+    $('#topCategory').html('<option value="'+categories[0]+'">'+categories[0]+'</option>');
+    $('#topCategory').val(categories[0]);
+    $('#upperCategory').html('<option value="'+categories[1]+'">'+categories[1]+'</option>');
+    $('#upperCategory').val(categories[1]);
+    $('#midCategory').html('<option value="'+categories[2]+'">'+categories[2]+'</option>');
+    $('#midCategory').val(categories[2]);
+    $('#lowerCategory').html('<option value="'+categories[3]+'">'+categories[3]+'</option>');
+    $('#lowerCategory').val(categories[3]);
 
-    if (categorySelect.find('option[value="' + categoryValue + '"]').length > 0) {
-        categorySelect.val(categoryValue).change();
-    } else {
-        categorySelect.val('custom').change();
-        categoryInput.val(categoryValue).show();
-    }
+
 }
 
 var isIsbnValid = false;
 function checkIsbn() {
     var isbn = $('#isbn').val();
     if (!isbn) {
-        $('#isbnFeedback').text('ISBN을 입력해주세요.').css('color', 'red');
         isIsbnValid = false;
         return;
     }
@@ -315,35 +301,36 @@ function checkIsbn() {
     });
 }
 
-$(document).ready(function() {
-    $('#saveAllbtn').on('click', function(event) {
-        if (!isIsbnValid) {
-            event.preventDefault();
-            alert('ISBN 유효성 검사를 통과해야 합니다.');
-        } else {
-            saveAll();
-        }
-    });
 
-    fetchTopCategories();
-});
+
+//String은 직접입력한 내용.
+//no는 선택한 내용.
+if(typeof(topCategory) === 'String')
+
+
+
+
 
 function fetchTopCategories() {
-    $.ajax({
-        url: 'top',
-        type: 'GET',
-        success: response => {
-            $('#topCategory').html('<option value="">선택</option><option value="custom">직접 입력</option>');
-            response.forEach(category => {
-                $('#topCategory').append('<option value="' + category.topCategoryNo + '">' + category.topCategoryName + '</option>');
-            });
-        }
-    });
-    toggleCustomInput('topCategory');
+    //
+    const topCategory = $('#topCategory').val();
+
+        $.ajax({
+            url: 'top',
+            type: 'GET',
+            success: response => {
+                response.forEach(category => {
+                    $('#topCategory').append('<option value="' + category.topCategoryNo + '">' + category.topCategoryName + '</option>');
+                console.log(typeof(category.topCategoryNo));
+                
+                });
+            }
+        });
 }
 
 function fetchUpperCategories(selectedValue) {
     var topCategoryNo = $('#topCategory').val();
+
     if (topCategoryNo && topCategoryNo !== 'custom') {
         $.ajax({
             url: 'upper/' + topCategoryNo,
@@ -427,53 +414,31 @@ let responseData;
 
 //도서 정보와 상세 정보를 순차적으로 저장
 function saveAll() {
-	var topCategory, upperCategory, midCategory, lowerCategory, categoryString;
 
-	// 상위 카테고리 값을 설정
-	if ($('#topCategory').val() === 'custom') {
-	    topCategory = $('#topCategoryInput').val(); // 사용자가 '직접 입력'한 값을 사용
-	} else {
-	    topCategory = $('#topCategory option:selected').text(); // 드롭다운에서 선택된 값을 사용
-	}
 
-	// 중위 카테고리 값을 설정
-	if ($('#upperCategory').val() === 'custom') {
-	    upperCategory = $('#upperCategoryInput').val(); // 사용자가 '직접 입력'한 값을 사용
-	} else {
-	    upperCategory = $('#upperCategory option:selected').text(); // 드롭다운에서 선택된 값을 사용
-	}
 
-	// 하위 카테고리 값을 설정
-	if ($('#midCategory').val() === 'custom') {
-	    midCategory = $('#midCategoryInput').val(); // 사용자가 '직접 입력'한 값을 사용
-	} else {
-	    midCategory = $('#midCategory option:selected').text(); // 드롭다운에서 선택된 값을 사용
-	}
-
-	// 최하위 카테고리 값을 설정
-	if ($('#lowerCategory').val() === 'custom') {
-	    lowerCategory = $('#lowerCategoryInput').val(); // 사용자가 '직접 입력'한 값을 사용
-	} else {
-	    lowerCategory = $('#lowerCategory option:selected').text(); // 드롭다운에서 선택된 값을 사용
-	}
-
-	// 카테고리 문자열을 구성
-	categoryString = topCategory; // 상위 카테고리로 시작
-	if (upperCategory) { // 중위 카테고리가 있다면 추가
-	    categoryString += '>' + upperCategory;
-	}
-	if (midCategory) { // 하위 카테고리가 있다면 추가
-	    categoryString += '>' + midCategory;
-	}
-	if (lowerCategory) { // 최하위 카테고리가 있다면 추가
-	    categoryString += '>' + lowerCategory;
-	}
+    var topCategory = $('#topCategory').val() === 'custom' ? $('#topCategoryInput').val() : $('#topCategory option:selected').text();
+    var upperCategory = $('#upperCategory').val() === 'custom' ? $('#upperCategoryInput').val() : $('#upperCategory option:selected').text();
+    var midCategory = $('#midCategory').val() === 'custom' ? $('#midCategoryInput').val() : $('#midCategory option:selected').text();
+    var lowerCategory = $('#lowerCategory').val() === 'custom' ? $('#lowerCategoryInput').val() : $('#lowerCategory option:selected').text();
+    
+    var categoryString = topCategory;
+    if (upperCategory) categoryString += '>' + upperCategory;
+    if (midCategory) categoryString += '>' + midCategory;
+    if (lowerCategory) categoryString += '>' + lowerCategory;
     
     const $categoryString = $('#categoryString').val(categoryString);
     
+
+
+
+
+
+
+
+
     var bookFormData = new FormData($('#bookForm').get(0));
     bookFormData.append('categoryString',$categoryString);
-    
     $.ajax({
         url: 'saveBook',
         type: 'POST',
@@ -497,7 +462,7 @@ function saveAll() {
 function saveBookDetail() {
     var bookDetailForm = new FormData($('#bookDetailForm').get(0));
     bookDetailForm.append('bookNo', responseData);
-    console.log(responseData);
+ 
     $.ajax({
         url: 'saveBookDetail',
         type: 'POST',
@@ -516,6 +481,8 @@ function saveBookDetail() {
         }
     });
 }
+
+
 
 function previewImage(input) {
     if (input.files && input.files[0]) {
