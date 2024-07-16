@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class NoticeFile {
-	private int noticeNo;
+
 	private String noticeImgOriginName;
 	private String noticeImgChangeName;
 	private String noticeOriginName;

@@ -37,6 +37,5 @@ public interface NoticeService {
 
 			int update(Notice notice);
 
-		//	int update(Notice notice);
 			
 }
