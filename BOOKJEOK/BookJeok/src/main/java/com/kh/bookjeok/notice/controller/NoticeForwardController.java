@@ -16,7 +16,7 @@ public class NoticeForwardController {
 	}
 
 	@PostMapping("noticeForm.do")
-	public String noticeInsert() {
+	public String noticeForm() {
 		return "notice/noticeInsert";
 	}
 	
