@@ -2,6 +2,7 @@ package com.kh.bookjeok.notice.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -10,8 +11,13 @@ public class NoticeForwardController {
 
 
 	@GetMapping("noticeList")
-	public String login() {
+	public String notice() {
 		return "notice/noticeList";
 	}
 
+	@PostMapping("noticeInsert")
+	public String noticeInsert() {
+		return "notice/noticeInsert";
+	}
+	
 }
