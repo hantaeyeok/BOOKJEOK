@@ -26,8 +26,15 @@
 
         .card-container {
             display: flex;
-            gap: 20px; /* 카드 간격 조절 */
+            gap: 40px; /* 카드 간격 조절 */
             margin: auto;
+            flex-wrap: wrap;
+            
+        }
+        
+        .card:hover {
+			transform: scale(1.05);
+			transition: all 0.5s ease-in-out;
         }
 
         .card-title-container {
@@ -47,12 +54,11 @@
             height: 18rem;
         }
 
-        .badge {
+        #badge {
             display: inline-block;
-            padding: 0.25em 0.4em;
+            margin-top: -10px;
             font-size: 75%;
             font-weight: 700;
-            line-height: 1;
             color: #fff;
             text-align: center;
             white-space: nowrap;
@@ -60,6 +66,7 @@
             border-radius: 0.7rem;
             width: 70px;
             height: 25px;
+            line-height: 18px;
         }
 
 
@@ -83,6 +90,10 @@
         #insert-btn {
             float: right;
         }
+        
+        #pagingArea {
+        	width:fit-content; margin:auto;
+        }
 
     </style>
 </head>
@@ -96,46 +107,137 @@
                 <a class="nav-link active" aria-current="page" href="list.clubboard">전체</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">모집중</a>
+                <a class="nav-link" href="list.clubboard?clubStatus=모집중">모집중</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">모집완료</a>
+                <a class="nav-link" href="list.clubboard?clubStatus=모집완료">모집완료</a>
             </li>
         </ul>
 
         <br><br>
         <div class="card-container">
-       		<c:choose>
-        		<c:when test="${totalClubboard.size() == 0 }">
-        			<span style="font-weight:bold; font-size:17px; margin-left:15px;">작성된 글이 없습니다.</span>
-        		</c:when>
-        	</c:choose>
-       		<c:forEach items="${totalClubboard }" var="clubboard">
-        		<div class="card">
+        	<c:choose>
+        		<c:when test="${not empty param.clubStatus}">
         			<c:choose>
-        			<c:when test="${ empty clubboard.clubboardChangename }">
-        				<img src="https://st.kakaocdn.net/shoppingstore/store/20240528180123_b9a6145839c346e3a34304f14163d941.png" class="card-img-top" alt="소개이미지">
-        			</c:when>
-        			<c:otherwise>
-        				<img src="${clubboard.clubboardChangename }" class="card-img-top" alt="소개이미지">
-        			</c:otherwise>
-        			</c:choose>
-	                <hr>
-	                <div class="card-body">
-	                    <div class="card-title-container">
-	                        <p class="card-title">${clubboard.bookclubName }</p>
-	                        <span class="badge recruiting">${clubboard.clubStatus }</span>
-	                    </div>
-	                    <p class="card-text">- 모집인원 : ${clubboard.clubNumber }명</p>
-	                    <p class="card-text">- 작성자 : ${clubboard.userId }</p>
-	                </div>
-	                <div class="card-footer">
-	                    <small class="text-body-secondary">모집기간 : ${clubboard.clubboardDate } ~ ${clubboard.clubPeriod }</small>
-	                </div>
-	            </div>
-            </c:forEach>
+		        		<c:when test="${statusClubboard.size() == 0 }">
+		        			<span style="font-weight:bold; font-size:17px; margin-left:15px;">작성된 글이 없습니다.</span>
+		        		</c:when>
+		        	</c:choose>
+		       		<c:forEach items="${statusClubboard }" var="clubboard">
+		        		<div class="card">
+		        			<c:choose>
+		        			<c:when test="${ empty clubboard.clubboardChangename }">
+		        				<img src="https://st.kakaocdn.net/shoppingstore/store/20240528180123_b9a6145839c346e3a34304f14163d941.png" class="card-img-top" alt="소개이미지">
+		        			</c:when>
+		        			<c:otherwise>
+		        				<img src="${clubboard.clubboardChangename }" class="card-img-top" alt="소개이미지">
+		        			</c:otherwise>
+		        			</c:choose>
+			                <hr>
+			                <div class="card-body">
+			                    <div class="card-title-container">
+			                        <p class="card-title">${clubboard.bookclubName }</p>
+			                        <span class="badge recruiting" id="badge">${clubboard.clubStatus }</span>
+			                    </div>
+			                    <p class="card-text">- 모집인원 : ${clubboard.clubNumber }명</p>
+			                    <p class="card-text">- 작성자 : ${clubboard.userId }</p>
+			                </div>
+			                <div class="card-footer">
+			                    <small class="text-body-secondary">모집기간 : ${clubboard.clubboardDate } ~ ${clubboard.clubPeriod }</small>
+			                </div>
+			            </div>
+		            </c:forEach>
+        		</c:when>
+        		
+        		<c:otherwise>
+        			<c:choose>
+		        		<c:when test="${totalClubboard.size() == 0 }">
+		        			<span style="font-weight:bold; font-size:17px; margin-left:15px;">작성된 글이 없습니다.</span>
+		        		</c:when>
+		        	</c:choose>
+		       		<c:forEach items="${totalClubboard }" var="clubboard">
+		       			<input type="hidden" name="clubboardNo" value="${clubboard.clubboardNo }" >
+		        		<div class="card">
+		        			<c:choose>
+		        			<c:when test="${ empty clubboard.clubboardChangename }">
+		        				<img src="https://st.kakaocdn.net/shoppingstore/store/20240528180123_b9a6145839c346e3a34304f14163d941.png" class="card-img-top" alt="소개이미지">
+		        			</c:when>
+		        			<c:otherwise>
+		        				<img src="${clubboard.clubboardChangename }" class="card-img-top" alt="소개이미지">
+		        			</c:otherwise>
+		        			</c:choose>
+			                <hr>
+			                <div class="card-body">
+			                    <div class="card-title-container">
+			                        <p class="card-title">${clubboard.bookclubName }</p>
+			                        <span class="badge recruiting" id="badge">${clubboard.clubStatus }</span>
+			                    </div>
+			                    <p class="card-text">- 모집인원 : ${clubboard.clubNumber }명</p>
+			                    <p class="card-text">- 작성자 : ${clubboard.userId }</p>
+			                </div>
+			                <div class="card-footer">
+			                    <small class="text-body-secondary">모집기간 : ${clubboard.clubboardDate } ~ ${clubboard.clubPeriod }</small>
+			                	<a class="btn btn-danger" href="delete.clubboard?clubboardNo=${clubboard.clubboardNo }">삭제</a>
+			                </div>
+			            </div>
+		            </c:forEach>
+        		</c:otherwise>
+        	</c:choose>
         </div>
         <br><br>
+        <!-- <a class="btn btn-danger" href="delete.clubboard?clubboardNo=${clubboard.clubboardNo }">삭제</a> -->
+        
+        <script>
+        
+        	$(() => {
+        		
+        		$('.card').click(()=> {
+        			
+        			var clubboardNo = $('[name="clubboardNo"]').val();
+        			
+        			location.href = 'detail.clubboard?clubboardNo=' + clubboardNo ;
+        		})
+        	});
+        	
+        	//const badge = document.getElementId('badge');
+        	
+        </script>
+        
+        <div id="pagingArea">
+			<ul class="pagination">
+				<c:choose>
+					<c:when test="${ '1' eq pageInfo.currentPage }">
+						<li class="page-item disabled">
+							<a class="page-link" href="#">이전</a>
+						</li>
+					</c:when>
+					<c:otherwise>
+						<li class="page-item">
+		                	<a class="page-link" href="list.clubboard?page=${ pageInfo.currentPage - 1 }">이전</a>
+		                </li>
+					</c:otherwise>
+				</c:choose>
+			
+				<c:forEach begin="${ pageInfo.startPage }" end="${ pageInfo.endPage }" var="p">
+					<li class="page-item">
+		                <a class="page-link" href="list.clubboard?page=${ p }">${ p }</a>
+		            </li>
+				</c:forEach>
+				
+				<c:choose>
+					<c:when test="${ pageInfo.maxPage eq pageInfo.currentPage }">
+						<li class="page-item disabled">
+							<a class="page-link" href="#">다음</a>
+						</li>
+					</c:when>
+					<c:otherwise>
+						<li class="page-item">
+	                    	<a class="page-link" href="list.clubboard?page=${ pageInfo.currentPage + 1 }">다음</a>
+	                    </li>
+					</c:otherwise>
+				</c:choose>
+			    </ul>
+			</div>
         
         <br><br>
         <c:if test="${not empty sessionScope.loginUser.userId }">

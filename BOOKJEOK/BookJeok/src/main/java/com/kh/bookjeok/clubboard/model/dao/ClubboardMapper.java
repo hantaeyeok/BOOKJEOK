@@ -18,4 +18,8 @@ public interface ClubboardMapper {
 
 	int insertClubboard(Clubboard clubboard);
 
+	int deleteClubboard(int clubboardNo);
+
+	Clubboard findByNo(int clubboardNo);
+
 }

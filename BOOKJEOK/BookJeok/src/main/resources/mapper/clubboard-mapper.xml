@@ -159,5 +159,27 @@
 			   )
 		
 	</insert>
+	
+	<update id="deleteClubboard" parameterType="_int">
+		UPDATE
+			   CLUBBOARD
+		   SET
+		   	   CLUBBOARD_STATUS = 'N',
+		   	   CLUBBOARD_ORIGINNAME = NULL,
+		   	   CLUBBOARD_CHANGENAME = NULL
+		 WHERE
+		   	   CLUBBOARD_NO = #{clubboardNo}
+	
+	</update>
+	
+	<select id="findByNo" parameterType="_int" resultType="clubboard">
+		<include refid="selectClubboard" />
+		  FROM
+		  	   CLUBBOARD
+		 WHERE
+		  	   CLUBBOARD_NO = #{clubboardNo}
+		   AND
+		  	   CLUBBOARD_STATUS = 'Y'
+	</select>
 
 </mapper>

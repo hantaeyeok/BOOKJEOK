@@ -14,5 +14,9 @@ public interface ClubboardService {
 	List<Clubboard> findByClubStatus(Map<String, Integer> map);
 
 	int insertClubboard(Clubboard clubboard);
+	
+	int deleteClubboard(int clubboardNo);
+
+	Clubboard findByNo(int clubboardNo);
 
 }

@@ -35,4 +35,15 @@ public class ClubboardServiceImpl implements ClubboardService {
 	public int insertClubboard(Clubboard clubboard) {
 		return clubboardMapper.insertClubboard(clubboard);
 	}
+
+	@Override
+	public int deleteClubboard(int clubboardNo) {
+		return clubboardMapper.deleteClubboard(clubboardNo);
+	}
+
+	@Override
+	public Clubboard findByNo(int clubboardNo) {
+		return clubboardMapper.findByNo(clubboardNo);
+	}
+	
 }

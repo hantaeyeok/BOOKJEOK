@@ -1,5 +1,6 @@
 package com.kh.bookjeok.clubboard.controller;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.bookjeok.clubboard.model.service.ClubboardService;
 import com.kh.bookjeok.clubboard.model.vo.Clubboard;
@@ -32,7 +34,8 @@ public class ClubboardController {
 	@GetMapping("list.clubboard")
 	public String list(@RequestParam(value="page", defaultValue="1") int page,
 			   		   Model model,
-			           HttpSession session) {
+			           HttpSession session,
+			           String clubStatus) {
 		
 		int listCount = clubboardService.clubboardCount();
 		//listCount, currentPage, pageLimit, boardLimit
@@ -49,7 +52,8 @@ public class ClubboardController {
 		model.addAttribute("totalClubboard", totalClubboard);
 		model.addAttribute("statusClubboard", statusClubboard);
 		model.addAttribute("pageInfo", pageInfo);
-		
+		model.addAttribute("clubStatus", clubStatus);
+	
 		return "clubboard/clubboard-list";
 	}
 	
@@ -82,6 +86,38 @@ public class ClubboardController {
 			return "redirect:list.clubboard";
 		}
 		
+	}
+	
+	@GetMapping("detail.clubboard")
+	public ModelAndView detailClubboard(int clubboardNo, ModelAndView mv) {
+		
+		Clubboard clubboard = clubboardService.findByNo(clubboardNo);
+		
+		mv.addObject("clubboard", clubboard);
+		mv.setViewName("clubboard/clubboard-detail");
+		
+		return mv;
+	}
+	
+	@GetMapping("delete.clubboard")
+	public String deleteClubboard(int clubboardNo,
+								  Model model,
+								  HttpSession session,
+								  String filePath) {
+		
+		if(clubboardService.deleteClubboard(clubboardNo) > 0) {
+			
+			if(filePath != null && !filePath.equals("")) {
+				
+				new File(session.getServletContext().getRealPath(filePath)).delete();
+			}
+			
+			return "redirect:list.clubboard";
+			
+		} else {
+			
+			return "redirect:list.clubboard";
+		}
 	}
 
 }
