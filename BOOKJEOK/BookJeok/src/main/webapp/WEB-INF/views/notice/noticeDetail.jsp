@@ -34,7 +34,7 @@
     <div class="content">
         <br><br>
         <div class="innerOuter">
-            <h2>게시글 상세보기</h2>
+            <h2> 공지사항 상세보기</h2>
             <br>
 
             <a class="btn btn-secondary" style="float:right;" href="">목록으로</a>

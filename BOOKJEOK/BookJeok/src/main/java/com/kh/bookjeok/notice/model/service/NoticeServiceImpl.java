@@ -64,6 +64,12 @@ public class NoticeServiceImpl implements NoticeService {
 		public int update(Notice notice) {
 			return noticeRepository.update(sqlSession, notice);
 		}
+
+		@Override
+		public int update(NoticeFile noticeFile) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
 	/*	
 		@Override  (수정요망)
 		public List<NoticeFile> selectNoticeFile() {

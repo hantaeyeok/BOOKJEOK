@@ -34,6 +34,9 @@ public interface NoticeService {
 			
 			// 게시글 수정하기
 			int update(NoticeFile noticeFile);
-			
 
+			int update(Notice notice);
+
+		//	int update(Notice notice);
+			
 }

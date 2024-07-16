@@ -25,5 +25,4 @@ public class NoticeForwardController {
 		return "notice/noticeEdit";
 	}
 	
-	
 }
