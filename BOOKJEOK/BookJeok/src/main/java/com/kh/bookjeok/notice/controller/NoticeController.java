@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,7 @@ import com.kh.bookjeok.common.template.PageInfo;
 import com.kh.bookjeok.notice.model.service.NoticeService;
 import com.kh.bookjeok.notice.model.vo.Notice;
 import com.kh.bookjeok.notice.model.vo.NoticeFile;
+import com.kh.bookjeok.template.PageTemplate;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -104,13 +106,207 @@ public class NoticeController {
 	      
 	      return "notice/noticeList";
 	   }
-
+	   
+	   
 	   
 	   
 
+	   //검색기능(조건 조회 + 페이징 처리_)
+	   @GetMapping("search.do")
+	   public String search(String condition,
+	                  String keyword,
+	                  @RequestParam(value="page", defaultValue = "1") int page, Model model) {
+	      
+	      log.info("검색 조건 : {}",condition);
+	      log.info("검색 키워드 : {}",keyword);
+	      
+
+	      Map<String, String> map = new HashMap();
+	      map.put("condition", condition);
+	      map.put("keyword", keyword);
+	      
+	      //검색결과 수
+	      int searchCount = noticeService.searchCount(map);
+	      log.info("검색 조건에 부합하는 행의 수 : {}", searchCount);
+	      int currentPage = page;
+	      int pageLimit = 10;
+	      int boardLimit = 10;
+	      
+        
+	      PageInfo pageInfo = PageTemplate.getPageInfo(searchCount,
+	                                        currentPage,
+	                                        pageLimit,
+	                                        boardLimit);
+	      
+	      
+	      // MyBatis에서 제공하는 >>>RowBounds()<<<
+	      // offset, limit
+	      RowBounds rowBounds = new RowBounds((currentPage - 1) * boardLimit, boardLimit);
+	      
+	      
+	      // MyBatis에서는 페이징 처리를 위해 RowsBounds라는 클래스를 제공
+	      // * offset, limit
+	      
+	      /*
+	       * boardLimit가 3일 경우       건너뛸 숫자(offset)
+	       * 
+	       *  currentPage : 1 -> 1~3 ==> 0
+	       *  currentPage : 2 -> 4~6 ==> 3
+	       *  currentPage : 3 -> 7~9 ==> 6
+	       *  
+	       *  (currentPage() -1) * boardLimit()
+	       */
+	      
+	      List<Notice> noticeList = noticeService.findByConditionAndKeyword(map, rowBounds);
+	      
+	      model.addAttribute("list", noticeList);
+	      model.addAttribute("pageInfo", pageInfo);
+	      model.addAttribute("keyword", keyword);
+	      model.addAttribute("condition", condition);
+	      
+	      return "notice/noticeList";
+	   }
+	   
+/*
+	   @PostMapping("insertForm.do")
+	   public String insert(NoticeFile noticeFile, MultipartFile upfile, HttpSession session, Model model) {   //MultipartFile[] 여러 개의 파일이 배열로 한번에 들어옴
+	      
+	      
+	      if(!upfile.getNoticeOriginalName().equals("")) {
+	         
+	         noticeFile.setNoticeOriginName(upfile.getOriginalFilename());
+	         noticeFile.setNoticeChangeName(saveFile(upfile, session));
+	      }
+	      
+	      
+	      // 첨부파일이 존재하지 않을 경우 notice : 제목 / 내용 /작성자
+	      // 첨부파일이 존재할 경우 notice : 제목 / 내용 /작성자
+	      
+	      if(noticeService.insert(notice) > 0) {
+	         
+	         session.setAttribute("alertMsg", "게시글 작성 성공~");
+	         
+	         // 무조건 리다이렉트 해야함!!!!!
+	         
+	         return "redirect:noticeList";
+	      } else {
+	         
+	         model.addAttribute("errorMsg", "게시글 작성 실패....");
+	         return "common/errorPage";
+	      }
+	      
+
+	      
+//	      return "redirect:/noticeForm.do";
+	      
+
+	      
+
+	   }*/
 	   
 
 
+	   @GetMapping("notice-detail")
+	   public ModelAndView findBynoticeNo(int noticeNo,
+			   							 ModelAndView mv) {
+		   
+
+		   if(noticeService.increaseCount(noticeNo) > 0) {	//count수 증가 성공 시
+
+			   mv.addObject("notice", noticeService.findById(noticeNo))
+			   .setViewName("notice/noticeDetail");
+			   
+		   } else {
+			   mv.addObject("errMsg", "게시글 상세조회에 실패했습니다.").setViewName("common/errorPage");
+		   }
+		   return mv;
+	   }
+	   
+	   
+	   
+	   
+	   
+	   
+
+	   @PostMapping("notice-delete")
+	   public String deleteById(int noticeNo,
+			   					String filePath,
+			   					HttpSession session,
+			   					Model model) {
+		   
+		   if(noticeService.delete(noticeNo) > 0) {
+			   
+			   if(!"".equals(filePath)) {		//filePath는 null일 가능성 O. 따라서 filePath를 기준으로 잡으면 오타 발생 시 nullPointerException이 발생할 가능성이 있다. 따라서 빈 문자열 ""를 기준으로 .equals 비교를 한다면 nullPointerException 오류 발생은 막을 수 있다.
+				   	new File(session.getServletContext().getRealPath(filePath)).delete();
+			   }
+			   
+			   session.setAttribute("alertMsg", "게시물 삭제 성공");
+			   return "redirect:noticeList";
+			   
+		   } else {
+			   model.addAttribute("errorMsg", "게시글 삭제 실패");
+			   return "common/errorPage";
+		   }
+	   }
+	   
+	   @PostMapping("noticeUpdateForm.do")
+	   public ModelAndView updateForm(ModelAndView mv, int noticeNo) {
+		   
+		   mv.addObject("notice", noticeService.findById(noticeNo))
+		   	.setViewName("notice/noticeEdit");
+		   return mv;
+	   }
+	   
+	   @PostMapping("notice-update")
+	   public String update(NoticeFile noticeFile,
+			   				MultipartFile reUpFile,
+			   				HttpSession session) {
+		   
+
+		   if(!reUpFile.getOriginalFilename().equals("")) {	//새로 올린 파일의 원래파일명이 빈문자열과 같지 않다면 = 기존 파일이 존재한다면
+			   
+			   noticeFile.setOriginName(reUpFile.getOriginalFilename());
+			   noticeFile.setChangeName(saveFile(reUpFile, session));
+		   }
+		   
+		   if(noticeService.update(notice) > 0) {
+			   
+			   session.setAttribute("alertMsg", "수정 완료");
+			   return "redirect:notice-detail?noticeNo="+notice.getNoticeNo();
+			   
+		   } else {
+			   
+			   session.setAttribute("errorMsg", "수정 실패");
+			   return "common/errorPage";
+		   }
+	   }
+
+	// changeName 생성 메서드 만들기
+	/*   public String saveFile(MultipartFile upfile, HttpSession session) {
+		   String originName = upfile.getOriginalFilename();
+	       
+	       String ext = originName.substring(originName.lastIndexOf('.'));
+	       //"abc.ddd.txt"
+	       
+	       //math * 숫자는 범위이고 뒤에 + 정수는 시작값 소수점을 버리기 위해 int로 형변환
+	       int num =(int)(Math.random() * 900) + 100;
+	       
+	       String currentTime= new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());         
+	       
+	       String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/");
+	       
+	       String changeName = "BOOKJEOK_" + currentTime + "_" + num + ext;
+	       
+	       try {
+	          upfile.transferTo(new File(savePath + changeName));
+	       } catch (IllegalStateException e) {
+	          e.printStackTrace();
+	       } catch (IOException e) {
+	          e.printStackTrace();
+	       }
+	       
+	       return "resources/uploadFiles/" + changeName;
+	    }*/
 	}
 	   
 	   

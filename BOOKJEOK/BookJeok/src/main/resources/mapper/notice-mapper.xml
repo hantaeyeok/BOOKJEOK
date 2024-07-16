@@ -13,6 +13,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			 FROM
 			      NOTICE
 		</sql>
+		<select id="noticeCount" resultType="_int">
+	
+		SELECT
+			  COUNT(NOTICE_NO)
+		  FROM
+		      NOTICE
+		 WHERE
+		      STATUS = 'Y'	 
+		</select>
 		
 		<select id="findAll" resultType="notice" parameterType="map"	>
 			<include refid="selectNotice"/>
