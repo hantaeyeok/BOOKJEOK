@@ -13,7 +13,11 @@
 		<typeAlias type="com.kh.bookjeok.book.model.vo.LowerCategory" alias="lowerCategory"/>
 		<typeAlias type="com.kh.bookjeok.book.model.vo.MidCategory" alias="midCategory"/>
 		<typeAlias type="com.kh.bookjeok.book.model.vo.UpperCategory" alias="upperCategory"/>
-    <typeAlias type="com.kh.bookjeok.member.model.vo.Member" alias="member"/>
+		<typeAlias type="com.kh.bookjeok.book.model.vo.BookDetail" alias="bookDetail"/>
+    <typeAlias type="com.kh.bookjeok.member.model.vo.Member" alias="member"/>	
+    <typeAlias type="com.kh.bookjeok.book.model.vo.BookReview" alias="bookReview"/>	
+    <typeAlias type="com.kh.bookjeok.book.model.vo.ReviewAvg" alias="reviewAvg"/>	
+    <typeAlias type="com.kh.bookjeok.cart.model.vo.Cart" alias="cart"/>	
     <typeAlias type="com.kh.bookjeok.mypage.model.vo.Payment" alias="payment"/>
     <typeAlias type="com.kh.bookjeok.mypage.model.vo.PaymentPerbook" alias="paymentperbook"/>
     <typeAlias type="com.kh.bookjeok.qna.model.vo.Question" alias="question"/>
@@ -23,6 +27,7 @@
 	<mappers>
 		<mapper resource="/mapper/book-mapper.xml"/>
 		<mapper resource="/mapper/member-mapper.xml"/>
+		<mapper resource="/mapper/cart-mapper.xml"/>
 		<mapper resource="/mapper/payment-mapper.xml"/>
 	</mappers>
 	

@@ -14,9 +14,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BookDetail {
-    private int detailNo;
-    private int bookNo;
-    private String detailImage;
-    private String detailDescription;
+public class ReviewAvg {
+
+    private int rating;
+    private int count;
+    private double percentage;
 }
