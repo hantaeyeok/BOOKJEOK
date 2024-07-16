@@ -64,7 +64,7 @@ public class NoticeServiceImpl implements NoticeService {
 		public int update(Notice notice) {
 			return noticeRepository.update(sqlSession, notice);
 		}
-		
+	/*	
 		@Override  (수정요망)
 		public List<NoticeFile> selectNoticeFile() {
 			return noticeRepository.selectNoticeFile(sqlSession);
@@ -73,5 +73,5 @@ public class NoticeServiceImpl implements NoticeService {
 		@Override (수정요망)
 		public NoticeFile updateNoticeFile(NoticeFile noticeFile) {
 			return noticeRepository.updateNoticeFile(sqlSession, noticeFile);
-		}
+		}*/
 }

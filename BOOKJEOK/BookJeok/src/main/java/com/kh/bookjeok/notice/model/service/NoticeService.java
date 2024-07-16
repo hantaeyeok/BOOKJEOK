@@ -35,10 +35,5 @@ public interface NoticeService {
 			// 게시글 수정하기
 			int update(Notice notice);
 			
-			// 사진 조회하기
-			List<NoticeFile> selectNoticeFile();
-			
-			// 첨부파일 업데이트 하기
-			NoticeFile updateNoticeFile(NoticeFile noticeFile);
 
 }
