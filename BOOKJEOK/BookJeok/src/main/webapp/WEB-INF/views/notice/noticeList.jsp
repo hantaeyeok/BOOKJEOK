@@ -75,12 +75,12 @@
                          </tr>
                       </c:when>
                    </c:choose>
-                    <c:forEach items="${ noticeList }" var="notice">
+                    <c:forEach items="${ notice }" var="notice">
                        <tr class="notice-detail" id="noticeNo-${ notice.noticeNo }">
                           <td>${ notice.noticeNo }</td>
                           <td>${ notice.noticeTitle }</td>
                           <td>${ notice.userID }</td>
-                          <td>${ notice.count }</td>
+                          <td>${ notice.noticeVisited }</td>
                           <td>${ notice.noticeDate }</td>
                           <td>
                              <c:if test="${ not empty notice.originName }">

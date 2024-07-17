@@ -38,8 +38,8 @@ public class NoticeRepository {
 			}
 			
 			// 조회 수 증가
-			public int increaseCount(SqlSessionTemplate sqlSession, int noticeNo) {
-				return sqlSession.update("noticeMapper.increaseCount", noticeNo);
+			public int increaseNoticeVisited(SqlSessionTemplate sqlSession, int noticeNo) {
+				return sqlSession.update("noticeMapper.increaseNoticeVisited", noticeNo);
 			}
 			
 			// 조회 수 증가 후, 게시글 조회
@@ -62,4 +62,6 @@ public class NoticeRepository {
 			public int updateNoticeFile(SqlSessionTemplate sqlSession, NoticeFile noticeFile) {
 				return sqlSession.update("noticeMapper.updatetNoticeFile", noticeFile);
 			}
+
+
 }

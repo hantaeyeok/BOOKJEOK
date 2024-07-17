@@ -24,7 +24,7 @@ public interface NoticeService {
 			int insert(Notice notice);
 			
 			// 조회수 증가
-			int increaseCount(int NoticeNo);
+			int increaseNoticeVisited(int NoticeNo);
 			
 			// 상세조회
 			Notice findById(int noticeNo);

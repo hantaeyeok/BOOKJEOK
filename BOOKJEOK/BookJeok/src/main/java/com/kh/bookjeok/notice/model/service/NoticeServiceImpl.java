@@ -46,8 +46,8 @@ public class NoticeServiceImpl implements NoticeService {
 		}
 		
 		@Override
-		public int increaseCount(int NoticeNo) {
-			return noticeRepository.increaseCount(sqlSession, NoticeNo);
+		public int increaseNoticeVisited(int NoticeNo) {
+			return noticeRepository.increaseNoticeVisited(sqlSession, NoticeNo);
 		}
 		
 		@Override
