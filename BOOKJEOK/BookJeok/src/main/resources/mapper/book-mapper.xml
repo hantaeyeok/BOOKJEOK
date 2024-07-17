@@ -414,8 +414,69 @@
 			BOOK_NO = #{bookNo}
 </select>
 
+<select id="bookByKeyword" resultType="book" parameterType="String">
+SELECT
+		BOOK_NO bookNo,
+		CATEGORY_ID categoryId,
+		BOOK_TITLE bookTitle,
+		BOOK_AUTHOR bookAuthor,
+		BOOK_PUBLISHER bookPublisher,
+		BOOK_PUB_DATE bookPubDate,
+		BOOK_ISBN bookIsbn, 
+		BOOK_PRICE bookPrice,
+		BOOK_DESCRIPTION bookDescription,
+		BOOK_COVER bookCover,
+		BOOK_CREATE_DATE bookCreateDate,
+		BOOK_AMOUNT bookAmount,
+		BOOK_STATUS bookStatus
+FROM
+   		BOOK
+WHERE
+     	BOOK_STATUS = 'Y'
+AND 
+		(BOOK_TITLE LIKE '%' || #{keyword} || '%' OR BOOK_AUTHOR LIKE '%' || #{keyword} || '%')
+</select>
 
 
+<select id="bookCategoryDetail" resultType="bookCategoryDetail" parameterType="String">
+SELECT 
+	    b.BOOK_NO bookNo,
+	    b.BOOK_TITLE bookTitle,
+	    b.BOOK_AUTHOR bookAuthor,
+	    b.BOOK_PUBLISHER bookPublisher,
+	    b.BOOK_PUB_DATE bookPubDate,
+	    b.BOOK_ISBN bookIsbn,
+	    b.BOOK_PRICE bookPrice,
+	    b.BOOK_DESCRIPTION bookDescription,
+	    b.BOOK_COVER bookCover,
+	    b.BOOK_CREATE_DATE bookCreateDate,
+	    b.BOOK_UPDATE_DATE bookUpdateDate,
+	    b.BOOK_AMOUNT bookAmount,
+	    b.BOOK_STATUS bookAmount,
+	    b.CATEGORY_ID categoryId,
+	    t.TOP_CATEGORY_NAME topCategoryName,
+	    u.UPPER_CATEGORY_NAME upperCategoryName,
+	    m.MID_CATEGORY_NAME midCategoryName,
+	    l.LOWER_CATEGORY_NAME lowerCategoryName,
+	    d.DETAIL_NO detailNo,
+	    d.DETAIL_IMAGE detailImage,
+	    d.DETAIL_DESCRIPTION detailDescription
+FROM 
+    	BOOK b
+LEFT JOIN 
+		LOWER_CATEGORY l ON b.CATEGORY_ID = l.LOWER_CATEGORY_NO
+LEFT JOIN 
+		MID_CATEGORY m ON l.MID_CATEGORY_NO = m.MID_CATEGORY_NO
+LEFT JOIN 
+		UPPER_CATEGORY u ON m.UPPER_CATEGORY_NO = u.UPPER_CATEGORY_NO
+LEFT JOIN 
+		TOP_CATEGORY t ON u.TOP_CATEGORY_NO = t.TOP_CATEGORY_NO
+LEFT JOIN 
+		BOOK_DETAIL d ON b.BOOK_NO = d.BOOK_NO
+WHERE
+	(b.BOOK_TITLE LIKE '%' || #{keyword} || '%' OR b.BOOK_AUTHOR LIKE '%' || #{keyword} || '%')
+
+</select>
 
 
 

@@ -13,237 +13,245 @@
 
 <jsp:include page="../common/menubar.jsp" />
 
-<div class="container my-5">
-    <h2>도서 등록 페이지</h2>
-    
-    <!-- Modal -->
-    <div class="modal fade" id="bookModal" tabindex="-1" role="dialog" aria-labelledby="bookModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="bookModalLabel">도서 선택</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- 좌측 메뉴바 -->
+        <jsp:include page="../common/adminMenuBar.jsp"></jsp:include>
+        
+        
+
+        <!-- 메인 콘텐츠 영역 -->
+        <div class="col-md-9">
+
+                <h2>도서 등록 페이지</h2>
+                
+                <!-- Modal -->
+                <div class="modal fade" id="bookModal" tabindex="-1" role="dialog" aria-labelledby="bookModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="bookModalLabel">도서 선택</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>표지</th>
+                                            <th>제목</th>
+                                            <th>저자</th>
+                                            <th>출판사</th>
+                                            <th>ISBN</th>
+                                            <th>선택</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="modalBookResults">
+                                        <!-- 검색 결과 표시 -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" onclick="changePage(-1)">이전</button>
+                                <button type="button" class="btn btn-secondary" onclick="changePage(+1)">다음</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>표지</th>
-                                <th>제목</th>
-                                <th>저자</th>
-                                <th>출판사</th>
-                                <th>ISBN</th>
-                                <th>선택</th>
-                            </tr>
-                        </thead>
-                        <tbody id="modalBookResults">
-                            <!-- 검색 결과 표시 -->
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="changePage(-1)">이전</button>
-                    <button type="button" class="btn btn-secondary" onclick="changePage(+1)">다음</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-                </div>
+                
+                <!-- api 도서 검색창 -->
+                <form class="form-inline my-4">
+                    <input type="text" class="form-control w-50" id="keyword" placeholder="책제목 OR 저자">
+                    <button type="button" class="btn btn-primary" onclick="searchBooks()">검색</button>
+                </form>
+                
+                <!-- 도서 기본 정보 폼 -->
+                <form id="bookForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="bookCover">책 표지:</label>
+                                <select id="coverType">
+                                    <option value="basic" selected>기본값 사용</option>
+                                    <option value="custom">직접 등록</option>
+                                </select>
+                                <br>
+                                <input type="text" class="form-control-file" id="bookCoverText"  name="bookCoverText" style="display: none"/>
+                                <input type="file" class="form-control-file" id="bookCoverFile"  name="bookCoverFile" style="display: none"/>
+                                <img id="coverPreview" src="http://via.placeholder.com/150x150" class="img-fluid" alt="책 표지 미리보기">
+                            </div>
+                        </div>
+                        <script>
+                            document.getElementById('coverType').addEventListener('change', function() {
+                                var coverType = document.getElementById('coverType').value;
+                                var textInput = document.getElementById('bookCoverText');
+                                var fileInput = document.getElementById('bookCoverFile');
+                            
+                                if (coverType === 'basic') {
+                                    textInput.name = 'bookCoverText';
+                                    fileInput.style.display = 'none';
+                                    fileInput.name = '';
+                                } else if (coverType === 'custom') {
+                                    fileInput.style.display = '';
+                                    fileInput.name = 'bookCoverFile';
+                                    textInput.name = '';
+                                }
+                            });
+                            
+                            function previewCoverImage(input) {
+                                if (input.files && input.files[0]) {
+                                    var reader = new FileReader();
+                                    reader.onload = function(e) {
+                                        $('#coverPreview').attr('src', e.target.result);
+                                    }
+                                    reader.readAsDataURL(input.files[0]);
+                                }
+                            }
+                        </script>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="title">책제목</label>
+                                <input type="text" class="form-control" id="title" name="bookTitle" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="author">저자</label>
+                                <input type="text" class="form-control" id="author" name="bookAuthor" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="publisher">출판사</label>
+                                <input type="text" class="form-control" id="publisher" name="bookPublisher" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="pubDate">출판일</label>
+                                <input type="date" class="form-control" id="pubDate" name="bookPubDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="isbn">ISBN</label>
+                                <input type="text" class="form-control" id="isbn" name="bookIsbn" required>
+                                <button type="button" class="btn btn-info mt-2" onclick="checkIsbn()">유효성 검사</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="topCategory">상위 카테고리</label>
+                                <select class="form-control" id="topCategory" onchange="fetchUpperCategories(); toggleCustomInput('topCategory');">
+                                    <option value="">선택</option>
+                                    <option value="custom">직접 입력</option>
+                                </select>
+                                <input type="text" class="form-control mt-2" id="topCategoryInput" name="topCategory" style="display:none;" placeholder="직접 입력">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="upperCategory">중위 카테고리</label>
+                                <select class="form-control" id="upperCategory" onchange="fetchMidCategories(); toggleCustomInput('upperCategory');"></select>
+                                <input type="text" class="form-control mt-2" id="upperCategoryInput" name="upperCategory" style="display:none;" placeholder="직접 입력">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="midCategory">하위 카테고리</label>
+                                <select class="form-control" id="midCategory" onchange="fetchLowerCategories(); toggleCustomInput('midCategory');"></select>
+                                <input type="text" class="form-control mt-2" id="midCategoryInput" name="midCategory" style="display:none;" placeholder="직접 입력">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="lowerCategory">최하위 카테고리</label>
+                                <select class="form-control" id="lowerCategory" onchange="toggleCustomInput('lowerCategory');"></select>
+                                <input type="text" class="form-control mt-2" id="lowerCategoryInput" name="lowerCategory" style="display:none;" placeholder="직접 입력">
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="categoryString" name="categoryString">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="price">가격</label>
+                                <input type="number" class="form-control" id="price" name="bookPrice" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="stock">재고</label>
+                                <input type="number" class="form-control" id="stock" name="bookAmount" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="description">책 설명</label>
+                                <textarea class="form-control" id="description" name="bookDescription" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="submitBookForm()" style="display: none">도서 정보 저장</button>
+                </form>
+            
+                <!-- 도서 상세 정보 표시 -->
+                <form id="bookDetailForm">
+                    <input type="hidden" id="bookNo" name="bookNo">
+                    <div class="form-group">
+                        <label for="detailImage">상세설명 이미지 추가</label>
+                        <input type="file" class="form-control" id="detailImage" name="detailImage" onchange="previewImage(this, 'imagePreview')">
+                        <div class="image-preview" id="imagePreview">
+                            <img src="" alt="상세 설명 이미지" style="max-height: 300px;">
+                            <span>이미지 없음</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="detailDescription">상세 설명</label>
+                            <textarea class="form-control" id="detailDescription" name="detailDescription" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="display: none">도서 등록 및 상세 정보 저장</button>
+                </form>
+                <button class="btn btn-primary" id="saveAllbtn">도서 등록 및 상세 정보 저장</button>
             </div>
         </div>
     </div>
-    
-    <!-- api 도서 검색창 -->
-    <form class="form-inline my-4">
-        <input type="text" class="form-control w-50" id="keyword" placeholder="책제목 OR 저자">
-        <button type="button" class="btn btn-primary" onclick="searchBooks()">검색</button>
-    </form>
-    
-    <!-- 도서 기본 정보 폼 -->
-    <form id="bookForm">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="bookCover">책 표지:</label>
-                    <select id="coverType">
-                        <option value="basic" selected>기본값 사용</option>
-                        <option value="custom">직접 등록</option>
-                    </select>
-                    <br>
-                    <input type="text" class="form-control-file" id="bookCoverText"  name="bookCoverText" style="display: none"/>
-                    <input type="file" class="form-control-file" id="bookCoverFile"  name="bookCoverFile" style="display: none"/>
-                    <img id="coverPreview" src="http://via.placeholder.com/150x150" class="img-fluid" alt="책 표지 미리보기">
-                </div>
-            </div>
-            <script>
-				document.getElementById('coverType').addEventListener('change', function() {
-				    var coverType = document.getElementById('coverType').value;
-				    var textInput = document.getElementById('bookCoverText');
-				    var fileInput = document.getElementById('bookCoverFile');
-				
-				    if (coverType === 'basic') {
-				        textInput.name = 'bookCoverText';
-				        fileInput.style.display = 'none';
-				        fileInput.name = '';
-				    } else if (coverType === 'custom') {
-				        fileInput.style.display = '';
-				        fileInput.name = 'bookCoverFile';
-				        textInput.name = '';
-				    }
-				});
-				
-				function previewCoverImage(input) {
-				    if (input.files && input.files[0]) {
-				        var reader = new FileReader();
-				        reader.onload = function(e) {
-				            $('#coverPreview').attr('src', e.target.result);
-				        }
-				        reader.readAsDataURL(input.files[0]);
-				    }
-				}
-            </script>
-            
-            
-            
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="title">책제목</label>
-                    <input type="text" class="form-control" id="title" name="bookTitle" required>
-                </div>
-                <div class="form-group">
-                    <label for="author">저자</label>
-                    <input type="text" class="form-control" id="author" name="bookAuthor" required>
-                </div>
-                <div class="form-group">
-                    <label for="publisher">출판사</label>
-                    <input type="text" class="form-control" id="publisher" name="bookPublisher" required>
-                </div>
-                <div class="form-group">
-                    <label for="pubDate">출판일</label>
-                    <input type="date" class="form-control" id="pubDate" name="bookPubDate" required>
-                </div>
-                <div class="form-group">
-                    <label for="isbn">ISBN</label>
-                    <input type="text" class="form-control" id="isbn" name="bookIsbn" required>
-                    <button type="button" class="btn btn-info mt-2" onclick="checkIsbn()">유효성 검사</button>
-                </div>
-            </div>
-        </div>
 
 
-        <div class="row">
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label for="topCategory">상위 카테고리</label>
-                    <select class="form-control" id="topCategory" onchange="fetchTopCategories()">
-                    
-                    </select>
-                    <input type="text" class="form-control mt-2" id="topCategoryInput" name="topCategory" style="display:none;" placeholder="직접 입력">
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label for="upperCategory">중위 카테고리</label>
-                    <select class="form-control" id="upperCategory" onchange="fetchUpperCategories()"></select>
-                    <input type="text" class="form-control mt-2" id="upperCategoryInput" name="upperCategory" style="display:none;" placeholder="직접 입력">
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label for="midCategory">하위 카테고리</label>
-                    <select class="form-control" id="midCategory" onchange="fetchMidCategories()"></select>
-                    <input type="text" class="form-control mt-2" id="midCategoryInput" name="midCategory" style="display:none;" placeholder="직접 입력">
-                </div>
-            </div>
-            
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label for="lowerCategory">최하위 카테고리</label>
-                    <select class="form-control" id="lowerCategory"  onchange="fetchLowerCategories()"></select>
-                    <input type="text" class="form-control mt-2" id="lowerCategoryInput" name="lowerCategory" style="display:none;" placeholder="직접 입력">
-                </div>
-            </div>
-        </div>
-        <input type="hidden" id="categoryString" name="categoryString">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="price">가격</label>
-                    <input type="number" class="form-control" id="price" name="bookPrice" required>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="stock">재고</label>
-                    <input type="number" class="form-control" id="stock" name="bookAmount" required>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label for="description">책 설명</label>
-                    <textarea class="form-control" id="description" name="bookDescription" rows="3"></textarea>
-                </div>
-            </div>
-        </div>
-        <button type="button" class="btn btn-primary" onclick="submitBookForm()" style="display: none">도서 정보 저장</button>
-    </form>
 
-    <!-- 도서 상세 정보 표시 -->
-    <form id="bookDetailForm">
-        <input type="hidden" id="bookNo" name="bookNo">
-        <div class="form-group">
-            <label for="detailImage">상세설명 이미지 추가</label>
-            <input type="file" class="form-control" id="detailImage" name="detailImage" onchange="previewImage(this, 'imagePreview')">
-            <div class="image-preview" id="imagePreview">
-                <img src="" alt="상세 설명 이미지" style="max-height: 300px;">
-                <span>이미지 없음</span>
-            </div>
-            <div class="form-group">
-                <label for="detailDescription">상세 설명</label>
-                <textarea class="form-control" id="detailDescription" name="detailDescription" rows="3"></textarea>
-            </div>
-        </div>
-        <button type="submit" class="btn btn-primary" style="display: none">도서 등록 및 상세 정보 저장</button>
-    </form>
-    <button class="btn btn-primary" id="saveAllbtn">도서 등록 및 상세 정보 저장</button>
-</div>
+
 
 <script>
-$(document).ready(function() {
-    $('#saveAllbtn').on('click', function(event) {
-        if (!isIsbnValid) {
-            event.preventDefault();
-            alert('ISBN 유효성 검사를 통과해야 합니다.');
-        } else {
-            saveAll();
-        }
-    });
-
-    
-    if(($('#topCategory').val())==null){
-    	fetchTopCategories();	
-    }
-    	
-    
-});
-
 var currentPage = 1;
+
 function searchBooks() {
     var $keyword = $('#keyword').val(); 
+   
     $.ajax({
         url: '/bookjeok/api',
         type: 'GET', 
         data: { keyword: $keyword, start: currentPage},
         success: result => {
+            console.log(result.object);
             const items = result.object.item; 
-            let rows = items.map(item => {
-                return buildBookRow(item);
-            }).join('');
+            console.log(items);
+            let rows = '';
+
+            for (let i = 0; i < items.length; i++) {
+                rows += buildBookRow(items[i]);
+            }
             $('#modalBookResults').html(rows);
             $('#bookModal').modal('show'); 
         }
     });
+}
+
+function changePage(delta) {
+    currentPage += delta;
+    if (currentPage < 1) {
+        currentPage = 1;
+    }
+    searchBooks();
 }
 
 function buildBookRow(item) {
@@ -273,6 +281,7 @@ function closeModal() {
 
 function selectBook(tr) {
     var $tr = $(tr);
+    var categories = $tr.data('category').split('>');
     $('#coverPreview').attr('src', $tr.data('cover'));
     $('#title').val($tr.data('title'));
     $('#author').val($tr.data('author'));
@@ -282,15 +291,11 @@ function selectBook(tr) {
     $('#description').val($tr.data('description'));
     $('#price').val($tr.data('price'));
     $('#bookCoverText').val($tr.data('cover'));
-
-    // 카테고리 정보 추출 및 처리
-    var categories = $tr.data('category').split('>');
+    
     setCategory('topCategory', categories[0]);
     setCategory('upperCategory', categories[1]);
     setCategory('midCategory', categories[2]);
     setCategory('lowerCategory', categories[3]);
-
-    $('#bookModal').modal('hide');
 }
 
 function setCategory(categoryId, categoryValue) {
@@ -309,6 +314,7 @@ var isIsbnValid = false;
 function checkIsbn() {
     var isbn = $('#isbn').val();
     if (!isbn) {
+        $('#isbnFeedback').text('ISBN을 입력해주세요.').css('color', 'red');
         isIsbnValid = false;
         return;
     }
@@ -333,6 +339,18 @@ function checkIsbn() {
     });
 }
 
+$(document).ready(function() {
+    $('#saveAllbtn').on('click', function(event) {
+        if (!isIsbnValid) {
+            event.preventDefault();
+            alert('ISBN 유효성 검사를 통과해야 합니다.');
+        } else {
+            saveAll();
+        }
+    });
+
+    fetchTopCategories();
+});
 
 function fetchTopCategories() {
     $.ajax({
@@ -345,11 +363,12 @@ function fetchTopCategories() {
             });
         }
     });
+    toggleCustomInput('topCategory');
 }
 
 function fetchUpperCategories(selectedValue) {
     var topCategoryNo = $('#topCategory').val();
-    if (topCategoryNo !== 'custom') {
+    if (topCategoryNo && topCategoryNo !== 'custom') {
         $.ajax({
             url: 'upper/' + topCategoryNo,
             type: 'GET',
@@ -371,7 +390,7 @@ function fetchUpperCategories(selectedValue) {
 
 function fetchMidCategories(selectedValue) {
     var upperCategoryNo = $('#upperCategory').val();
-    if (upperCategoryNo !== 'custom') {
+    if (upperCategoryNo && upperCategoryNo !== 'custom') {
         $.ajax({
             url: 'mid/' + upperCategoryNo,
             type: 'GET',
@@ -393,7 +412,7 @@ function fetchMidCategories(selectedValue) {
 
 function fetchLowerCategories(selectedValue) {
     var midCategoryNo = $('#midCategory').val();
-    if (midCategoryNo !== 'custom') {
+    if (midCategoryNo && midCategoryNo !== 'custom') {
         $.ajax({
             url: 'lower/' + midCategoryNo,
             type: 'GET',
@@ -414,20 +433,19 @@ function fetchLowerCategories(selectedValue) {
 }
 
 function toggleCustomInput(categoryLevel) {
-    var selectElement = $('#' + categoryLevel); // 해당 카테고리의 선택 요소를 가져온다.
-    var inputElement = $('#' + categoryLevel + 'Input'); // 해당 카테고리의 입력 요소를 가져온다.
+    var selectElement = $('#' + categoryLevel);
+    var inputElement = $('#' + categoryLevel + 'Input');
 
-    if (selectElement.val() === 'custom') { // '직접 입력'이 선택된 경우
+    if (selectElement.val() === 'custom') {
         inputElement.show();
-        inputElement.attr('name', categoryLevel); // 입력 필드의 name 속성을 설정
-        selectElement.attr('name', ''); // 선택 요소의 name 속성을 제거
+        inputElement.attr('name', categoryLevel);
+        selectElement.attr('name', '');
     } else {
-        inputElement.hide(); 
-        inputElement.attr('name', ''); 
-        selectElement.attr('name', categoryLevel); 
+        inputElement.hide();
+        inputElement.attr('name', '');
+        selectElement.attr('name', categoryLevel);
     }
 }
-
 
 let responseData;
 
@@ -474,8 +492,8 @@ function saveAll() {
 	if (lowerCategory) { // 최하위 카테고리가 있다면 추가
 	    categoryString += '>' + lowerCategory;
 	}
+    
     const $categoryString = $('#categoryString').val(categoryString);
-
     var bookFormData = new FormData($('#bookForm').get(0));
     bookFormData.append('categoryString',$categoryString);
     
@@ -502,7 +520,7 @@ function saveAll() {
 function saveBookDetail() {
     var bookDetailForm = new FormData($('#bookDetailForm').get(0));
     bookDetailForm.append('bookNo', responseData);
- 
+    console.log(responseData);
     $.ajax({
         url: 'saveBookDetail',
         type: 'POST',
@@ -521,8 +539,6 @@ function saveBookDetail() {
         }
     });
 }
-
-
 
 function previewImage(input) {
     if (input.files && input.files[0]) {

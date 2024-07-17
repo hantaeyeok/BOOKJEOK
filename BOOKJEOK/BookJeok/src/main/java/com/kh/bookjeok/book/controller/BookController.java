@@ -3,7 +3,6 @@ package com.kh.bookjeok.book.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 
@@ -20,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.kh.bookjeok.book.model.service.BookCategoryService;
 import com.kh.bookjeok.book.model.service.BookService;
 import com.kh.bookjeok.book.model.vo.Book;
+import com.kh.bookjeok.book.model.vo.BookCategoryDetail;
 import com.kh.bookjeok.book.model.vo.BookDetail;
 import com.kh.bookjeok.book.model.vo.BookReview;
 import com.kh.bookjeok.book.model.vo.LowerCategory;
@@ -46,6 +46,7 @@ public class BookController {
 	
 	@GetMapping("isbnCheck")
 	public ResponseEntity<Message> isbnCheck(String isbn) {
+		
 		log.info("isbn : {}",isbn);
 		int response = bookService.isbnCheck(isbn);
 		if(response == 0) {
@@ -61,56 +62,51 @@ public class BookController {
                                          .build();
             return ResponseEntity.status(HttpStatus.OK).body(responseMsg);
         }
-		
 	}
 
 	@PostMapping("saveBook")
-	public ResponseEntity<Message> saveBook(
-	        Book book,
-	        @RequestParam(required = false) String bookCoverText,
-	        @RequestParam(required = false) MultipartFile bookCoverFile,
-	        @RequestParam String categoryString,
-	        HttpSession session) {
-		
-	if(bookCoverFile != null && !bookCoverFile.isEmpty()) { //파일로 들어올 때 
-		String coverPath = fileUploadService.saveFile(bookCoverFile, session);
-		book.setBookCover(coverPath);
-	} else if (bookCoverText != null && !bookCoverText.isEmpty()) { // 경로로 들어올 때
-		book.setBookCover(bookCoverText); 
-	} else {
-		log.info("북 커버가 없어서 기본 이미지 넣어요");
-		book.setBookCover("bookbook.jpg");
-	}
-	        
-	// 카테고리 저장 및 ID 반환
-	Integer categoryId = bookCategoryService.saveCategory(categoryString);
-	book.setCategoryId(categoryId);
-	String bookIsbn = book.getBookIsbn();
-	//saveBook
-	int result = bookService.saveBook(book);
-	if (result > 0) {
-	    //도서 저장 성공 시, 도서 ID 반환
-		Book newBook = bookService.isbnSelect(bookIsbn);
-
-		Message responsMsg = Message.builder()
-									.data(newBook.getBookNo())
-									.message("도서 저장 성공")
-									.build();
-		return ResponseEntity.status(HttpStatus.OK).body(responsMsg);
-	} else {
-		return 	ResponseEntity.status(HttpStatus.OK).body(Message.builder()
-																.message("도서 저장 실패")
-																.build());
+	public ResponseEntity<Message> saveBook(Book book,
+									        @RequestParam(required = false) String bookCoverText,
+									        @RequestParam(required = false) MultipartFile bookCoverFile,
+									        @RequestParam String categoryString,
+									        HttpSession session) {
+		if(bookCoverFile != null && !bookCoverFile.isEmpty()) { //파일로 들어올 때 
+			String coverPath = fileUploadService.saveFile(bookCoverFile, session);
+			book.setBookCover(coverPath);
+		} else if (bookCoverText != null && !bookCoverText.isEmpty()) { // 경로로 들어올 때
+			book.setBookCover(bookCoverText); 
+		} else {
+			log.info("북 커버가 없어서 기본 이미지 넣어요");
+			book.setBookCover("bookbook.jpg");
 		}
+	        
+		// 카테고리 저장 및 ID 반환
+		Integer categoryId = bookCategoryService.saveCategory(categoryString);
+		book.setCategoryId(categoryId);
+		String bookIsbn = book.getBookIsbn();
+		
+		int result = bookService.saveBook(book);//saveBook
+		if (result > 0) {
+		    //도서 저장 성공 시, 도서 ID 반환
+			Book newBook = bookService.isbnSelect(bookIsbn);
+	
+			Message responsMsg = Message.builder()
+										.data(newBook.getBookNo())
+										.message("도서 저장 성공")
+										.build();
+			return ResponseEntity.status(HttpStatus.OK).body(responsMsg);
+		} else {
+			return 	ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+																	.message("도서 저장 실패")
+																	.build());
+			}
 	}
 
 	@PostMapping("saveBookDetail")
-	public ResponseEntity<Message> saveBookDetail(
-				@RequestParam("bookNo") int bookNo,
-				@RequestParam(required = false) MultipartFile detailImage,
-				@RequestParam(required = false) String detailDescription,
-				HttpSession session
-				){
+	public ResponseEntity<Message> saveBookDetail(@RequestParam("bookNo") int bookNo,
+												  @RequestParam(required = false) MultipartFile detailImage,
+												  @RequestParam(required = false) String detailDescription,
+												  HttpSession session){
 		//번호저장
 		BookDetail bookDetail = new BookDetail();
 		bookDetail.setBookNo(bookNo);
@@ -129,7 +125,6 @@ public class BookController {
 			bookDetail.setDetailDescription(detailDescription);
 		}
 		
-		
 		int result = bookService.saveBookDetail(bookDetail);
 		if(result > 0) {
 			return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
@@ -141,40 +136,16 @@ public class BookController {
 													.build());
 		}
 	}
-	
-	
+		
 	@GetMapping("search")
 	public List<Book> keywordByBook(String bookKeyword) {
 		return bookService.keywrodByBook(bookKeyword);
 	}
-	
-	
+		
 	@GetMapping("top")
 	public List<TopCategory> topCategoryAll(){
 		return bookService.topCategoryAll();
 	}
-	/*
-	@GetMapping("upper/{topCategoryNo}")
-	public List<UpperCategory> upperCategoryBytopNo(@PathVariable int topCategoryNo){
-		Integer topCategoryNoInteger = (Integer) topCategoryNo;
-		List<UpperCategory> category = bookService.upperCategoryBytopNo(topCategoryNoInteger);
-		return category;
-	}
-	
-	@GetMapping("mid/{upperCategoryNo}")
-	public List<MidCategory> midCategoryByupperNo(@PathVariable int upperCategoryNo){
-		Integer upperCategoryNoInteger = (Integer) upperCategoryNo;
-		List<MidCategory> category = bookService.midCategoryByupperNo(upperCategoryNoInteger);
-		return category;
-	}
-	
-	@GetMapping("lower/{midCategoryNo}")
-	public List<LowerCategory> lowerCategoryBymidCategoryNo(@PathVariable int midCategory){
-		Integer midCategoryNoInteger = (Integer) midCategory;
-		List<LowerCategory> category = bookService.lowerCategoryBymidCategoryNo(midCategoryNoInteger);
-		return category;
-	}
-	*/
 	
 	@GetMapping("upper/{topCategoryNo}")
 	public List<UpperCategory> upperCategoryBytopNo(@PathVariable("topCategoryNo") int topCategoryNo){
@@ -193,36 +164,36 @@ public class BookController {
 	
 	
 	//
-	 @PostMapping("review")
-	    public ResponseEntity<Message> saveReview(
-	            @RequestParam int bookNo,
-	            @RequestParam String userId,
-	            @RequestParam String reviewContext,
-	            @RequestParam int reviewRating) {
-	        BookReview review = BookReview.builder()
-	                .bookNo(bookNo)
-	                .userId(userId)
-	                .reviewContext(reviewContext)
-	                .reviewRating(reviewRating)
-	                .build();
+	@PostMapping("review")
+	public ResponseEntity<Message> saveReview(@RequestParam int bookNo,
+										       @RequestParam String userId,
+										       @RequestParam String reviewContext,
+										       @RequestParam int reviewRating) {     
+		 
+		 BookReview review = BookReview.builder()
+						               .bookNo(bookNo)
+						               .userId(userId)
+						               .reviewContext(reviewContext)
+						               .reviewRating(reviewRating)
+						               .build();
 
-	        int result = bookService.saveReview(review);
-	        if (result > 0) {
-	            Message responseMsg = Message.builder()
-	                    .message("리뷰 등록 성공")
-	                    .data(review)
-	                    .build();
-	            return ResponseEntity.status(HttpStatus.OK).body(responseMsg);
-	        } else {
-	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder()
-	                    .message("리뷰 등록 실패")
-	                    .build());
-	        }
-	    }
+        int result = bookService.saveReview(review);
+        if (result > 0) {
+            Message responseMsg = Message.builder()
+                    .message("리뷰 등록 성공")
+                    .data(review)
+                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(responseMsg);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder()
+                    .message("리뷰 등록 실패")
+                    .build());
+        }
+    }
 	 
 	 
 	 @GetMapping("reviews/{bookNo}")
-	    public ResponseEntity<Message> getReviews(@PathVariable int bookNo,
+	 public ResponseEntity<Message> getReviews(@PathVariable int bookNo,
 	                                              @RequestParam(required = false, defaultValue = "1") int page,
 	                                              @RequestParam(required = false, defaultValue = "10") int pageSize,
 	                                              @RequestParam(required = false, defaultValue = "latest") String sortBy) {
@@ -238,6 +209,9 @@ public class BookController {
 
 	        int start = pageInfo.getStartValue();
 	        int end = Math.min(pageInfo.getEndValue(), totalReviews);
+	        //indexOutofBoundsExcetion : 리스트의 크기를 벗어나는 경우에 발생
+			//조치사항 Math.min함수사용 최대크기 초과하지 않도록 조정
+	        System.out.println(start);
 	        List<BookReview> paginatedReviews = allReviews.subList(start, end);
 
 	        // 응답 메시지 구성
@@ -295,6 +269,38 @@ public class BookController {
 	                .build();
             return ResponseEntity.status(HttpStatus.OK).body(responseMsg);
 	    }
-	
+
+	 @GetMapping("update")
+	 public ResponseEntity<Message> selectBookAndBookDetailByKeyword(
+			 @RequestParam(required = false, defaultValue = "1") int page,
+		        @RequestParam String keyword){
+		 System.out.println(page);
+		 System.out.println(keyword);
+		 //페이징 처리
+		 List<BookCategoryDetail> bookList = bookService.bookCategoryDetail(keyword);
+		 
+		 int pageLimit = 10;
+		 int pageSize = 5;
+		 int totalBooks = bookList.size();
+		 PageInfo pageInfo = PageInfo.getPageInfo(totalBooks, page, pageLimit, pageSize);
+		 int start = pageInfo.getStartValue();
+		 int end = Math.min(pageInfo.getEndValue(),totalBooks);
+		
+		 List<BookCategoryDetail> paginatedBook = bookList.subList(start, end);
+		 
+		 System.out.println(start);
+		 System.out.println(end);
+		 
+		 Message responsMsg = Message.builder()
+				 					 .data(paginatedBook)
+				 					 .message("성공")
+				 					 .build();
+		 return ResponseEntity.status(HttpStatus.OK).body(responsMsg);
+	 }
+	 
+	 //모달띄우기
+	 //bookNo로
+	 
+
 	
 }

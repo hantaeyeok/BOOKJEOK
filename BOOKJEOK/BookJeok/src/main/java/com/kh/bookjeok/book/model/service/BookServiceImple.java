@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.kh.bookjeok.book.model.dao.BookMapper;
 import com.kh.bookjeok.book.model.vo.Book;
+import com.kh.bookjeok.book.model.vo.BookCategoryDetail;
 import com.kh.bookjeok.book.model.vo.BookDetail;
 import com.kh.bookjeok.book.model.vo.BookReview;
 import com.kh.bookjeok.book.model.vo.LowerCategory;
@@ -106,6 +107,16 @@ public class BookServiceImple implements BookService{
 	@Override
 	public int getBookPrice(int bookNo) {
 		return bookMapper.getBookPrice(bookNo);
+	}
+
+	@Override
+	public List<Book> bookByKeyword(String keyword) {
+		return bookMapper.bookByKeyword(keyword);
+	}
+
+	@Override
+	public List<BookCategoryDetail> bookCategoryDetail(String keyword) {
+		return bookMapper.bookCategoryDetail(keyword);
 	}
 	
 	

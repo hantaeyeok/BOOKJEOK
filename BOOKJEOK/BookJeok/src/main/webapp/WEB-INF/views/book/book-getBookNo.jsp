@@ -7,11 +7,6 @@
 <head>
     <meta charset="UTF-8">
     <title>상품 상세 페이지</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
     <style>
         .sticky-top {
             top: 0;
@@ -251,7 +246,6 @@
                     $('#review-list-container').append('<div class="list-group-item">리뷰가 없습니다.</div>');
                 }
 
-                // 페이지네이션 업데이트
                 updatePagination(pageInfo);
             },
             error: function() {

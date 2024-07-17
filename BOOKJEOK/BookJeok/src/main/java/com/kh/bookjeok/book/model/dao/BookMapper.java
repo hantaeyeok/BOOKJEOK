@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.kh.bookjeok.book.model.vo.Book;
+import com.kh.bookjeok.book.model.vo.BookCategoryDetail;
 import com.kh.bookjeok.book.model.vo.BookDetail;
 import com.kh.bookjeok.book.model.vo.BookReview;
 import com.kh.bookjeok.book.model.vo.LowerCategory;
@@ -63,5 +64,9 @@ public interface BookMapper {
 	int countReviews(int bookNo);
 	
 	List<BookReview> selectBookReviewByBookNo(Map<String, Object> params);
+	
+	List<Book> bookByKeyword(String keyword);
+	
+	List<BookCategoryDetail> bookCategoryDetail(String keyword);
 	
 }

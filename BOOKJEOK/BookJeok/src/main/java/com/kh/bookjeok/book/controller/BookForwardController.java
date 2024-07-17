@@ -39,4 +39,9 @@ public class BookForwardController {
 		model.addAttribute("bookReview",bookService.selectBookReviewBybookNo(bookNo));
 		return "book/book-getBookNo";
 	}
+	
+	@GetMapping("upup")
+	public String updateBook() {
+		return "book/book-update";
+	}
 }

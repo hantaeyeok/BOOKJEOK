@@ -12,7 +12,10 @@
 <body>
 
 <jsp:include page="../common/menubar.jsp" />
+<jsp:include page="../common/adminMenuBar.jsp"></jsp:include>
 
+
+<br/>
 <div class="container my-5">
     <h2>도서 등록 페이지</h2>
     
