@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="noticeMapper">
+<mapper namespace="com.kh.bookjeok.notice.model.dao.NoticeMapper">
 			<sql id="selectNotice">
 			SELECT
 			 	  NOTICE_NO noticeNo,
@@ -14,7 +14,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			      NOTICE
 		</sql>
 		<select id="noticeCount" resultType="_int">
-	
 		SELECT
 			  COUNT(NOTICE_NO)
 		  FROM
@@ -127,7 +126,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</update>
 		
 		<select id="findById" parameterType="_int" resultType="notice">
-			<include refid="selectnotice" />
+			<include refid="selectNotice" />
 			 FROM
 				  NOTICE
 			WHERE
@@ -195,22 +194,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				
 		</select>
 
-		<resultMap id="noticeResultSet" type="notice">
-		   <id     column="NOTICE_NO"      property="noticeNo" />
-		   <result column="NOTICE_TITLE"   property="noticeTitle" />
-		   <result column="NOTICE_CONTENT" property="noticeContent" />
-		   <result column="NOTICE_WRITER"  property="noticeWriter" />
-		   <result column="NOTICE_VISITED"         property="noticeVisited" />
-		
-		   <result column="NOTICE_DATE" property="noticeDate" />
-		   <collection resultMap="noticeFileResultSet" property="noticeFileList" />
-		</resultMap>
-		<resultMap id="noticeFileResultSet" type="noticeFile">
-			<id     column="NOTICE_NO"        property="noticeNo" />
-		   <result column="NOTICE_IMG_ORIGINNAME"   property="noticeImgOriginName" />
-		   <result column="NOTICE_IMG_CHANGENAME"   property="noticeImgChangeName" />
-		   <result column="NOTICE_ORIGINNAME"   property="noticeOriginName" />
-		   <result column="NOTICE_CHANGENAME"   property="noticeChangeName" />
-		</resultMap>
+
 
 </mapper>
