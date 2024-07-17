@@ -1,6 +1,7 @@
 package com.kh.bookjeok.member.model.service;
 
 import com.kh.bookjeok.member.model.vo.Member;
+import com.kh.bookjeok.member.model.vo.PwResetKey;
 
 
 
@@ -26,6 +27,10 @@ public interface MemberService {
 	int emailCheck(String emailCheck);
 
 	Member getMemberByEmail(Member member);
+
+	int pwdResetKeyInsert(PwResetKey pwResetKey);
+	PwResetKey pwdResetKeySelectOne(PwResetKey pwResetKey);
+	int pwdResetKeyDelete(PwResetKey pwResetKey);
 
 	
 }

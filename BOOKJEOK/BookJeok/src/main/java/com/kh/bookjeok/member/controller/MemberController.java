@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.kh.bookjeok.common.model.Message;
 import com.kh.bookjeok.member.model.service.MemberService;
 import com.kh.bookjeok.member.model.vo.Member;
+import com.kh.bookjeok.member.model.vo.PwResetKey;
 
 import lombok.RequiredArgsConstructor;
 
@@ -74,14 +75,30 @@ public class MemberController {
 			helper = new MimeMessageHelper(message, false, "UTF-8");
 			Member memberFind=memberService.getMemberByEmail(member);
 			if (memberFind!=null && member.getUserId().equals(memberFind.getUserId())) {
-				helper.setSubject("북적북적 - 아이디 찾기");
-				helper.setText("<h1>아이디 찾기</h1><p>회원님의 아이디는</p><h3>"+memberFind.getUserId()+"</h3><p>입니다.</p>",true);
-				helper.setTo(memberFind.getEmail());
-				sender.send(message);
-				return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
-																		.data("success")
-																	    .message("데이터 전송완료")
-																	    .build());
+				String code = bCryptPasswordEncoder.encode(memberFind.getUserName());
+				PwResetKey pwResetKey = PwResetKey.builder()
+												  .userId(memberFind.getUserId())
+												  .code(code)
+												  .build();
+				int i = memberService.pwdResetKeyInsert(pwResetKey);
+				if (i>0) {
+					String link = "http://localhost:8091/member/pwdreset?id="+memberFind.getUserId()+"&code="+code;
+					helper.setSubject("북적북적 - 비밀번호 재설정");
+					helper.setText("<h1>비밀번호 재설정</h1><h3>"+memberFind.getUserId()+"</h3>님<br/><p>아래 링크로 접속하셔서 비밀번호를 재설정해주세요.</p><br/>"+ link +"<br/><p>절대 타인과 이 링크를 공유하지 마세요!</p>" ,true);
+					helper.setTo(memberFind.getEmail());
+					sender.send(message);
+					return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+																			.data("success")
+																		    .message("데이터 전송완료")
+																		    .build());
+				} else {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder()
+																		 .data("fail")
+																	     .message("비밀번호 재설정 코드 등록 실패")
+																	     .build());
+				}
+				
+
 			} else {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder()
 																				 .data("fail")
@@ -94,6 +111,58 @@ public class MemberController {
 															    .message("이메일 전송실패")
 															    .build());
 		}
+	}
+	
+	@GetMapping("pwdreset")
+	public ModelAndView pwdreset(PwResetKey pwResetKey, ModelAndView mv) {
+		Member member = memberService.login(Member.builder().userId(pwResetKey.getUserId()).build());
+		if( pwResetKey!=null && memberService.pwdResetKeySelectOne(pwResetKey).getCode().equals(pwResetKey.getCode())  ) {
+			if( member!=null && bCryptPasswordEncoder.matches(member.getUserName(), pwResetKey.getCode()) ) {
+				mv.addObject("member",member)
+				  .addObject("pwResetKey",pwResetKey)
+				  .setViewName("/member/findPwd_reset");
+			} else {
+				mv.setViewName("redirect:/");
+			}
+		} else {
+			mv.setViewName("redirect:/");
+		}
+		return mv;
+	}
+	
+	@ResponseBody
+	@PostMapping("pwdresetPro")
+	public ResponseEntity<Message> pwdresetPro(Member member, String code) {
+		PwResetKey pwResetKey = memberService.pwdResetKeySelectOne( PwResetKey.builder().userId(member.getUserId()).code(code).build() );
+		String rst="";
+		if(member!=null && pwResetKey.getCode().equals(code)) {
+			int i = memberService.pwdResetKeyDelete(pwResetKey);
+			int j = memberService.updatePwd(member);
+			if (i>0) {
+				if (j>0) {
+					return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+							.data("success")
+						    .message("데이터 전송완료")
+						    .build());
+				} else {
+					System.out.println("memberService.updatePwd 실패");
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder()
+							.data("fail")
+						    .message("memberService.updatePwd 실패")
+						    .build());
+				}
+			} else {
+				System.out.println("memberService.pwdResetKeyDelete 실패");
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder()
+						.data("fail")
+					    .message("memberService.pwdResetKeyDelete 실패")
+					    .build());
+			}
+		}
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder()
+				.data("fail")
+			    .message("member이 null 이거나 pwResetKey가 DB와 일치하지않습니다.")
+			    .build());
 	}
 	
 	@GetMapping("logout")

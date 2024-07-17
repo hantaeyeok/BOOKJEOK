@@ -16,6 +16,7 @@
     <typeAlias type="com.kh.bookjeok.member.model.vo.Member" alias="member"/>
     <typeAlias type="com.kh.bookjeok.mypage.model.vo.Payment" alias="payment"/>
     <typeAlias type="com.kh.bookjeok.mypage.model.vo.PaymentPerbook" alias="paymentperbook"/>
+    <typeAlias type="com.kh.bookjeok.member.model.vo.PwResetKey" alias="PwResetKey"/>
     <typeAlias type="com.kh.bookjeok.qna.model.vo.Question" alias="question"/>
 	</typeAliases>
 	

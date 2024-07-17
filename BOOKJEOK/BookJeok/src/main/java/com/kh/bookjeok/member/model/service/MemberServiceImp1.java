@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.kh.bookjeok.member.model.dao.MemberMapper;
 import com.kh.bookjeok.member.model.vo.Member;
+import com.kh.bookjeok.member.model.vo.PwResetKey;
 
 import lombok.RequiredArgsConstructor;
 
@@ -88,6 +89,20 @@ public class MemberServiceImp1 implements MemberService{
 	public Member getMemberByEmail(Member member) {
 		// TODO Auto-generated method stub
 		return memberMapper.getMemberByEmail(member);
+	}
+
+
+	@Override
+	public int pwdResetKeyInsert(PwResetKey pwResetKey) {
+		// TODO Auto-generated method stub
+		return memberMapper.pwdResetKeyInsert(pwResetKey);
+	}
+
+
+	@Override
+	public PwResetKey pwdResetKeySelectOne(PwResetKey pwResetKey) {
+		// TODO Auto-generated method stub
+		return memberMapper.pwdResetKeySelectOne(pwResetKey);
 	}
 
 

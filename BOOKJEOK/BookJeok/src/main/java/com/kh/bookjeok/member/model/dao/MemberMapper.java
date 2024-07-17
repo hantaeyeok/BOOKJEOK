@@ -3,6 +3,7 @@ package com.kh.bookjeok.member.model.dao;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.kh.bookjeok.member.model.vo.Member;
+import com.kh.bookjeok.member.model.vo.PwResetKey;
 
 @Mapper
 public interface MemberMapper{
@@ -26,5 +27,9 @@ public interface MemberMapper{
 	int emailCheck(String emailCheck);
 
 	Member getMemberByEmail(Member member);
+
+	int pwdResetKeyInsert(PwResetKey pwResetKey);
+
+	PwResetKey pwdResetKeySelectOne(PwResetKey pwResetKey);
 	
 }
