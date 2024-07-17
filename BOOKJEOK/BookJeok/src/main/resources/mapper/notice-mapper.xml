@@ -119,7 +119,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			UPDATE
 				   NOTICE
 			   SET
-				   COUNT = COUNT + 1
+				   NOTICE_VISITED = NOTICE_VISITED + 1
 			 WHERE
 			 	   NOTICE_NO = #{noticeNo}
 			   AND
@@ -200,7 +200,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		   <result column="NOTICE_TITLE"   property="noticeTitle" />
 		   <result column="NOTICE_CONTENT" property="noticeContent" />
 		   <result column="NOTICE_WRITER"  property="noticeWriter" />
-		   <result column="COUNT"         property="count" />
+		   <result column="NOTICE_VISITED"         property="noticeVisited" />
 		
 		   <result column="NOTICE_DATE" property="noticeDate" />
 		   <collection resultMap="noticeFileResultSet" property="noticeFileList" />
