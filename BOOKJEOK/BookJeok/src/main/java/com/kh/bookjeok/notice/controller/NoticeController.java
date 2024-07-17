@@ -24,6 +24,8 @@ import com.kh.bookjeok.model.Page;
 import com.kh.bookjeok.notice.model.service.NoticeService;
 import com.kh.bookjeok.notice.model.vo.Notice;
 import com.kh.bookjeok.notice.model.vo.NoticeFile;
+import com.kh.bookjeok.qna.model.service.QnaService;
+import com.kh.bookjeok.qna.model.vo.Question;
 import com.kh.bookjeok.template.PageTemplate;
 
 import lombok.RequiredArgsConstructor;
@@ -35,17 +37,19 @@ import lombok.extern.slf4j.Slf4j;
 public class NoticeController {
 	
 	   private final NoticeService noticeService;
-	   
-
+	
+ 
 	   
 	   @GetMapping("noticeList")
-	   public String forwarding(@RequestParam(value="page", defaultValue="1") int page, Model model) {
+	   public String list(@RequestParam(value="page", defaultValue="1") int page, 
+			   				   Model model,
+							   Page pageInfo) {
 	      
 
 	      int listCount;      // 현재 일반게시판의 게시글 총 개수 => notice테이블로부터 SELECT COUNT(*) 활용해서 조회
 	      int currentPage;   // 현재 페이지(사용자가 요청한 페이지) => 앞에서 넘길 것
 	      int pageLimit;      // 페이지 하단에 보일 페이징바의 최대 개수 => 10개로 고정
-	      int boardLimit;      // 한 페이지에 보여질 게시글의 최대 개수 => 10개로 고정
+	      int listLimit;      // 한 페이지에 보여질 게시글의 최대 개수 => 10개로 고정
 	      
 	      int maxPage;      // 가장 마지막 페이지가 몇 번 페이지인지(총 페이지의 개수)
 	      int startPage;      // 페이지 하단에 보여질 페이징바의 시작 수
@@ -63,10 +67,10 @@ public class NoticeController {
 	      pageLimit = 10;
 	      
 	      // * boardLimit = 한 페이지에 보여질 게시글의 최대 개수
-	      boardLimit = 10;	   
+	      listLimit = 10;	   
 
 	      
-	      maxPage = (int)Math.ceil((double)listCount / boardLimit);
+	      maxPage = (int)Math.ceil((double)listCount / listLimit);
 	      
 
 	      startPage = (currentPage - 1) / pageLimit * pageLimit + 1;
@@ -74,12 +78,14 @@ public class NoticeController {
 	      endPage = startPage + pageLimit - 1;
 
 	      if(endPage > maxPage) endPage = maxPage;
+	      int startValue = (currentPage - 1) * listLimit + 1;
+	      int endValue = startValue + listLimit - 1;
 
-	      PageInfo pageInfo = PageInfo.builder()
+	      pageInfo = Page.builder()
 	                           .listCount(listCount)
 	                           .currentPage(currentPage)
 	                           .pageLimit(pageLimit)
-	                           .boardLimit(boardLimit)
+	                           .listLimit(listLimit)
 	                           .maxPage(maxPage)
 	                           .startPage(startPage)
 	                           .endPage(endPage)
@@ -90,8 +96,7 @@ public class NoticeController {
 
 	      Map<String, Integer> map = new HashMap();
 	      
-	      int startValue = (currentPage - 1) * boardLimit + 1;
-	      int endValue = startValue + boardLimit - 1;
+
 	      
 	      map.put("startValue", startValue);
 	      map.put("endValue", endValue);
@@ -109,8 +114,60 @@ public class NoticeController {
 	      return "notice/noticeList";
 	   }
 	   
-	   
-	   
+	   //검색기능(조건 조회 + 페이징 처리_)
+	   @GetMapping("search.do")
+	   public String search(String condition,
+	                  String keyword,
+	                  @RequestParam(value="page", defaultValue = "1") int page, Model model) {
+	      
+	      log.info("검색 조건 : {}",condition);
+	      log.info("검색 키워드 : {}",keyword);
+	      
+
+	      Map<String, String> map = new HashMap();
+	      map.put("condition", condition);
+	      map.put("keyword", keyword);
+	      
+	      //검색결과 수
+	      int searchCount = noticeService.searchCount(map);
+	      log.info("검색 조건에 부합하는 행의 수 : {}", searchCount);
+	      int currentPage = page;
+	      int pageLimit = 10;
+	      int listLimit = 10;
+	      
+        
+	      Page pageInfo = PageTemplate.getPageInfo(searchCount,
+	                                        currentPage,
+	                                        pageLimit,
+	                                        listLimit);
+	      
+	      
+	      RowBounds rowBounds = new RowBounds((currentPage - 1) * listLimit, listLimit);
+	      
+	      
+	      // MyBatis에서는 페이징 처리를 위해 RowsBounds라는 클래스를 제공
+	      // * offset, limit
+	      
+	      /*
+	       * boardLimit가 3일 경우       건너뛸 숫자(offset)
+	       * 
+	       *  currentPage : 1 -> 1~3 ==> 0
+	       *  currentPage : 2 -> 4~6 ==> 3
+	       *  currentPage : 3 -> 7~9 ==> 6
+	       *  
+	       *  (currentPage() -1) * boardLimit()
+	       */
+	      
+	      List<Notice> noticeList = noticeService.findByConditionAndKeyword(map, rowBounds);
+	      
+	      model.addAttribute("notice", noticeList);
+	      model.addAttribute("pageInfo", pageInfo);
+	      model.addAttribute("keyword", keyword);
+	      model.addAttribute("condition", condition);
+	      
+	      return "notice/noticeList";
+	   }
+
 
 	   
 

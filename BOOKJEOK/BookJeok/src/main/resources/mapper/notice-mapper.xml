@@ -24,32 +24,40 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		
 		<select id="findAll" resultType="notice" parameterType="map"	>
 			<include refid="selectNotice"/>
-		      FROM
-		          (SELECT
-		                 NOTICE_NO,
-		                 NOTICE_TITLE,
-		                 NOTICE_CONTENT,
-		                 NOTICE_VISITED,
-		                 NOTICE_DATE,
-		                 USER_ID,
-		                 ROWNUM RNUM
-		            FROM
-		                (SELECT
-		                       NOTICE_NO,
-		                       NOTICE_TITLE,
-		                       NOTICE_CONTENT,
-		                 	   NOTICE_VISITED,
-		                       NOTICE_DATE,
-		                       USER_ID
-		                  FROM
-		                       NOTICE,
-		                 WHERE
-		                      STATUS ='Y'
-		                 ORDER
-		                    BY
-		                      NOTICE_NO DESC))
-		     WHERE
-		          RNUM BETWEEN #{startValue} AND #{endValue}
+				SELECT
+	                 NOTICE_NO,
+	                 NOTICE_TITLE,
+	                 USER_ID,
+	                 NOTICE_VISITED,
+	                 NOTICE_DATE,
+			   		 NOTICE_IMG_ORIGINNAME
+	                 RNUM
+			      FROM
+			          (SELECT
+			                 NOTICE_NO,
+			                 NOTICE_TITLE,
+			                 USER_ID,
+			                 NOTICE_VISITED,
+			                 NOTICE_DATE,
+					   		 NOTICE_IMG_ORIGINNAME
+			                 ROWNUM RNUM
+			            FROM
+			                (SELECT
+					                 NOTICE_NO,
+					                 NOTICE_TITLE,
+					                 USER_ID,
+					                 NOTICE_VISITED,
+					                 NOTICE_DATE,
+							   		 NOTICE_IMG_ORIGINNAME
+			                  FROM
+			                       NOTICE,
+			                 WHERE
+			                      STATUS ='Y'
+			                 ORDER
+			                    BY
+			                      NOTICE_NO DESC))
+		   WHERE
+		        RNUM BETWEEN #{startValue} AND #{endValue}
 		
 		</select>
 		<select id="searchCount" resultType="hashmap" parameterType="int">
