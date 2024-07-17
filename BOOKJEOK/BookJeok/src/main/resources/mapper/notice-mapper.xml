@@ -14,6 +14,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				  NOTICE_ORIGINNAME noticeOriginName,
 				  NOTICE_STATUS noticeStatus;
 			 	  USER_ID userId
+			 	  
 			 FROM
 			      NOTICE
 		</sql>
@@ -26,7 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		      STATUS = 'Y'	 
 		</select>
 		
-		<select id="findAll" resultType="notice" parameterType="map"	>
+		<select id="findAll" resultType="notice" parameterType="map">
 			<include refid="selectNotice"/>
 		      FROM
 		          (SELECT
@@ -46,7 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				                 NOTICE_DATE,
 						   		 NOTICE_IMG_ORIGINNAME
 		                  FROM
-		                       NOTICE,
+		                       NOTICE
 		                 WHERE
 		                      STATUS ='Y'
 		                 ORDER
@@ -163,41 +164,58 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 		<!--  -->
 		<select id="selectNoticeFile" resultType="noticeFile" parameterType="noticeFile">
-				SELECT
+			SELECT
 				NOTICE_NO noticeNo,
 				NOTICE_IMG_ORIGINNAME noticeImgOriginName,
 				NOTICE_ORIGINNAME noticeOriginName
-				FROM
+			FROM
 				NOTICE
-				WHERE
+			WHERE
 				STATUS = 'Y'
-				AND
+			AND
 				SEQ_NNO = #{noticeNo}
 				
-				ORDER
-				BY
+			ORDER
+			   BY
 				NOTICE_NO DESC               	
 		</select>
 
 		<!-- update를 할 떄 공지사항 글만 업데이를 하면 되는지(첨부파일 포함) , 아님 파일을 따로 업데이트 해야 하는지  -->	
 		<select id="updateNoticeFile" resultType="noticeFile" parameterType="noticeFile">
-				INSERT
-				INTO
+		  INSERT
+			INTO
 				NOTICE_FILE
 				(
 				NOTICE_NO noticeNo,
 				NOTICE_IMG_ORIGINNAME noticeImgOriginName,
 				NOTICE_ORIGINNAME noticeOriginName
 				)
-				VALUES
-				(
+		  VALUES
+			    (
 				#{noticeNo},
 				#{noticeImgOriginName},
 				#{noticeOriginName}
 				)
 				
-		</select>
-
-
-
+		</select>	
+			
+		<resultMap id="noticeResultSet" type="notice">
+		   <id     column="NOTICE_NO"      property="noticeNo" />
+		   <result column="NOTICE_TITLE"   property="noticeTitle" />
+		   <result column="NOTICE_CONTENT" property="noticeContent" />
+		   <result column="NOTICE_WRITER"  property="noticeWriter" />
+		   <result column="NOTICE_VISITED"         property="noticeVisited" />
+		
+		   <result column="NOTICE_DATE" property="noticeDate" />
+		   <collection resultMap="noticeFileResultSet" property="noticeFileList" />
+		</resultMap>
+		<resultMap id="noticeFileResultSet" type="noticeFile">
+			<id     column="NOTICE_NO"        property="noticeNo" />
+		   <result column="NOTICE_IMG_ORIGINNAME"   property="noticeImgOriginName" />
+		   <result column="NOTICE_IMG_CHANGENAME"   property="noticeImgChangeName" />
+		   <result column="NOTICE_ORIGINNAME"   property="noticeOriginName" />
+		   <result column="NOTICE_CHANGENAME"   property="noticeChangeName" />
+		</resultMap>
+		
+		
 </mapper>

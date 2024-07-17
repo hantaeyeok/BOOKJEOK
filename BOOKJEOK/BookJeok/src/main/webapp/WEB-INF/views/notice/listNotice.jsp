@@ -70,17 +70,17 @@
                 </thead>
                 <tbody>        
                    <c:choose>
-                      <c:when test="${listNotice.size() == 0 }">
+                      <c:when test="${noticeList.size() == 0 }">
                          <tr>
                             <td colspan="6">조회된 결과가 존재하지 않습니다.</td>
                          </tr>
                       </c:when>
                    </c:choose>
-                    <c:forEach items="${ listNotice }" var="notice">
+                    <c:forEach items="${ noticeList }" var="notice">
                        <tr class="notice-detail" id="noticeNo-${ notice.noticeNo }">
                           <td>${ notice.noticeNo }</td>
                           <td>${ notice.noticeTitle }</td>
-                          <td>${ notice.userID }</td>
+                          <td>${ notice.userId }</td>
                           <td>${ notice.noticeVisited }</td>
                           <td>${ notice.noticeDate }</td>
                           <td>

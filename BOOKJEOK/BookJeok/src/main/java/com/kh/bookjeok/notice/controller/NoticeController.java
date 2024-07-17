@@ -1,19 +1,29 @@
 package com.kh.bookjeok.notice.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.bookjeok.common.template.PageInfo;
 import com.kh.bookjeok.model.Page;
 import com.kh.bookjeok.notice.model.service.NoticeService;
 import com.kh.bookjeok.notice.model.vo.Notice;
+import com.kh.bookjeok.notice.model.vo.NoticeFile;
 import com.kh.bookjeok.template.PageTemplate;
 
 import lombok.RequiredArgsConstructor;
@@ -26,8 +36,7 @@ public class NoticeController {
 	
 	   private final NoticeService noticeService;
 	
- 
-	   
+
 	   @GetMapping("listNotice")
 	   public String list(@RequestParam(value="page", defaultValue="1") int page, 
 			   				   Model model) {
@@ -88,19 +97,18 @@ public class NoticeController {
 	      map.put("startValue", startValue);
 	      map.put("endValue", endValue);
 	      
-	      List<Notice> list = noticeService.findAll(map);
-	      /*
+	      List<Notice> noticeList = noticeService.findAll(map);
+
 	      log.info("조회된 게시물의 개수 : {}", noticeList.size());
 	      log.info("-----------------------------------------");
 	      log.info("조회된 게시글 목록 : {}", noticeList);
-	      */
-	      model.addAttribute("list", list);
+
+	      model.addAttribute("noticeList", noticeList);
 	      model.addAttribute("pageInfo", pageInfo);	      
 	      
 	      
 	      return "notice/listNotice";
 	   }
-	   
 	   
 	   //검색기능(조건 조회 + 페이징 처리_)
 	   @GetMapping("search.do")
@@ -146,10 +154,8 @@ public class NoticeController {
 	       *  (currentPage() -1) * boardLimit()
 	       */
 	      
-	      List<Notice> listNotice = noticeService.findByConditionAndKeyword(map, rowBounds);
+	      List<Notice> noticeList = noticeService.findByConditionAndKeyword(map, rowBounds);
 	      
-	      model.addAttribute("listNotice", listNotice);
-	      model.addAttribute("pageInfo", pageInfo);
 	      model.addAttribute("keyword", keyword);
 	      model.addAttribute("condition", condition);
 	      
@@ -159,5 +165,144 @@ public class NoticeController {
 
 	   
 
+	   
 
-}  
+	   @PostMapping("insertForm.do")
+	   public String insert(Notice notice, NoticeFile noticeFile, MultipartFile upfile, HttpSession session, Model model) {   //MultipartFile[] 여러 개의 파일이 배열로 한번에 들어옴
+	      
+	      
+	      if(!upfile.getOriginalFilename().equals("")) {
+	         
+	         noticeFile.setNoticeOriginName(upfile.getOriginalFilename());
+	         noticeFile.setNoticeChangeName(saveFile(upfile, session));
+	      }
+	      
+	      
+	      // 첨부파일이 존재하지 않을 경우 notice : 제목 / 내용 /작성자
+	      // 첨부파일이 존재할 경우 notice : 제목 / 내용 /작성자
+	      
+	      if(noticeService.insert(notice) > 0) {
+	         
+	         session.setAttribute("alertMsg", "게시글 작성 성공~");
+	         
+	         // 무조건 리다이렉트 해야함!!!!!
+	         
+	         return "redirect:noticeList";
+	      } else {
+	         
+	         model.addAttribute("errorMsg", "게시글 작성 실패....");
+	         return "common/errorPage";
+	      }
+	      
+
+	      
+//	      return "redirect:/noticeForm.do";
+	      
+
+	      
+
+	   }
+	   
+
+
+	   @GetMapping("notice-detail")
+	   public ModelAndView findBynoticeNo(int noticeNo,
+			   							 ModelAndView mv) {
+		   
+
+		   if(noticeService.increaseNoticeVisited(noticeNo) > 0) {	//count수 증가 성공 시
+
+			   mv.addObject("notice", noticeService.findById(noticeNo))
+			   .setViewName("notice/noticeDetail");
+			   
+		   } else {
+			   mv.addObject("errMsg", "게시글 상세조회에 실패했습니다.").setViewName("common/errorPage");
+		   }
+		   return mv;
+	   }
+
+	   @PostMapping("notice-delete")
+	   public String deleteById(int noticeNo,
+			   					String filePath,
+			   					HttpSession session,
+			   					Model model) {
+		   
+		   if(noticeService.delete(noticeNo) > 0) {
+			   
+			   if(!"".equals(filePath)) {		//filePath는 null일 가능성 O. 따라서 filePath를 기준으로 잡으면 오타 발생 시 nullPointerException이 발생할 가능성이 있다. 따라서 빈 문자열 ""를 기준으로 .equals 비교를 한다면 nullPointerException 오류 발생은 막을 수 있다.
+				   	new File(session.getServletContext().getRealPath(filePath)).delete();
+			   }
+			   
+			   session.setAttribute("alertMsg", "게시물 삭제 성공");
+			   return "redirect:noticeList";
+			   
+		   } else {
+			   model.addAttribute("errorMsg", "게시글 삭제 실패");
+			   return "common/errorPage";
+		   }
+	   }
+	   
+	   @PostMapping("noticeUpdateForm.do")
+	   public ModelAndView updateForm(ModelAndView mv, int noticeNo) {
+		   
+		   mv.addObject("notice", noticeService.findById(noticeNo))
+		   	.setViewName("notice/noticeEdit");
+		   return mv;
+	   }
+	   
+	   @PostMapping("noticeFile-update")
+	   public String update(NoticeFile noticeFile,
+			   				MultipartFile reUpFile,
+			   				HttpSession session) {
+		   
+
+		   if(!reUpFile.getOriginalFilename().equals("")) {	  
+			   noticeFile.setNoticeOriginName(reUpFile.getOriginalFilename());
+			   noticeFile.setNoticeChangeName(saveFile(reUpFile, session));
+		   }
+		   
+		   if(noticeService.update(noticeFile) > 0) {
+			   
+			   session.setAttribute("alertMsg", "수정 완료");
+			   return "redirect:notice-detail?noticeNo="+noticeFile.getNoticeNo();
+			   
+		   } else {
+			   
+			   session.setAttribute("errorMsg", "수정 실패");
+			   return "common/errorPage";
+		   }
+	   }
+
+	// changeName 생성 메서드 만들기
+	     public String saveFile(MultipartFile upfile, HttpSession session) {
+		   String originName = upfile.getOriginalFilename();
+	       
+	       String ext = originName.substring(originName.lastIndexOf('.'));
+	       //"abc.ddd.txt"
+	       
+	       //math * 숫자는 범위이고 뒤에 + 정수는 시작값 소수점을 버리기 위해 int로 형변환
+	       int num =(int)(Math.random() * 900) + 100;
+	       
+	       String currentTime= new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(num));         
+	       
+	       String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/");
+	       
+	       String changeName = "BOOKJEOK_" + currentTime + "_" + num + ext;
+	       
+	       try {
+	          upfile.transferTo(new File(savePath + changeName));
+	       } catch (IllegalStateException e) {
+	          e.printStackTrace();
+	       } catch (IOException e) {
+	          e.printStackTrace();
+	       }
+	       
+	       return "resources/uploadFiles/" + changeName;
+	    } 
+	}
+	   
+
+	   
+
+
+
