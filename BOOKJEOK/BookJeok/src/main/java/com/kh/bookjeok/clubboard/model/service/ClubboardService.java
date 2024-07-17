@@ -19,4 +19,6 @@ public interface ClubboardService {
 
 	Clubboard findByNo(int clubboardNo);
 
+	int updateClubboard(Clubboard clubboard);
+
 }

@@ -181,5 +181,20 @@
 		   AND
 		  	   CLUBBOARD_STATUS = 'Y'
 	</select>
+	
+	<update id="updateClubboard" parameterType="clubboard">
+		UPDATE
+			   CLUBBOARD
+		   SET
+			   CLUBBOARD_TITLE = #{clubboardTitle},
+		       BOOKCLUB_NAME = #{bookclubName}, 
+		       CLUBBOARD_CONTENT = #{clubboardContent},
+		       CLUBBOARD_ORIGINNAME = #{clubboardOriginname},
+		       CLUBBOARD_CHANGENAME = #{clubboardChangename},
+		       CLUB_NUMBER = #{clubNumber},
+		       CLUB_PERIOD = #{clubPeriod}
+		 WHERE
+		 	   CLUBBOARD_NO = #{clubboardNo}
+	</update>
 
 </mapper>

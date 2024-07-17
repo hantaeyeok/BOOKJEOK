@@ -22,4 +22,6 @@ public interface ClubboardMapper {
 
 	Clubboard findByNo(int clubboardNo);
 
+	int updateClubboard(Clubboard clubboard);
+
 }

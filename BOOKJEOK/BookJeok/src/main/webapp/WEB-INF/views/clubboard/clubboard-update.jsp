@@ -42,43 +42,57 @@
     <div class="content">
         <br><br>
         <div class="innerOuter">
-            <h2>독서모임 모집 게시글 작성</h2>
+            <h2>독서모임 모집 게시글 수정</h2>
             <br>
 
-            <form id="enrollForm" method="post" action="insert.clubboard" enctype="multipart/form-data">
+            <form id="enrollForm" method="post" action="update.clubboard?clubboardNo=${clubboard.clubboardNo }" enctype="multipart/form-data">
                 <table align="center">
                     <tr>
                         <th><label for="title">제목</label></th>
-                        <td><input type="text" id="title" class="form-control" name="clubboardTitle" required></td>
+                        <td>
+                        	<input type="text" id="title" class="form-control" name="clubboardTitle" value="${clubboard.clubboardTitle }" required>
+                        </td>
                     </tr>
                     <tr>
                         <th><label for="writer">작성자</label></th>
-                        <td><input type="text" id="writer" class="form-control" value="${sessionScope.loginUser.userId }" name="userId" readonly></td>
+                        <td><input type="text" id="writer" class="form-control" value="${clubboard.userId }" name="userId" readonly></td>
                     </tr>
                     <tr>
-                        <th><label for="title">독서 모임 명</label></th>
-                        <td><input type="text" id="clubname" class="form-control" name="bookclubName" required></td>
+                        <th><label for="clubname">독서 모임 명</label></th>
+                        <td><input type="text" id="clubname" class="form-control" name="bookclubName" value="${clubboard.bookclubName }" required></td>
                     </tr>
                     <tr>
-                        <th><label for="number">모집 인원</label></th>
-                        <td><input type="number" id="clubnum" class="form-control" name="clubNumber" required></td>
+                        <th><label for="clubnum">모집 인원</label></th>
+                        <td>
+                        	<input type="number" id="clubnum" class="form-control" name="clubNumber" value="${clubboard.clubNumber }" required>
+                        </td>
                     </tr>
                     <tr>
                         <th><label for="content">내용</label></th>
-                        <td><textarea id="content" class="form-control" rows="10" style="resize:none;" name="clubboardContent" required></textarea></td>
+                        <td>
+                        	<textarea id="content" class="form-control" rows="10" style="resize:none;" name="clubboardContent" required>
+                        		${clubboard.clubboardContent }
+                        	</textarea>
+                        </td>
                     </tr>
                     <tr>
-                        <th><label for="content">모집 기간</label></th>
-                        <td><input type="date" id="period" class="form-control" name="clubPeriod" required></td>
+                        <th><label for="period">모집 기간</label></th>
+                        <td>
+                        	<input type="date" id="period" class="form-control" name="clubPeriod" value="${clubboard.clubPeriod }" required>
+                        </td>
                     </tr>
                     <tr>
                         <th><label for="upfile">이미지 파일</label></th>
-                        <td><input type="file" id="upfile" class="form-control-file border" name="upFile" accept="image/*"></td>
+                        <td>
+                            <input type="file" id="upfile" class="form-control-file border" name="upFile" accept="image/*">
+                            현재 업로드된 파일 : 
+                            <a href="" download=""></a>
+                        </td>
                     </tr>
                     <tr>
                         <th colspan="2">
                             <div id="img-area">
-                                <img src="https://st.kakaocdn.net/shoppingstore/store/20240528180123_b9a6145839c346e3a34304f14163d941.png" alt="기본이미지">
+                                <img src="https://st.kakaocdn.net/shoppingstore/store/20240528180123_b9a6145839c346e3a34304f14163d941.png" alt="">
                             </div>
                         </th>
                     </tr>
@@ -86,8 +100,8 @@
                 <br>
 
                 <div align="center">
-                    <button type="submit" class="btn btn-primary">작성하기</button>
-                    <a class="btn btn-danger" href="list.clubboard">취소하기</a>
+                    <button type="submit" class="btn btn-primary">수정하기</button>
+                    <a class="btn btn-danger" href="detail.clubboard?clubboardNo=${clubboard.clubboardNo }">취소하기</a>
                 </div>
             </form>
         </div>

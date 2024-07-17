@@ -156,8 +156,8 @@
 		        		</c:when>
 		        	</c:choose>
 		       		<c:forEach items="${totalClubboard }" var="clubboard">
-		       			<input type="hidden" name="clubboardNo" value="${clubboard.clubboardNo }" >
-		        		<div class="card">
+		        		<div class="card" id="clubboardNo-${ clubboard.clubboardNo }">
+		        			<%-- <input type="hidden" name="clubboardNo" value="${clubboard.clubboardNo }" >--%>
 		        			<c:choose>
 		        			<c:when test="${ empty clubboard.clubboardChangename }">
 		        				<img src="https://st.kakaocdn.net/shoppingstore/store/20240528180123_b9a6145839c346e3a34304f14163d941.png" class="card-img-top" alt="소개이미지">
@@ -177,7 +177,6 @@
 			                </div>
 			                <div class="card-footer">
 			                    <small class="text-body-secondary">모집기간 : ${clubboard.clubboardDate } ~ ${clubboard.clubPeriod }</small>
-			                	<a class="btn btn-danger" href="delete.clubboard?clubboardNo=${clubboard.clubboardNo }">삭제</a>
 			                </div>
 			            </div>
 		            </c:forEach>
@@ -185,17 +184,17 @@
         	</c:choose>
         </div>
         <br><br>
-        <!-- <a class="btn btn-danger" href="delete.clubboard?clubboardNo=${clubboard.clubboardNo }">삭제</a> -->
         
         <script>
         
         	$(() => {
         		
-        		$('.card').click(()=> {
+        		$('.card').click(e => {
         			
-        			var clubboardNo = $('[name="clubboardNo"]').val();
+        			//var clubboardNo = $('[name="clubboardNo"]').val();
         			
-        			location.href = 'detail.clubboard?clubboardNo=' + clubboardNo ;
+        			//location.href = 'detail.clubboard?clubboardNo=' + clubboardNo ;
+        			location.href = 'detail.clubboard?clubboardNo=' + e.currentTarget.id.split('-')[1];
         		})
         	});
         	

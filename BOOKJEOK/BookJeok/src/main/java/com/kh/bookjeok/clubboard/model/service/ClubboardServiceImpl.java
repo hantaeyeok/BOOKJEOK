@@ -45,5 +45,10 @@ public class ClubboardServiceImpl implements ClubboardService {
 	public Clubboard findByNo(int clubboardNo) {
 		return clubboardMapper.findByNo(clubboardNo);
 	}
+
+	@Override
+	public int updateClubboard(Clubboard clubboard) {
+		return clubboardMapper.updateClubboard(clubboard);
+	}
 	
 }

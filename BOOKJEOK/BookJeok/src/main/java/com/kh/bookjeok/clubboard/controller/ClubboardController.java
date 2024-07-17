@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.bookjeok.clubboard.model.service.ClubboardService;
+import com.kh.bookjeok.clubboard.model.service.ClubboardServiceImpl;
 import com.kh.bookjeok.clubboard.model.vo.Clubboard;
 import com.kh.bookjeok.common.model.FileUploadService;
 import com.kh.bookjeok.common.template.PageInfo;
@@ -117,6 +118,36 @@ public class ClubboardController {
 		} else {
 			
 			return "redirect:list.clubboard";
+		}
+	}
+	
+	@GetMapping("updateForm.clubboard")
+	public ModelAndView updateFormClubboard(int clubboardNo, ModelAndView mv) {
+		
+		Clubboard clubboard = clubboardService.findByNo(clubboardNo);
+		
+		mv.addObject("clubboard",clubboard).setViewName("clubboard/clubboard-update");
+		
+		return mv;
+	}
+	
+	@PostMapping("update.clubboard")
+	public String updateClubboard(Clubboard clubboard,
+								  MultipartFile reUpFile,
+								  HttpSession session) {
+		
+		if(reUpFile != null && !reUpFile.getOriginalFilename().equals("")) {
+			clubboard.setClubboardOriginname(reUpFile.getOriginalFilename());
+			clubboard.setClubboardChangename(fileUploadService.saveFile(reUpFile, session));
+		}
+		
+		if(clubboardService.updateClubboard(clubboard) > 0) {
+			
+			return "redirect:detail.clubboard?clubboardNo=" + clubboard.getClubboardNo();
+		
+		} else {
+			
+			return "redirect:detail.clubboard?clubboardNo=" + clubboard.getClubboardNo();
 		}
 	}
 
