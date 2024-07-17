@@ -35,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 public class NoticeController {
 	
 	   private final NoticeService noticeService;
+	   
 
 	   
 	   @GetMapping("noticeList")
@@ -107,59 +108,10 @@ public class NoticeController {
 	      
 	      return "notice/noticeList";
 	   }
-	   //검색기능(조건 조회 + 페이징 처리_)
-	   @GetMapping("search.do")
-	   public String search(String condition,
-	                  String keyword,
-	                  @RequestParam(value="page", defaultValue = "1") int page, Model model) {
-	      
-	      log.info("검색 조건 : {}",condition);
-	      log.info("검색 키워드 : {}",keyword);
-	      
+	   
+	   
+	   
 
-	      Map<String, String> map = new HashMap();
-	      map.put("condition", condition);
-	      map.put("keyword", keyword);
-	      
-	      //검색결과 수
-	      int searchCount = noticeService.searchCount(map);
-	      log.info("검색 조건에 부합하는 행의 수 : {}", searchCount);
-	      int currentPage = page;
-	      int pageLimit = 10;
-	      int boardLimit = 10;
-	      
-        
-	      Page pageInfo = PageTemplate.getPageInfo(searchCount,
-	                                        currentPage,
-	                                        pageLimit,
-	                                        boardLimit);
-	      
-	      
-	      RowBounds rowBounds = new RowBounds((currentPage - 1) * boardLimit, boardLimit);
-	      
-	      
-	      // MyBatis에서는 페이징 처리를 위해 RowsBounds라는 클래스를 제공
-	      // * offset, limit
-	      
-	      /*
-	       * boardLimit가 3일 경우       건너뛸 숫자(offset)
-	       * 
-	       *  currentPage : 1 -> 1~3 ==> 0
-	       *  currentPage : 2 -> 4~6 ==> 3
-	       *  currentPage : 3 -> 7~9 ==> 6
-	       *  
-	       *  (currentPage() -1) * boardLimit()
-	       */
-	      
-	      List<Notice> noticeList = noticeService.findByConditionAndKeyword(map, rowBounds);
-	      
-	      model.addAttribute("list", noticeList);
-	      model.addAttribute("pageInfo", pageInfo);
-	      model.addAttribute("keyword", keyword);
-	      model.addAttribute("condition", condition);
-	      
-	      return "notice/noticeList";
-	   }
 	   
 
 
