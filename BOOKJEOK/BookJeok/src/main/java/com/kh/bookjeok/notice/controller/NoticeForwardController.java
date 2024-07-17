@@ -10,18 +10,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class NoticeForwardController {
 
 
-	@GetMapping("noticeList")
+	@GetMapping("listNotice")
 	public String notice() {
-		return "notice/noticeList";
+		return "notice/listNotice";
 	}
 
-	@PostMapping("noticeForm.do")
-	public String noticeUpdate() {
+	@PostMapping("noticeInsert")
+	public String noticeInsert() {
 		return "notice/noticeInsert";
 	}
 	
-	@PostMapping("notice-update")
-	public String noticeForm() {
+	@PostMapping("noticeEdit")
+	public String noticeEdit() {
 		return "notice/noticeEdit";
 	}
 	

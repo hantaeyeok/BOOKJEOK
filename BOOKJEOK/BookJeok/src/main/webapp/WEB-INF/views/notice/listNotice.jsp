@@ -53,7 +53,7 @@
             
             <c:if test="${ not empty sessionScope.loginUser }">
                <!-- 로그인 후 상태일 경우만 보여지는 글쓰기 버튼 -->
-               <a class="btn btn-secondary" style="float:right;" href="noticeForm.do">글쓰기</a>
+               <a class="btn btn-secondary" style="float:right;" href="noticeInsert.do">글쓰기</a>
             </c:if>
             <br>
             <br>
@@ -70,13 +70,13 @@
                 </thead>
                 <tbody>        
                    <c:choose>
-                      <c:when test="${noticeList.size() == 0 }">
+                      <c:when test="${listNotice.size() == 0 }">
                          <tr>
                             <td colspan="6">조회된 결과가 존재하지 않습니다.</td>
                          </tr>
                       </c:when>
                    </c:choose>
-                    <c:forEach items="${ noticeList }" var="notice">
+                    <c:forEach items="${ listNotice }" var="notice">
                        <tr class="notice-detail" id="noticeNo-${ notice.noticeNo }">
                           <td>${ notice.noticeNo }</td>
                           <td>${ notice.noticeTitle }</td>
@@ -84,7 +84,7 @@
                           <td>${ notice.noticeVisited }</td>
                           <td>${ notice.noticeDate }</td>
                           <td>
-                             <c:if test="${ not empty notice.originName }">
+                             <c:if test="${ not empty notice.noticeOriginName }">
                                 📄  
                              </c:if>
                           </td>
@@ -97,7 +97,7 @@
 
             $(() =>{
                   $('.notice-detail').click(e => {
-                	  location.href = 'notice-detail?noticeNo=' + e.currentTarget.id.split('-')[1];
+                	  location.href = 'noticeDetail?noticeNo=' + e.currentTarget.id.split('-')[1];
                   });
                });
             </script>
@@ -114,7 +114,7 @@
 			                <c:choose>
 			                    <c:when test="${ empty condition }">
 			                        <li class="page-item">
-			                            <a class="page-link" href="noticeList?page=${ pageInfo.currentPage - 1 }">이전</a>
+			                            <a class="page-link" href="listNotice?page=${ pageInfo.currentPage - 1 }">이전</a>
 			                        </li>
 			                    </c:when>
 			                    <c:otherwise>
@@ -129,7 +129,7 @@
 			            <c:choose>
 			                <c:when test="${ empty condition }">
 			                    <li class="page-item ${ pageInfo.currentPage eq p ? 'active' : '' }">
-			                        <a class="page-link" href="noticeList?page=${ p }">${ p }</a>
+			                        <a class="page-link" href="listNotice?page=${ p }">${ p }</a>
 			                    </li>
 			                </c:when>
 			                <c:otherwise>
@@ -142,14 +142,14 @@
 			        <c:choose>
 			            <c:when test="${ pageInfo.maxPage eq pageInfo.currentPage }">
 			                <li class="page-item disabled">
-			                    <a class="page-link" href="noticeList?page=${ pageInfo.currentPage + 1 }">다음</a>
+			                    <a class="page-link" href="listNotice?page=${ pageInfo.currentPage + 1 }">다음</a>
 			                </li>
 			            </c:when>
 			            <c:otherwise>
 			                <c:choose>
 			                    <c:when test="${ empty condition }">
 			                        <li class="page-item">
-			                            <a class="page-link" href="noticeList?page=${ pageInfo.currentPage + 1 }">다음</a>
+			                            <a class="page-link" href="listNotice?page=${ pageInfo.currentPage + 1 }">다음</a>
 			                        </li>
 			                    </c:when>
 			                    <c:otherwise>

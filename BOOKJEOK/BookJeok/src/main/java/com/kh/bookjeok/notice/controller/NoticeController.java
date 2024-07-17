@@ -1,31 +1,19 @@
 package com.kh.bookjeok.notice.controller;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.bookjeok.common.template.PageInfo;
 import com.kh.bookjeok.model.Page;
 import com.kh.bookjeok.notice.model.service.NoticeService;
 import com.kh.bookjeok.notice.model.vo.Notice;
-import com.kh.bookjeok.notice.model.vo.NoticeFile;
-import com.kh.bookjeok.qna.model.service.QnaService;
-import com.kh.bookjeok.qna.model.vo.Question;
 import com.kh.bookjeok.template.PageTemplate;
 
 import lombok.RequiredArgsConstructor;
@@ -40,16 +28,15 @@ public class NoticeController {
 	
  
 	   
-	   @GetMapping("noticeList")
+	   @GetMapping("listNotice")
 	   public String list(@RequestParam(value="page", defaultValue="1") int page, 
-			   				   Model model,
-							   Page pageInfo) {
+			   				   Model model) {
 	      
 
 	      int listCount;      // 현재 일반게시판의 게시글 총 개수 => notice테이블로부터 SELECT COUNT(*) 활용해서 조회
 	      int currentPage;   // 현재 페이지(사용자가 요청한 페이지) => 앞에서 넘길 것
 	      int pageLimit;      // 페이지 하단에 보일 페이징바의 최대 개수 => 10개로 고정
-	      int listLimit;      // 한 페이지에 보여질 게시글의 최대 개수 => 10개로 고정
+	      int boardLimit;      // 한 페이지에 보여질 게시글의 최대 개수 => 10개로 고정
 	      
 	      int maxPage;      // 가장 마지막 페이지가 몇 번 페이지인지(총 페이지의 개수)
 	      int startPage;      // 페이지 하단에 보여질 페이징바의 시작 수
@@ -67,29 +54,29 @@ public class NoticeController {
 	      pageLimit = 10;
 	      
 	      // * boardLimit = 한 페이지에 보여질 게시글의 최대 개수
-	      listLimit = 10;	   
+	      boardLimit = 10;	   
 
 	      
-	      maxPage = (int)Math.ceil((double)listCount / listLimit);
+	      maxPage = (int)Math.ceil((double)listCount / boardLimit);
 	      
 
-	      startPage = (currentPage - 1) / pageLimit * pageLimit + 1;
+	      startPage = (currentPage - 1) / boardLimit * boardLimit + 1;
 
 	      endPage = startPage + pageLimit - 1;
 
 	      if(endPage > maxPage) endPage = maxPage;
-	      int startValue = (currentPage - 1) * listLimit + 1;
-	      int endValue = startValue + listLimit - 1;
+	      int startValue = (currentPage - 1) * boardLimit + 1;
+	      int endValue = startValue + boardLimit - 1;
 
-	      pageInfo = Page.builder()
-	                           .listCount(listCount)
-	                           .currentPage(currentPage)
-	                           .pageLimit(pageLimit)
-	                           .listLimit(listLimit)
-	                           .maxPage(maxPage)
-	                           .startPage(startPage)
-	                           .endPage(endPage)
-	                           .build(); 
+	      PageInfo pageInfo = PageInfo.builder()
+					                  .listCount(listCount)
+					                  .currentPage(currentPage)
+					                  .pageLimit(pageLimit)
+					                  .boardLimit(boardLimit)
+					                  .maxPage(maxPage)
+					                  .startPage(startPage)
+					                  .endPage(endPage)
+					                  .build();
 	      
 
 	      
@@ -101,18 +88,19 @@ public class NoticeController {
 	      map.put("startValue", startValue);
 	      map.put("endValue", endValue);
 	      
-	      List<Notice> noticeList = noticeService.findAll(map);
+	      List<Notice> list = noticeService.findAll(map);
 	      /*
 	      log.info("조회된 게시물의 개수 : {}", noticeList.size());
 	      log.info("-----------------------------------------");
 	      log.info("조회된 게시글 목록 : {}", noticeList);
 	      */
-	      model.addAttribute("noticeList", noticeList);
+	      model.addAttribute("list", list);
 	      model.addAttribute("pageInfo", pageInfo);	      
 	      
 	      
-	      return "notice/noticeList";
+	      return "notice/listNotice";
 	   }
+	   
 	   
 	   //검색기능(조건 조회 + 페이징 처리_)
 	   @GetMapping("search.do")
@@ -133,16 +121,16 @@ public class NoticeController {
 	      log.info("검색 조건에 부합하는 행의 수 : {}", searchCount);
 	      int currentPage = page;
 	      int pageLimit = 10;
-	      int listLimit = 10;
+	      int boardLimit = 10;
 	      
         
 	      Page pageInfo = PageTemplate.getPageInfo(searchCount,
 	                                        currentPage,
 	                                        pageLimit,
-	                                        listLimit);
+	                                        boardLimit);
 	      
 	      
-	      RowBounds rowBounds = new RowBounds((currentPage - 1) * listLimit, listLimit);
+	      RowBounds rowBounds = new RowBounds((currentPage - 1) * boardLimit, boardLimit);
 	      
 	      
 	      // MyBatis에서는 페이징 처리를 위해 RowsBounds라는 클래스를 제공
@@ -158,14 +146,14 @@ public class NoticeController {
 	       *  (currentPage() -1) * boardLimit()
 	       */
 	      
-	      List<Notice> noticeList = noticeService.findByConditionAndKeyword(map, rowBounds);
+	      List<Notice> listNotice = noticeService.findByConditionAndKeyword(map, rowBounds);
 	      
-	      model.addAttribute("notice", noticeList);
+	      model.addAttribute("listNotice", listNotice);
 	      model.addAttribute("pageInfo", pageInfo);
 	      model.addAttribute("keyword", keyword);
 	      model.addAttribute("condition", condition);
 	      
-	      return "notice/noticeList";
+	      return "notice/listNotice";
 	   }
 
 
