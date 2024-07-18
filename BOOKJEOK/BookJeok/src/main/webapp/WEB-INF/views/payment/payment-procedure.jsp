@@ -21,7 +21,7 @@
 
 
     .thanks-greeting {
-    text-decoration: ;    
+    text-align:center ;    
     }
 
     /*주문페이지 전체 div*/
@@ -34,7 +34,7 @@
 
     }
 
-    .order-title { font-weight: 800;}
+    .order-title { font-weight: 800; font-size: 20px;}
 
 
 
@@ -46,11 +46,10 @@
     
 <div class="order-page"> 
 
-    <h1 class="thanks-greeting">${sessionScope.loginUser.userId} 님 저희 서점을 이용해주셔서 정말 감사드립니다.</h1>
 
         <br><br><br>
         <div class="order-title">
-        <p>주문 상품</p>
+        <p>주 문 상 품</p>
         </div>
         <hr>
         <table class="table table-borderless">
@@ -96,7 +95,7 @@
 
         <br><br><br>
         <div class="order-title">
-            <p>배송주소</p>
+            <p>배 송 주 소</p>
         </div>
         <hr>
 
@@ -147,7 +146,7 @@
 
         <br><br><br>
         <div class="order-title">
-            <p>결제정보</p>
+            <p>결 제 정 보</p>
         </div>
         <hr>
         <tr>
@@ -175,7 +174,7 @@
 
         <br><br><br>
         <div class="order-title">
-            <p>결제방법</p>
+            <p>결 제 방 법</p>
         </div>
         <hr>
         <div>
