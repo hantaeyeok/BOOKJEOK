@@ -42,9 +42,9 @@
     </style>
 </head>
 <body>
-    <!--  
-    <jsp:include page="" />
-	-->
+
+	<jsp:include page="../common/menubar.jsp" />
+	
     <div class="content">
         <br><br>
         <div class="innerOuter" style="padding:5% 10%;">
@@ -83,20 +83,39 @@
                     </tr>
                 </thead>
                 <tbody>
+                	<c:forEach items="${ question }" var="question">
                 	<c:choose>
-                		<c:when test="${ question.size() == 0 }">
+                		<c:when test="${ empty question 
+                		or (sessionScope.loginUser.userId != question.userId
+                		and sessionScope.loginUser.userId != 'admin')}">
                 			<tr>
                 				<td colspan="4">조회된 문의가 없습니다.</td>
                 			</tr>
                 		</c:when>
                 	</c:choose>
-                	<c:forEach items="${ question }" var="question">
-                		<tr class="qna-detail" id="qnaNo-${ question.qnaNo }">
-                			<td>${ question.qnaNo }</td>
-	                        <td>${ question.questionTitle }</td>
-	                        <td>${ question.questionDate }</td>
-	                        <td>처리중</td>
-                		</tr>
+                	
+                		<c:if test="${ question.userId == sessionScope.loginUser.userId 
+                		or sessionScope.loginUser.userId == 'admin' }">
+	                		<tr class="qna-detail" id="qnaNo-${ question.qnaNo }">
+	                			<td>${ question.qnaNo }</td>
+		                        <td>${ question.questionTitle }</td>
+		                        <td>${ question.questionDate }</td>
+							    <c:set var="isProcessed" value="false"/>
+					            <c:forEach var="answer" items="${answer}">
+					                <c:if test="${question.qnaNo == answer.qnaNo}">
+					                    <c:set var="isProcessed" value="true"/>
+					                </c:if>
+					            </c:forEach>
+					            <c:choose>
+					                <c:when test="${isProcessed == 'true'}">
+					                    <td>처리완료</td>
+					                </c:when>
+					                <c:otherwise>
+					                    <td>처리중</td>
+					                </c:otherwise>
+					            </c:choose>
+	                		</tr>
+                		</c:if>
                 	</c:forEach>
                 </tbody>
             </table>
@@ -148,7 +167,7 @@
                     		<c:otherwise>
 	                    		<li class="page-item">
 		                    		<a class="page-link" 
-		                    		   href="search.qna.do?page=${ p }&condition=${condition}&keyword=${keyword}"
+		                    		   href="search.qna?page=${ p }&condition=${condition}&keyword=${keyword}"
 		                    		   >${ p }</a>
 		                    	</li>
                     		</c:otherwise>
@@ -183,8 +202,10 @@
                 </ul>
             </div>
             <br>
-            <a class="btn btn-primary" style="float:right;" href="insertForm.question">문의하기</a>
-            <br><br>
+            <c:if test="${ sessionScope.loginUser.userId != 'admin' }">
+	            <a class="btn btn-primary" style="float:right;" href="insertForm.question">문의하기</a>
+	            <br><br>
+            </c:if>
         </div>
         <br><br>
 

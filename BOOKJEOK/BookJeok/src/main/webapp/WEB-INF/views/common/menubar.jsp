@@ -17,6 +17,41 @@
 <body>
     <header>
         <div class="header_wrapper columns">
+
+            <nav id="global-navigation">
+                <div class="gnb_wrap">
+                     <c:choose>
+		            	<c:when test="${ sessionScope.loginUser eq null }">
+		            		<%-- ${ empty sessionScope.loginUser } --%>
+			                <!-- 로그인 전 -->
+			                <a href="member/joinform">회원가입</a>
+			                <a href="member/loginform">로그인</a>
+		                </c:when>
+		                <c:otherwise>
+			                <!-- 로그인 후 -->
+			                <label>${ sessionScope.loginUser.userName }님 환영합니다</label> &nbsp;&nbsp;
+			                <a href="#">마이페이지</a>
+			                <a href="#">로그아웃</a>
+		                </c:otherwise>
+	                </c:choose>
+	                <div id="header_2">
+			            <ul>
+			                <li><a href="../list.qna">1대1문의</a></li>
+			                <li><a href="../list.clubboard">독서모임게시판</a></li>
+			            </ul>
+			        </div>
+                    <div class="seacrh_wrap column is-6">
+                        <div class="search_bar">
+                            <form class="search-container">
+                                <input type="text" id="search-bar" placeholder="검색">
+                              </form>
+                        </div>
+                    </div>
+                    <div class="user_menu_wrap column is-1">
+                        <div class="user_menu"><i class="fas fa-home"></i><i class="fas fa-bars"></i></div>
+                    </div>
+                </div>
+            </nav>
         <form class="form-inline my-4">
             <div class="dropdown w-100">
                 <input type="text" class="form-control w-75" id="searchInput" name="searchInput" placeholder="검색어를 입력하세요" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

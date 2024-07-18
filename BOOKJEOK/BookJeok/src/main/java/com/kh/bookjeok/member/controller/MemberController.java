@@ -42,6 +42,7 @@ public class MemberController {
 		}
 		
 		return "redirect:/";
+
 	}
 	
 	@PostMapping("join")
