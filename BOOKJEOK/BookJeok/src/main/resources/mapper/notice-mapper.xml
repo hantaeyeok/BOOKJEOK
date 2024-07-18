@@ -1,1 +1,221 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.bookjeok.notice.model.dao.NoticeMapper">
+			<sql id="selectNotice">
+			SELECT
+			 	  NOTICE_NO noticeNo,
+			 	  NOTICE_TITLE noticeTitle,
+			 	  NOTICE_CONTENT noticeContent,
+			 	  NOTICE_DATE noticeDate,
+			 	  NOTICE_VISITED noticeVisited,
+				  NOTICE_IMG_ORIGINNAME noticeImgOriginName,
+				  NOTICE_ORIGINNAME noticeOriginName,
+				  NOTICE_STATUS noticeStatus;
+			 	  USER_ID userId
+			 	  
+			 FROM
+			      NOTICE
+		</sql>
+		<select id="noticeCount" resultType="_int">
+		SELECT
+			  COUNT(NOTICE_NO)
+		  FROM
+		      NOTICE
+		 WHERE
+		      STATUS = 'Y'	 
+		</select>
+		
+		<select id="findAll" resultType="notice" parameterType="map">
+			<include refid="selectNotice"/>
+		      FROM
+		          (SELECT
+		                 NOTICE_NO,
+		                 NOTICE_TITLE,
+		                 USER_ID,
+		                 NOTICE_VISITED,
+		                 NOTICE_DATE,
+				   		 NOTICE_IMG_ORIGINNAME
+		                 ROWNUM RNUM
+		            FROM
+		                (SELECT
+				                 NOTICE_NO,
+				                 NOTICE_TITLE,
+				                 USER_ID,
+				                 NOTICE_VISITED,
+				                 NOTICE_DATE,
+						   		 NOTICE_IMG_ORIGINNAME
+		                  FROM
+		                       NOTICE
+		                 WHERE
+		                      STATUS ='Y'
+		                 ORDER
+		                    BY
+		                      NOTICE_NO DESC))
+		   WHERE
+		        RNUM BETWEEN #{startValue} AND #{endValue}
+		
+		</select>
+		<select id="searchCount" resultType="hashmap" parameterType="int">
+			<include refid="selectNotice"/>
+		    FROM
+		        NOTICE
+		   WHERE
+		        STATUS = 'Y'
+		   <if test="condition == 'writer'">
+		    AND
+		       USER_ID
+		   </if>
+		   <if test="condition == 'title'">
+		    AND
+		       NOTICE_TITLE
+		   </if>
+		   <if test="condition == 'content'">
+		    AND
+		        NOTICE_CONTENT
+		   </if>
+		
+		        LIKE '%' || #{keyword} || '%'
+		</select>
+
+		<select id="findByConditionAndKeyword" parameterType="hashmap" resultType="notice">
+			<include refid="selectNotice"/>
+		      FROM
+		          NOTICE
+		     WHERE
+		          STATUS ='Y'
+		
+		  <choose>
+		  	<when test="condition == 'writer'">
+		  	   AND USER_ID
+		  	</when>
+		  	<when test="condition == 'title'">
+		  	   AND NOTICE_TITLE
+		  	</when>
+		  	<otherwise>
+		  	   AND NOTICE_CONTENT
+		  	</otherwise>
+		  </choose>
+		      LIKE '%' || #{keyword} || '%'
+		     ORDER
+		        BY
+		          NOTICE_NO DESC
+		</select>
+		
+		
+		<insert id="insert" parameterType="notice">
+			INSERT
+			  INTO
+			      NOTICE
+			      (
+			      NOTICE_NO,
+			      NOTICE_TITLE,
+			      NOTICE_CONTENT,
+			      USER_ID,
+			      NOTICE_IMG_ORIGINNAME,
+			      NOTICE_ORIGINNAME
+			      )
+		     VALUE
+		</insert>
+		
+		<update id="increaseCount" parameterType="_int">
+			UPDATE
+				   NOTICE
+			   SET
+				   NOTICE_VISITED = NOTICE_VISITED + 1
+			 WHERE
+			 	   NOTICE_NO = #{noticeNo}
+			   AND
+			   	   STATUS = 'Y'
+		</update>
+		
+		<select id="findById" parameterType="_int" resultType="notice">
+			<include refid="selectNotice" />
+			 FROM
+				  NOTICE
+			WHERE
+				  NOTICE_NO = #{noticeNo}
+		</select>
+
+		<update id="delete" parameterType="_int">
+			UPDATE
+				   NOTICE
+			   SET
+			   	   STATUS = 'N'
+			 WHERE
+			 	   NOTICE_NO = #{noticeNo}
+		</update>
+
+		<update id="update" parameterType="notice">
+			UPDATE
+				   NOTICE
+			   SET
+				   NOTICE_TITLE = #{noticeTitle},
+				   NOTICE_CONTENT = #{noticeContent},
+				   NOTICE_IMG_ORIGINNAME = #{noticeImgOriginName},
+				   NOTICE_IMG_CHANGENAME = #{noticeImgChangeName},
+				   NOTICE_ORIGINNAME = #{noticeOriginName},
+				   NOTICE_CHANGENAME = #{noticeChangeName},
+			 WHERE
+				   NOTICE_NO = #{noticeNo}
+		</update>
+
+
+		<!--  -->
+		<select id="selectNoticeFile" resultType="noticeFile" parameterType="noticeFile">
+			SELECT
+				NOTICE_NO noticeNo,
+				NOTICE_IMG_ORIGINNAME noticeImgOriginName,
+				NOTICE_ORIGINNAME noticeOriginName
+			FROM
+				NOTICE
+			WHERE
+				STATUS = 'Y'
+			AND
+				SEQ_NNO = #{noticeNo}
+				
+			ORDER
+			   BY
+				NOTICE_NO DESC               	
+		</select>
+
+		<!-- update를 할 떄 공지사항 글만 업데이를 하면 되는지(첨부파일 포함) , 아님 파일을 따로 업데이트 해야 하는지  -->	
+		<select id="updateNoticeFile" resultType="noticeFile" parameterType="noticeFile">
+		  INSERT
+			INTO
+				NOTICE_FILE
+				(
+				NOTICE_NO noticeNo,
+				NOTICE_IMG_ORIGINNAME noticeImgOriginName,
+				NOTICE_ORIGINNAME noticeOriginName
+				)
+		  VALUES
+			    (
+				#{noticeNo},
+				#{noticeImgOriginName},
+				#{noticeOriginName}
+				)
+				
+		</select>	
+			
+		<resultMap id="noticeResultSet" type="notice">
+		   <id     column="NOTICE_NO"      property="noticeNo" />
+		   <result column="NOTICE_TITLE"   property="noticeTitle" />
+		   <result column="NOTICE_CONTENT" property="noticeContent" />
+		   <result column="NOTICE_WRITER"  property="noticeWriter" />
+		   <result column="NOTICE_VISITED"         property="noticeVisited" />
+		
+		   <result column="NOTICE_DATE" property="noticeDate" />
+		   <collection resultMap="noticeFileResultSet" property="noticeFileList" />
+		</resultMap>
+		<resultMap id="noticeFileResultSet" type="noticeFile">
+			<id     column="NOTICE_NO"        property="noticeNo" />
+		   <result column="NOTICE_IMG_ORIGINNAME"   property="noticeImgOriginName" />
+		   <result column="NOTICE_IMG_CHANGENAME"   property="noticeImgChangeName" />
+		   <result column="NOTICE_ORIGINNAME"   property="noticeOriginName" />
+		   <result column="NOTICE_CHANGENAME"   property="noticeChangeName" />
+		</resultMap>
+		
+		
+</mapper>
