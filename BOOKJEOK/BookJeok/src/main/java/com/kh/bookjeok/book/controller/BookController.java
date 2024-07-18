@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,8 +47,6 @@ public class BookController {
 	
 	@GetMapping("isbnCheck")
 	public ResponseEntity<Message> isbnCheck(String isbn) {
-		
-		log.info("isbn : {}",isbn);
 		int response = bookService.isbnCheck(isbn);
 		if(response == 0) {
             Message responseMsg = Message.builder()
@@ -70,6 +69,9 @@ public class BookController {
 									        @RequestParam(required = false) MultipartFile bookCoverFile,
 									        @RequestParam String categoryString,
 									        HttpSession session) {
+		
+		System.out.println("categoryString : "+categoryString);
+		log.info("categoryString log :{}",categoryString);
 		if(bookCoverFile != null && !bookCoverFile.isEmpty()) { //파일로 들어올 때 
 			String coverPath = fileUploadService.saveFile(bookCoverFile, session);
 			book.setBookCover(coverPath);
@@ -99,7 +101,7 @@ public class BookController {
 			return 	ResponseEntity.status(HttpStatus.OK).body(Message.builder()
 																	.message("도서 저장 실패")
 																	.build());
-			}
+		}
 	}
 
 	@PostMapping("saveBookDetail")
@@ -285,11 +287,10 @@ public class BookController {
 		 PageInfo pageInfo = PageInfo.getPageInfo(totalBooks, page, pageLimit, pageSize);
 		 int start = pageInfo.getStartValue();
 		 int end = Math.min(pageInfo.getEndValue(),totalBooks);
-		
-		 List<BookCategoryDetail> paginatedBook = bookList.subList(start, end);
+
 		 
-		 System.out.println(start);
-		 System.out.println(end);
+		 List<BookCategoryDetail> paginatedBook = bookList.subList(start, end);
+		 System.out.println(paginatedBook.get(0).getBookPubDate());
 		 
 		 Message responsMsg = Message.builder()
 				 					 .data(paginatedBook)
@@ -297,10 +298,20 @@ public class BookController {
 				 					 .build();
 		 return ResponseEntity.status(HttpStatus.OK).body(responsMsg);
 	 }
-	 
-	 //모달띄우기
-	 //bookNo로
-	 
-
+	 /*
+	 @PutMapping("update")
+	 public ResponseEntity<Message> updateBookBybookNo(Book book,
+												        @RequestParam(required = false) String bookCoverText,
+												        @RequestParam(required = false) MultipartFile bookCoverFile,
+												        @RequestParam String categoryString,
+												        HttpSession session){
+		 
+		 
+		 
+		 
+		 return "";
+		 
+	 }
+	*/
 	
 }

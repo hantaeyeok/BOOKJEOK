@@ -21,7 +21,7 @@ public class BookCategoryDetail {
     private String bookTitle;
     private String bookAuthor;
     private String bookPublisher;
-    private Date bookPubDate;
+    private String bookPubDate;
     private String bookIsbn;
     private int bookPrice;
     private String bookDescription;

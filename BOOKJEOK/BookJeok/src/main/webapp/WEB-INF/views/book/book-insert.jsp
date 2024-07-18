@@ -80,8 +80,8 @@
                                 </select>
                                 <br>
                                 <input type="text" class="form-control-file" id="bookCoverText"  name="bookCoverText" style="display: none"/>
-                                <input type="file" class="form-control-file" id="bookCoverFile"  name="bookCoverFile" style="display: none"/>
-                                <img id="coverPreview" src="http://via.placeholder.com/150x150" class="img-fluid" alt="책 표지 미리보기">
+					            <input type="file" class="form-control-file" id="bookCoverFile"  name="bookCoverFile" style="display: none" onchange="previewCoverImage(this)"/>
+					            <img id="coverPreview" src="http://via.placeholder.com/150x150" class="img-fluid" alt="책 표지 미리보기">
                             </div>
                         </div>
                         <script>
@@ -105,11 +105,12 @@
                                 if (input.files && input.files[0]) {
                                     var reader = new FileReader();
                                     reader.onload = function(e) {
-                                        $('#coverPreview').attr('src', e.target.result);
+                                    	document.getElementById('coverPreview').src = e.target.result;
                                     }
                                     reader.readAsDataURL(input.files[0]);
                                 }
                             }
+                            
                         </script>
                         <div class="col-md-6">
                             <div class="form-group">
@@ -169,7 +170,6 @@
                             </div>
                         </div>
                     </div>
-                    <input type="hidden" id="categoryString" name="categoryString">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -203,7 +203,6 @@
                         <input type="file" class="form-control" id="detailImage" name="detailImage" onchange="previewImage(this, 'imagePreview')">
                         <div class="image-preview" id="imagePreview">
                             <img src="" alt="상세 설명 이미지" style="max-height: 300px;">
-                            <span>이미지 없음</span>
                         </div>
                         <div class="form-group">
                             <label for="detailDescription">상세 설명</label>
@@ -216,9 +215,17 @@
             </div>
         </div>
     </div>
-
-
-
+<script>
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            $('#imagePreview img').attr('src', e.target.result);
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
 
 
 <script>
@@ -493,9 +500,9 @@ function saveAll() {
 	    categoryString += '>' + lowerCategory;
 	}
     
-    const $categoryString = $('#categoryString').val(categoryString);
+    
     var bookFormData = new FormData($('#bookForm').get(0));
-    bookFormData.append('categoryString',$categoryString);
+    bookFormData.append('categoryString',categoryString);
     
     $.ajax({
         url: 'saveBook',
@@ -540,15 +547,7 @@ function saveBookDetail() {
     });
 }
 
-function previewImage(input) {
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            $('#imagePreview img').attr('src', e.target.result);
-        }
-        reader.readAsDataURL(input.files[0]);
-    }
-}
+
 </script>
 </body>
 </html>

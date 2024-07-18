@@ -444,7 +444,7 @@ SELECT
 	    b.BOOK_TITLE bookTitle,
 	    b.BOOK_AUTHOR bookAuthor,
 	    b.BOOK_PUBLISHER bookPublisher,
-	    b.BOOK_PUB_DATE bookPubDate,
+	    TO_CHAR(b.BOOK_PUB_DATE, 'YYYY-MM-DD') bookPubDate,
 	    b.BOOK_ISBN bookIsbn,
 	    b.BOOK_PRICE bookPrice,
 	    b.BOOK_DESCRIPTION bookDescription,

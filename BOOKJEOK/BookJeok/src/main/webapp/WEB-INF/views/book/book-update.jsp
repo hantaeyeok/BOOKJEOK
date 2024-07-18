@@ -76,8 +76,8 @@
                                 </select>
                                 <br>
                                 <input type="text" class="form-control-file" id="bookCoverText"  name="bookCoverText" style="display: none"/>
-                                <input type="file" class="form-control-file" id="bookCoverFile"  name="bookCoverFile" style="display: none"/>
-                                <img id="coverPreview" src="http://via.placeholder.com/150x150" class="img-fluid" alt="책 표지 미리보기">
+					            <input type="file" class="form-control-file" id="bookCoverFile"  name="bookCoverFile" style="display: none" onchange="previewCoverImage(this)"/>
+					            <img id="coverPreview" src="http://via.placeholder.com/150x150" class="img-fluid" alt="책 표지 미리보기">
                             </div>
                         </div>
                         <script>
@@ -101,7 +101,7 @@
                                 if (input.files && input.files[0]) {
                                     var reader = new FileReader();
                                     reader.onload = function(e) {
-                                        $('#coverPreview').attr('src', e.target.result);
+                                    	document.getElementById('coverPreview').src = e.target.result;
                                     }
                                     reader.readAsDataURL(input.files[0]);
                                 }
@@ -127,7 +127,6 @@
                             <div class="form-group">
                                 <label for="isbn">ISBN</label>
                                 <input type="text" class="form-control" id="isbn" name="bookIsbn" required>
-                                <button type="button" class="btn btn-info mt-2" onclick="checkIsbn()">유효성 검사</button>
                             </div>
                         </div>
                     </div>
@@ -165,7 +164,6 @@
                             </div>
                         </div>
                     </div>
-                    <input type="hidden" id="categoryString" name="categoryString">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -196,7 +194,7 @@
                     <input type="hidden" id="bookNo" name="bookNo">
                     <div class="form-group">
                         <label for="detailImage">상세설명 이미지 추가</label>
-                        <input type="file" class="form-control" id="detailImage" name="detailImage" onchange="previewImage(this, 'imagePreview')">
+                        <input type="file" class="form-control" id="detailImageId" name="detailImage" onchange="previewImage(this, 'imagePreview')">
                         <div class="image-preview" id="imagePreview">
                             <img src="" alt="상세 설명 이미지" style="max-height: 300px;" id="detailImage">
                             <span>이미지 없음</span>
@@ -208,7 +206,7 @@
                     </div>
                     <button type="submit" class="btn btn-primary" style="display: none">도서 등록 및 상세 정보 저장</button>
                 </form>
-                <button class="btn btn-primary" id="saveAllbtn">도서 등록 및 상세 정보 저장</button>
+                <button class="btn btn-primary" id="saveAllbtn">도서 등록 및 상세 수정</button>
             </div>
         </div>
     </div>
@@ -223,9 +221,10 @@
 
 <script>
 var currentPage = 1;
-//검색버튼 누르면 db에서 데이터 5개만 날라옴.
+var bookData = {};
+
 function searchBooks() {
-    var $keyword = $('#keyword').val(); 
+   var $keyword = $('#keyword').val(); 
    console.log(typeof currentPage);
     $.ajax({
         url: '/bookjeok/book/update',
@@ -235,83 +234,63 @@ function searchBooks() {
         success: result => {
             const books = result.data;
             console.log(books);
-            console.log(result);
+            bookData = {}; //검색 할때 bookData 초기화
             let rows = '';
-            for (let i = 0; i < books.length; i++) {
-                rows += buildBookRow(books[i]);
-            }
+			books.forEach((book) => {
+				const bookId = "book" + book.bookNo; //문자열+숫자
+				bookData[bookId] = book;
+				rows += buildBookRow(book, bookId);
+			});             
             $('#modalBookResults').html(rows);
             $('#bookModal').modal('show'); 
         }
     });
 }
 
-function buildBookRow(item) {
-	console.log("item : ",item);
-    var setData = 'data-cover="' + item.bookCover + '" ' +
-                  'data-title="' + item.bookTitle + '" ' +
-                  'data-author="' + item.bookAuthor + '" ' +
-                  'data-publisher="' + item.bookPublisher + '" ' +
-                  'data-pubdate="' + item.bookPubDate + '" ' +
-                  'data-isbn="' + item.bookIsbn + '" ' +
-                  'data-description="' + item.bookDescription + '" ' +
-                  'data-price="' + item.bookPrice + '"' +
-                  'data-topCategory="' + item.topCategoryName + '" ' +
-                  'data-upperCategory="' + item.upperCategoryName + '" ' +
-                  'data-midCategory="' + item.midCategoryName + '" ' +
-                  'data-lowerCategory="' + item.lowerCategoryName + '" ' +
-                  'data-detailImage="' + item.detailImage + '" ' +
-                  'data-detailDescription="' + item.detailDescription + '" ' ;
-                  
-                 
-     console.log("setData : ",setData);  
-     console.log("setData . topcategory : ", setData.data-topCategory);
-     console.log(typeof setData.data-topCategory);
-     console.log((setData.data-topCategory).toString);
-                  
-    return '<tr onclick="selectBook(this)" ' + setData + '>' +
-           '<td><img src="' + item.bookCover + '" style="width:100px;height:150px;"></td>' +
-           '<td>' + item.bookTitle + '</td>' +
-           '<td>' + item.bookAuthor + '</td>' +
-           '<td>' + item.bookPublisher + '</td>' +
-           '<td>' + item.bookIsbn + '</td>' +
-           '<td><button class="btn btn-primary" onclick="closeModal()">선택</button></td>' +
+function buildBookRow(book, bookId) {
+    return '<tr id="' + bookId + '" onclick="selectBook(\'' + bookId + '\')">' +
+           '<td><img src="' + book.bookCover + '" style="width:100px; height:150px;"></td>' +
+           '<td>' + book.bookTitle + '</td>' +
+           '<td>' + book.bookAuthor + '</td>' +
+           '<td>' + book.bookPublisher + '</td>' +
+           '<td>' + book.bookIsbn + '</td>' +
+           '<td><button class="btn btn-primary" onclick="selectBook(\'' + bookId + '\')"; closeModal();">선택</button></td>' +
            '</tr>';
+}
+
+function selectBook(bookId) {
+    var book = bookData[bookId];
+    $('#coverPreview').attr('src', book.bookCover);
+    $('#title').val(book.bookTitle);
+    $('#author').val(book.bookAuthor);
+    $('#publisher').val(book.bookPublisher);
+
+    
+    
+    $('#isbn').val(book.bookIsbn);
+    $('#description').val(book.bookDescription);
+    $('#price').val(book.bookPrice);
+    $('#bookAmount').val(book.bookAmount);  // 재고 데이터 불러오기
+    $('#detailImage').attr('src', book.detailImage); // 상세 설명 이미지 불러오기
+    $('#detailDescription').val(book.bookDescription); // 상세 설명 불러오기
+    $('#bookNo').val(book.bookNo);
+
+    $('#pubDate').val(book.bookPubDate);
+    setCategory('topCategory', book.topCategoryName);
+    setCategory('upperCategory', book.upperCategoryName);
+    setCategory('midCategory', book.midCategoryName);
+    setCategory('lowerCategory', book.lowerCategoryName);
+}
+
+function formatDate(date) {
+    return date.toLocaleDateString();
 }
 
 function closeModal() {
     $('#bookModal').modal('hide');
 }
 
-function selectBook(tr) {
-    var $tr = $(tr);
-    var lowerCategory = $tr.data('lowerCategory');
 
-   
-    console.log("Lower Category:", lowerCategory);
-    
-    $('#coverPreview').attr('src', $tr.data('cover'));
-    $('#title').val($tr.data('title'));
-    $('#author').val($tr.data('author'));
-    $('#publisher').val($tr.data('publisher'));
-    $('#pubDate').val($tr.data('pubdate'));
-    $('#isbn').val($tr.data('isbn'));
-    $('#description').val($tr.data('description'));
-    $('#price').val($tr.data('price'));
-    $('#bookCoverText').val($tr.data('cover'));
-    $('#detailImage').attr('src', $tr.data('detailImage'));
-    $('#detailDescription').val($tr.data('detailDescription'));
-    
-//    $('#topCategory').val($tr.data('topCategory'));
-//    $('#upperCategory').val($tr.data('upperCategory'));
-//    $('#midCategory').val($tr.data('midCategory'));
-//    $('#lowerCategory').val($tr.data('lowerCategory'));
-    
-    setCategory('topCategory', $tr.data('topCategory'));
-    setCategory('upperCategory', $tr.data('upperCategory'));
-    setCategory('midCategory', $tr.data('midCategory'));
-    setCategory('lowerCategory', $tr.data('lowerCategory'));
-}
 
 function setCategory(categoryId, categoryValue) {
     var categorySelect = $('#' + categoryId);
@@ -332,7 +311,6 @@ $(document).ready(function() {
     });
     
     fetchTopCategories();
-
 });
 
 function fetchTopCategories() {
@@ -476,10 +454,12 @@ function saveAll() {
 	    categoryString += '>' + lowerCategory;
 	}
     
-    const $categoryString = $('#categoryString').val(categoryString);
+
+    const $bookNo = $('#bookNo').val();
     
     var bookFormData = new FormData($('#bookForm').get(0));
-    bookFormData.append('categoryString',$categoryString);
+    bookFormData.append('bookNo', $bookNo)
+    bookFormData.append('categoryString',categoryString);
     
     $.ajax({
         url: 'saveBook',

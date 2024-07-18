@@ -30,15 +30,7 @@ public class FileUploadService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(changeName);
-        log.info("changName : {}",changeName);
         return "resources/uploadFiles/" + changeName;
     }
 
 }
-
-/*
- 파일 업로드 service 만들어서 메서드 호출해서 사용하세용
- 
- 
- */
