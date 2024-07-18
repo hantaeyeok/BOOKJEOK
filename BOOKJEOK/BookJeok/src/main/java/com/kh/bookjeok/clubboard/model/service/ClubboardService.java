@@ -9,9 +9,9 @@ public interface ClubboardService {
 
 	int clubboardCount();
 
-	List<Clubboard> findAllClubboard(Map<String, Integer> map);
+	List<Clubboard> findAllClubboard(Map<String, Object> map);
 	
-	List<Clubboard> findByClubStatus(Map<String, Integer> map);
+	List<Clubboard> findByClubStatus(Map<String, Object> map);
 
 	int insertClubboard(Clubboard clubboard);
 	

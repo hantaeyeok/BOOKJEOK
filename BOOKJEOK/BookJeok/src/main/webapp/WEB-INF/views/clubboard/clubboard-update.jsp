@@ -84,19 +84,54 @@
                     <tr>
                         <th><label for="upfile">이미지 파일</label></th>
                         <td>
-                            <input type="file" id="upfile" class="form-control-file border" name="upFile" accept="image/*">
-                            현재 업로드된 파일 : 
-                            <a href="" download=""></a>
+                            <input type="file" id="upfile" class="form-control-file border" name="reUpFile" accept="image/*" onchange="loadImg(this);">
+                            <c:if test="${not empty clubboard.clubboardOriginname }">
+                            	<input type="hidden" name="clubboardOriginname" value="${clubboard.clubboardOriginname }">
+                            	<input type="hidden" name="clubboardChangename" value="${clubboard.clubboardChangename }">
+	                            현재 업로드된 파일 : 
+	                            <a href="${clubboard.clubboardChangename }" 
+	                               download="${clubboard.clubboardOriginname }">
+	                            	${clubboard.clubboardOriginname }   
+	                            </a>
+                            </c:if>
                         </td>
                     </tr>
                     <tr>
                         <th colspan="2">
                             <div id="img-area">
-                                <img src="https://st.kakaocdn.net/shoppingstore/store/20240528180123_b9a6145839c346e3a34304f14163d941.png" alt="">
+                            	<c:choose>
+                            		<c:when test="${empty clubboard.clubboardOriginname }">
+                                		<img id="introImg" src="https://st.kakaocdn.net/shoppingstore/store/20240528180123_b9a6145839c346e3a34304f14163d941.png" alt="소개이미지">
+                            		</c:when>
+                            		<c:otherwise>
+                            			<img id="introImg" src="${clubboard.clubboardChangename }" alt="소개이미지">
+                            		</c:otherwise>
+                            	</c:choose>
                             </div>
                         </th>
                     </tr>
                 </table>
+                
+                <script>
+                	function loadImg(inputFile) {
+                		
+                		if(inputFile.files.length) {
+                			
+                			const reader = new FileReader();
+                			
+                			reader.readAsDataURL(inputFile.files[0]);
+                			
+                			reader.onload = e => {
+                				
+                				document.getElementById('introImg').src = e.target.result;
+                			}
+                			
+                		} else {
+                			
+                			document.getElementById('introImg').src = "https://st.kakaocdn.net/shoppingstore/store/20240528180123_b9a6145839c346e3a34304f14163d941.png";
+                		}
+                	}
+                </script>
                 <br>
 
                 <div align="center">

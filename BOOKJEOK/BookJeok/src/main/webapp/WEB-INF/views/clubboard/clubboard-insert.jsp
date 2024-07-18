@@ -73,17 +73,37 @@
                     </tr>
                     <tr>
                         <th><label for="upfile">이미지 파일</label></th>
-                        <td><input type="file" id="upfile" class="form-control-file border" name="upFile" accept="image/*"></td>
+                        <td><input type="file" id="upfile" class="form-control-file border" name="upFile" accept="image/*" onchange="loadImg(this);"></td>
                     </tr>
                     <tr>
                         <th colspan="2">
                             <div id="img-area">
-                                <img src="https://st.kakaocdn.net/shoppingstore/store/20240528180123_b9a6145839c346e3a34304f14163d941.png" alt="기본이미지">
+                                <img id="introImg" src="https://st.kakaocdn.net/shoppingstore/store/20240528180123_b9a6145839c346e3a34304f14163d941.png" alt="기본이미지">
                             </div>
                         </th>
                     </tr>
                 </table>
                 <br>
+                <script>
+                	function loadImg(inputFile) {
+                		
+                		if(inputFile.files.length) {
+                			
+                			const reader = new FileReader();
+                			
+                			reader.readAsDataURL(inputFile.files[0]);
+                			
+                			reader.onload = e => {
+                				
+                				document.getElementById('introImg').src = e.target.result;
+                			}
+                			
+                		} else {
+                			
+                			document.getElementById('introImg').src = "https://st.kakaocdn.net/shoppingstore/store/20240528180123_b9a6145839c346e3a34304f14163d941.png";
+                		}
+                	}
+                </script>
 
                 <div align="center">
                     <button type="submit" class="btn btn-primary">작성하기</button>

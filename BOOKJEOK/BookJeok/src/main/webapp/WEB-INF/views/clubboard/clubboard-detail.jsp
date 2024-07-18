@@ -16,27 +16,28 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            width:80%;
+           	width: 80%;
             margin:auto;
         }
         
         .container {
             background-color: #ffffff;
             border: 1px solid #ddd;
-            padding: 20px;
-            width: 600px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             margin : 100px;
+        }
+        
+        #container {
+        	width: 55%;
+        	padding: 20px 30px;
         }
         
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            margin-left: 10px;
-            margin-right: 10px;
+            margin: 10px;
         }
         
         .header .badge {
@@ -45,7 +46,15 @@
             padding: 7px 10px;
             border-radius: 5px;
             font-size: 14px;
-            width: 70px;
+        }
+        
+        /* 상태에 따라 다른 스타일 적용 */
+        .header .recruiting {
+            background-color: #20c997; /* 모집중 배경색 */
+        }
+
+        .header .completed {
+            background-color: red; /* 모집완료 배경색 */
         }
         
         .header .writer {
@@ -68,6 +77,7 @@
             justify-content: center;
             align-items: center;
             border : 1px solid #ddd;
+            margin-left: 20px;
         }
         
         .image-container img {
@@ -77,8 +87,8 @@
         
         .content {
         	display: inline-block;
-        	margin-right: 20px;
-        	margin-top: 20px;
+        	margin-right: 40px;
+        	margin-top: 10px;
         	float: right;
         }
         
@@ -89,7 +99,14 @@
         .content label {
             font-weight: bold;
             display: inline-block;
-            width: 100px;
+            width: 120px;
+            height: 30px;
+            text-align: center;
+            vertical-align : center;
+            border : 1px solid #fff;
+            background-color : #d5d5d5;
+            border-radius: 10px;
+            padding: 2px;
         }
         
         .content .value {
@@ -138,75 +155,83 @@
     </style>
 </head>
 <body>
+	<jsp:include page="../common/menubar.jsp" />
 	<div class="container-box">
-    <div class="container">
-        <div class="header">
-        	<span class="writer">작성자 : ${clubboard.userId }</span>
-            <span class="badge">${clubboard.clubStatus }</span>
-        </div>
-        <hr>
-        <div class="image-container">
-            <c:choose>
-      			<c:when test="${ empty clubboard.clubboardChangename }">
-      				<img src="https://st.kakaocdn.net/shoppingstore/store/20240528180123_b9a6145839c346e3a34304f14163d941.png" class="card-img-top" alt="소개이미지">
-      			</c:when>
-      			<c:otherwise>
-      				<img src="${clubboard.clubboardChangename }" class="card-img-top" alt="소개이미지">
-      			</c:otherwise>
-    		</c:choose>
-        </div>
-        <div class="content">
-            <div>
-                <label>독서 모임 명 : </label>
-                <span class="value">${clubboard.bookclubName }</span>
-            </div>
-            <div>
-                <label>모집 인원 : </label>
-                <span class="value">${clubboard.clubNumber }명</span>
-            </div>
-            <div>
-                <label>신청 인원 : </label>
-                <span class="value">#명</span>
-            </div>
-            <div>
-                <label>모집 기간 : </label>
-                <span class="value">${clubboard.clubboardDate } ~ ${clubboard.clubPeriod }</span>
-            </div>
-        </div>
-        <hr>
-        <div class="title-container">
-            <span class="title" id="title">${clubboard.clubboardTitle }</span>
-        </div>
-        <div class="textarea-container">
-            ${clubboard.clubboardContent }
-        </div>
-        <c:choose>
-	        <c:when test="${sessionScope.loginUser.userId eq clubboard.userId }">
-		        <div class="buttons">
-		            <a class="btn btn-success" href="updateForm.clubboard?clubboardNo=${clubboard.clubboardNo }">수정</a>
-		            <a class="btn btn-danger" href="delete.clubboard?clubboardNo=${clubboard.clubboardNo }">삭제</a>
-		            <a class="btn btn-info" href="list.clubboard">목록으로</a>
-		        </div>
-	        </c:when>
-	        <c:otherwise>
-	        	<c:choose>
-	        		<c:when test="${sessionScope.loginUser.userId eq 'admin'}">
-			        	<div class="buttons">
-				            <a class="btn btn-primary" href="#">신청하기</a>
+	    <div class="container" id="container">
+	        <div class="header">
+	        	<span class="writer">작성자 : ${clubboard.userId }</span>
+	            <span class="badge ${clubboard.clubStatus == '모집중' ? 'recruiting' : 'completed'}">${clubboard.clubStatus }</span>
+	        </div>
+	        <hr>
+	        <div class="image-container">
+	            <c:choose>
+	      			<c:when test="${ empty clubboard.clubboardChangename }">
+	      				<img src="https://st.kakaocdn.net/shoppingstore/store/20240528180123_b9a6145839c346e3a34304f14163d941.png" class="card-img-top" alt="소개이미지">
+	      			</c:when>
+	      			<c:otherwise>
+	      				<img src="${clubboard.clubboardChangename }" class="card-img-top" alt="소개이미지">
+	      			</c:otherwise>
+	    		</c:choose>
+	        </div>
+	        <div class="content">
+	            <div>
+	                <label>모임 명</label>
+	                <span class="value">${clubboard.bookclubName }</span>
+	            </div>
+	            <div>
+	                <label>모집 인원</label>
+	                <span class="value">${clubboard.clubNumber }명</span>
+	            </div>
+	            <div>
+	                <label>신청 인원</label>
+	                <span class="value">#명</span>
+	            </div>
+	            <div>
+	                <label>모집 기간</label>
+	                <span class="value">${clubboard.clubboardDate } ~ ${clubboard.clubPeriod }</span>
+	            </div>
+	        </div>
+	        <hr>
+	        <div class="title-container">
+	            <span class="title" id="title">${clubboard.clubboardTitle }</span>
+	        </div>
+	        <div class="textarea-container">
+	            ${clubboard.clubboardContent }
+	        </div>
+	        <c:if test="${not empty sessionScope.loginUser.userId }">
+		        <c:choose>
+			        <c:when test="${sessionScope.loginUser.userId eq clubboard.userId }">
+				        <div class="buttons">
+				            <a class="btn btn-success" href="updateForm.clubboard?clubboardNo=${clubboard.clubboardNo }">수정</a>
 				            <a class="btn btn-danger" href="delete.clubboard?clubboardNo=${clubboard.clubboardNo }">삭제</a>
 				            <a class="btn btn-info" href="list.clubboard">목록으로</a>
 				        </div>
 			        </c:when>
 			        <c:otherwise>
-			        	<div class="buttons">
-				            <a class="btn btn-primary" href="#">신청하기</a>
-				            <a class="btn btn-info" href="list.clubboard">목록으로</a>
-				        </div>
+			        	<c:choose>
+			        		<c:when test="${sessionScope.loginUser.userId eq 'admin'}">
+					        	<div class="buttons">
+						            <a class="btn btn-primary" href="#">신청하기</a>
+						            <a class="btn btn-danger" href="delete.clubboard?clubboardNo=${clubboard.clubboardNo }">삭제</a>
+						            <a class="btn btn-info" href="list.clubboard">목록으로</a>
+						        </div>
+					        </c:when>
+					        <c:otherwise>
+					        	<div class="buttons">
+						            <a class="btn btn-primary" href="#">신청하기</a>
+						            <a class="btn btn-info" href="list.clubboard">목록으로</a>
+						        </div>
+					        </c:otherwise>
+			        	</c:choose>
 			        </c:otherwise>
-	        	</c:choose>
-	        </c:otherwise>
-        </c:choose>
-    </div>
+		        </c:choose>
+	        </c:if>
+	        <c:if test="${empty sessionScope.loginUser.userId }">
+	        	<div class="buttons">
+		            <a class="btn btn-info" href="list.clubboard">목록으로</a>
+		        </div>
+	        </c:if>
+	    </div>
     </div>
 </body>
 </html>

@@ -36,22 +36,29 @@ public class ClubboardController {
 	public String list(@RequestParam(value="page", defaultValue="1") int page,
 			   		   Model model,
 			           HttpSession session,
-			           String clubStatus) {
+			           @RequestParam(value="clubStatus", defaultValue="all") String clubStatus) {
 		
 		int listCount = clubboardService.clubboardCount();
 		//listCount, currentPage, pageLimit, boardLimit
 		PageInfo pageInfo = PageInfo.getPageInfo(listCount, page, 5, 8);
 		
-		Map<String, Integer> map = new HashMap();
+		Map<String, Object> map = new HashMap();
 		
 		map.put("startValue", pageInfo.getStartValue());
 		map.put("endValue", pageInfo.getEndValue());
+		map.put("clubStatus", clubStatus);
 		
-		List<Clubboard> totalClubboard = clubboardService.findAllClubboard(map);
-		List<Clubboard> statusClubboard = clubboardService.findByClubStatus(map);
+		if (clubStatus.equals("all")) {
+			
+			List<Clubboard> clubboard = clubboardService.findAllClubboard(map);
+	        model.addAttribute("clubboard", clubboard);
+	        
+	    } else {
+	    	
+			List<Clubboard> clubboard = clubboardService.findByClubStatus(map);
+	        model.addAttribute("clubboard", clubboard);
+	    }
 		
-		model.addAttribute("totalClubboard", totalClubboard);
-		model.addAttribute("statusClubboard", statusClubboard);
 		model.addAttribute("pageInfo", pageInfo);
 		model.addAttribute("clubStatus", clubStatus);
 	

@@ -22,12 +22,12 @@ public class ClubboardServiceImpl implements ClubboardService {
 	}
 
 	@Override
-	public List<Clubboard> findAllClubboard(Map<String, Integer> map) {
+	public List<Clubboard> findAllClubboard(Map<String, Object> map) {
 		return clubboardMapper.findAllClubboard(map);
 	}
 
 	@Override
-	public List<Clubboard> findByClubStatus(Map<String, Integer> map) {
+	public List<Clubboard> findByClubStatus(Map<String, Object> map) {
 		return clubboardMapper.findByClubStatus(map);
 	}
 
