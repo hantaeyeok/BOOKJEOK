@@ -1,9 +1,12 @@
 package com.kh.bookjeok.member.controller;
 
+import java.io.IOException;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpSession;
 
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,14 +17,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.bookjeok.common.model.Message;
+import com.kh.bookjeok.member.model.service.KakaoService;
 import com.kh.bookjeok.member.model.service.MemberService;
 import com.kh.bookjeok.member.model.vo.Member;
 import com.kh.bookjeok.member.model.vo.PwResetKey;
+import com.kh.bookjeok.member.model.vo.SocialMember;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,6 +38,45 @@ public class MemberController {
 	
 	@Autowired
 	private JavaMailSender sender;
+	
+	@Autowired
+	private KakaoService kakaoService;
+	
+	
+	@ResponseBody
+	@GetMapping("/oauth")
+	public void socialLogin(HttpSession session, String code, ModelAndView mv) throws IOException, ParseException {
+		if(session.getAttribute("loginUser")==null) {
+			String accessToken = kakaoService.getToken(code);
+			session.setAttribute("accessToken", accessToken);
+			
+			SocialMember sm = kakaoService.getUserInfo(accessToken);
+			Member socialMember = Member.builder()
+					.userId(sm.getId())
+					.userName(sm.getNickName())
+					.userPwd(bCryptPasswordEncoder.encode(sm.getId()+sm.getNickName()+sm.getThumbnailImg()))
+					.email("example"+sm.getId()+"@gmail.com")
+					.build();
+					//비밀번호 : 소셜 사용자의 경우 마이페이지 정보수정 등에서도 비밀번호 재확인을 물어보지 않고 그냥 넘어가므로, 임의의 
+					//이메일부분은 카카오에서 사업허가 등을 받고 카카오 이메일을 받아올 수 있게 된다면 그 이메일을 넣게 될 것이고, 현재는 임시 데이터를 집어넣었음 
+			Member memberDB = memberService.login(socialMember);
+			if (memberDB != null) {
+				session.setAttribute("loginUser", memberDB);
+				session.setAttribute("socialMember", "kakao");
+			} else {
+				int nnn = memberService.insertMem(socialMember);
+				if(nnn > 0) {
+					session.setAttribute("loginUser", socialMember);
+					session.setAttribute("socialMember", "kakao");
+				} else {
+					System.out.println("소셜로그인-가입 실패");
+				}
+			}
+		} else {
+			System.out.println("이미 로그인되어있습니다");
+		}
+		
+	}
 	
 	@ResponseBody
 	@PostMapping("findId")
@@ -168,7 +211,10 @@ public class MemberController {
 	}
 	
 	@GetMapping("logout")
-	public String logout(Member member, HttpSession session) {
+	public String logout(Member member, HttpSession session) throws IOException {
+		if (session.getAttribute("accessToken")!=null) {
+			kakaoService.logout((String)session.getAttribute("accessToken"));
+		}
 		session.removeAttribute("loginUser");
 		return "redirect:/";
 	}
@@ -203,14 +249,12 @@ public class MemberController {
 		//암호화구문 삽입 부분
 		String encPwd = bCryptPasswordEncoder.encode(member.getUserPwd());
 		member.setUserPwd(encPwd);
-		System.out.println("member.getUserPwd encode버전 : " + member.getUserPwd());
 
 		//DB 삽입구문
 		int nnn = memberService.insertMem(member);
 		//DB 삽입 성공시
 		if (nnn > 0) {
 			session.setAttribute("loginUser", member);
-			System.out.println("회원가입 성공 - session객체 loginUser : " + session.getAttribute("loginUser"));
 		} else {
 			System.out.println("회원가입 실패");
 		}
@@ -302,5 +346,15 @@ public class MemberController {
 		return member;
 	}
 	
-	
+	@GetMapping("editMemberInfoBfr")
+	public ModelAndView editMemberInfoBfr(HttpSession session, ModelAndView mv) {
+		if (session.getAttribute("socialMember") != null) { //소셜로그인 사용자의 경우 그냥 바로 수정창으로 넘어감
+			mv.addObject("PassEncryptPasscheck","OK")
+			  .setViewName("/member/EditMemberInfo");
+		} else {
+			mv.setViewName("member/EditMemberInfoBfr");
+		}
+		return mv;
+		
+	}
 }

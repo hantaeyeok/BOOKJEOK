@@ -69,11 +69,9 @@
 	</form>
 	</div>
 	<div style="width:30%; display:none;" id="page2">
-		입력하신 이메일로 비밀번호 확인 링크가 전송되었습니다.<br>
-		이메일을 확인하여주세요.<br>
-		※절대 아무에게도 공유하지 마세요!
+		비밀번호 재설정이 완료되었습니다.
 		<div style="width:100%; height:300px;"></div>
-		<button type="submit" class="btn btn-primary btn-lg btn-block" onclick="location.href='/member/loginform';">돌아가기</button>
+		<button type="submit" class="btn btn-primary btn-lg btn-block" onclick="location.href='/member/loginform';">로그인 창으로</button>
 	</div>
 </div>
 
