@@ -9,9 +9,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class PaymentForwardController {
 
 
-	@GetMapping("paymentOrder")
+	@GetMapping("payOrder")
 	public String payment() {
 		return "payment/payment-procedure";
+		
 	}
 	
+	@GetMapping("payComplete")
+	public String payCom() {
+		return "payment/payment-completion";
+		
+	}
 }
