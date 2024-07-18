@@ -14,8 +14,8 @@ public class NoticeFile {
 	private int noticeNo;
 	private String noticeImgOriginName;
 	private String noticeImgChangeName;
-	private String noticeOriginName;
-	private String noticeChangeName;
+	private String noticeTextOriginName;
+	private String noticeTextChangeName;
 
 		
 	}

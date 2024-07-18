@@ -70,7 +70,7 @@ public class NoticeServiceImpl implements NoticeService {
 			// TODO Auto-generated method stub
 			return 0;
 		}
-
+		//test
 		@Override
 		public List<Notice> noticeList() {
 			return noticeRepository.noticeList(sqlSession);

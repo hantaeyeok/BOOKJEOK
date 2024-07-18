@@ -110,10 +110,10 @@ public class NoticeController {
 	      
 	      model.addAttribute("pageInfo", pageInfo);	      
 	      
-	      List<Notice> notitiList = noticeService.noticeList();
-	      model.addAttribute("noticeList", notitiList);
+	      List<Notice> noticeList = noticeService.noticeList();
+	      model.addAttribute("noticeList", noticeList);
 	      
-	      return "notice/listNotice1";
+	      return "notice/listNotice";
 	   }
 	   
 	   
@@ -184,8 +184,8 @@ public class NoticeController {
 	      
 	      if(!upfile.getOriginalFilename().equals("")) {
 	         
-	         noticeFile.setNoticeOriginName(upfile.getOriginalFilename());
-	         noticeFile.setNoticeChangeName(saveFile(upfile, session));
+	         noticeFile.setNoticeTextOriginName(upfile.getOriginalFilename());
+	         noticeFile.setNoticeTextChangeName(saveFile(upfile, session));
 	      }
 	      
 	      
@@ -268,8 +268,8 @@ public class NoticeController {
 		   
 
 		   if(!reUpFile.getOriginalFilename().equals("")) {	  
-			   noticeFile.setNoticeOriginName(reUpFile.getOriginalFilename());
-			   noticeFile.setNoticeChangeName(saveFile(reUpFile, session));
+			   noticeFile.setNoticeTextOriginName(reUpFile.getOriginalFilename());
+			   noticeFile.setNoticeTextChangeName(saveFile(reUpFile, session));
 		   }
 		   
 		   if(noticeService.update(noticeFile) > 0) {
