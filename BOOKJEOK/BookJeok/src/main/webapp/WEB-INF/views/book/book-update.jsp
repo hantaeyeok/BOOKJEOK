@@ -191,33 +191,56 @@
             
                 <!-- 도서 상세 정보 표시 -->
                 <form id="bookDetailForm">
-                    <input type="hidden" id="bookNo" name="bookNo">
-                    <div class="form-group">
-                        <label for="detailImage">상세설명 이미지 추가</label>
-                        <input type="file" class="form-control" id="detailImageId" name="detailImage" onchange="previewImage(this, 'imagePreview')">
-                        <div class="image-preview" id="imagePreview">
-                            <img src="" alt="상세 설명 이미지" style="max-height: 300px;" id="detailImage">
-                            <span>이미지 없음</span>
-                        </div>
-                        <div class="form-group">
-                            <label for="detailDescription">상세 설명</label>
-                            <textarea class="form-control" id="detailDescription" name="detailDescription" rows="3"></textarea>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary" style="display: none">도서 등록 및 상세 정보 저장</button>
-                </form>
+					 <input type="hidden" id="bookNo" name="bookNo">
+					    <div class="form-group">
+					        <label for="detailImage">상세설명 이미지 추가</label>
+					        <select id="detailImageType">
+					            <option value="basic" selected>기존 이미지 사용</option>
+					            <option value="custom">이미지 변경</option>
+					        </select>
+					        <br>
+					        <input type="file" class="form-control" id="detailImageFile" name="detailImage" style="display: none" onchange="previewImage(this, 'imagePreview')">
+					        <div class="image-preview" id="imagePreview">
+					            <img src="" alt="상세 설명 이미지" style="max-height: 300px;" id="detailImage">
+					        </div>
+					    </div>
+					    <div class="form-group">
+					        <label for="detailDescription">상세 설명</label>
+					        <textarea class="form-control" id="detailDescription" name="detailDescription" rows="3"></textarea>
+					    </div>
+					    <button type="submit" class="btn btn-primary" style="display: none">도서 등록 및 상세 정보 저장</button>
+					</form>
                 <button class="btn btn-primary" id="saveAllbtn">도서 등록 및 상세 수정</button>
             </div>
         </div>
     </div>
+    
+    if (coverType === 'basic') {
+                                    textInput.name = 'bookCoverText';
+                                    fileInput.style.display = 'none';
+                                    fileInput.name = '';
+                                } else if (coverType === 'custom') {
+                                    fileInput.style.display = '';
+                                    fileInput.name = 'bookCoverFile';
+                                    textInput.name = '';
+                                }
+<script>
+		document.getElementById('detailImageType').addEventListener('change', function() {
+		    var detailImageSelect = document.getElementById('detailImageType').value;
+		    var detailImageUpload = document.getElementById('detailImageFile');
+		    
+		    if (detailImageSelect === 'basic') {
+		        detailImageUpload.style.display = 'none';
+		        detailImageUpload.name = '';
+		    } else if (detailImageSelect === 'custom') {
+		        detailImageUpload.style.display = '';
+		        detailImageUpload.name = 'detailImage';
+		    }
+		});
 
-<!-- 
-	1. 도서를 검색한다.
-	2. 도서 검색한 내용이 나온다.
-	3. 도서 검색한 내용을 수정한다.
-	4. 수정 내용을 저장한다.
 
- -->
+
+</script>
 
 <script>
 var currentPage = 1;
@@ -409,7 +432,23 @@ function toggleCustomInput(categoryLevel) {
 }
 
 let responseData;
-
+function logFormData(formData) {
+    for (var pair of formData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
+        
+        // 키의 타입은 항상 string입니다.
+        console.log('Type of ' + pair[0] + ': ' + typeof pair[0]);
+        
+        // 값의 타입을 확인합니다.
+        if (pair[1] instanceof File) {
+            console.log('Type of ' + pair[0] + ': File');
+        } else if (pair[1] instanceof Blob) {
+            console.log('Type of ' + pair[0] + ': Blob');
+        } else {
+            console.log('Type of ' + pair[0] + ': ' + typeof pair[1]);
+        }
+    }
+}
 //도서 정보와 상세 정보를 순차적으로 저장
 function saveAll() {
 	var topCategory, upperCategory, midCategory, lowerCategory, categoryString;
@@ -456,59 +495,74 @@ function saveAll() {
     
 
     const $bookNo = $('#bookNo').val();
+
     
-    var bookFormData = new FormData($('#bookForm').get(0));
-    bookFormData.append('bookNo', $bookNo)
-    bookFormData.append('categoryString',categoryString);
+    var bookFormDatal = new FormData($('#bookForm').get(0));
+    bookFormDatal.append('bookNo', $bookNo);
+    bookFormDatal.append('categoryString',categoryString);
+
+    //logFormData(bookFormDatal);
     
     $.ajax({
-        url: 'saveBook',
+        url: '/bookjeok/book/updateBook',
         type: 'POST',
-        data: bookFormData,
+        data: bookFormDatal,
         contentType: false,
         processData: false,
         success: response => {
-            if (response.message == '도서 저장 성공') {
+            if (response.message == '도서 수정 성공') {
                 console.log(response.data);
                 responseData = response.data;
                 alert('도서 기본 정보 저장 성공: ' + response.message);
                 $('#bookDetailForm').find('input[name="bookNo"]').val(response.data);
                 saveBookDetail();
             } else {
-                alert('도서 기본 정보 저장 실패: ' + response.message);
+                alert('도서 기본 정보 수정 실패: ' + response.message);
             }
         }
     });
 }
 
+
 function saveBookDetail() {
-    var bookDetailForm = new FormData($('#bookDetailForm').get(0));
-    bookDetailForm.append('bookNo', responseData);
-    console.log(responseData);
+	var bookDetailForm = new FormData($('#bookDetailForm').get(0));
+	bookDetailForm.append('bookNo', responseData);
+	var detailImageType = document.getElementById('detailImageType').value;
+	var fileInput = document.getElementById('detailImageFile');
+	
+	logFormData(bookDetailForm);
+	if (detailImageType === 'basic') {
+	    // 기존 이미지를 유지하는 경우, detailImage 필드를 제외하거나 기존 이미지 경로를 추가
+	    bookDetailForm.delete('detailImage');
+	} else if (detailImageType === 'custom' && fileInput.files.length > 0) {
+	    bookDetailForm.append('detailImage', fileInput.files[0]);
+	}
+
+
     $.ajax({
-        url: 'saveBookDetail',
+        url: '/bookjeok/book/updateBookDetail',
         type: 'POST',
         data: bookDetailForm,
         contentType: false,
         processData: false,
         success: response => {
-            if (response.message == "도서 상세정보 저장 성공") {
-                alert('도서 상세 정보 저장 성공!');
+            if (response.message == "도서 상세정보 수정 성공") {
+                alert('도서 상세 정보 수정 성공!');
             } else {
-                alert('도서 상세 정보 저장 실패');
+                alert('도서 상세 정보 수정 실패');
             }
         },
         error : function() {
-            alert('도서 상세 정보 저장 중 오류 발생');
+            alert('도서 상세 정보 수정 중 오류 발생');
         }
     });
 }
 
-function previewImage(input) {
+function previewImage(input, previewId) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
         reader.onload = function(e) {
-            $('#imagePreview img').attr('src', e.target.result);
+            document.getElementById(previewId).querySelector('img').src = e.target.result;
         }
         reader.readAsDataURL(input.files[0]);
     }

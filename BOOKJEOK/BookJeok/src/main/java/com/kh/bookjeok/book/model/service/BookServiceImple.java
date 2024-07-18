@@ -118,6 +118,18 @@ public class BookServiceImple implements BookService{
 	public List<BookCategoryDetail> bookCategoryDetail(String keyword) {
 		return bookMapper.bookCategoryDetail(keyword);
 	}
+
+	@Override
+	public int updateBook(Book book) {
+		return bookMapper.updateBook(book);
+	}
+
+	@Override
+	public int updateBookDetail(BookDetail bookDetail) {
+		return bookMapper.updateBookDetail(bookDetail);
+	}
+	
+	
 	
 	
 	

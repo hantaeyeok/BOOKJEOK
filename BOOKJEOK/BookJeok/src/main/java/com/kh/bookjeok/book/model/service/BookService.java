@@ -43,5 +43,7 @@ public interface BookService {
 	List<Book> bookByKeyword(String keyword);
 
 	List<BookCategoryDetail> bookCategoryDetail(String keyword);
+	int updateBook(Book book);
+	int updateBookDetail(BookDetail bookDetail);
 
 }

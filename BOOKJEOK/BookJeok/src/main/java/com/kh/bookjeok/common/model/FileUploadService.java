@@ -32,5 +32,12 @@ public class FileUploadService {
         }
         return "resources/uploadFiles/" + changeName;
     }
-
+	
+	public int deleteFile() {
+		//도준님 구현하세요.
+		
+		int i = 0;
+		return i == 0 ? 0 : 1;
+		 
+	}
 }

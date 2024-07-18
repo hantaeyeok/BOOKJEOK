@@ -1,5 +1,8 @@
 package com.kh.bookjeok.book.controller;
 
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,11 +12,14 @@ import javax.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +29,7 @@ import com.kh.bookjeok.book.model.vo.Book;
 import com.kh.bookjeok.book.model.vo.BookCategoryDetail;
 import com.kh.bookjeok.book.model.vo.BookDetail;
 import com.kh.bookjeok.book.model.vo.BookReview;
+import com.kh.bookjeok.book.model.vo.FormData;
 import com.kh.bookjeok.book.model.vo.LowerCategory;
 import com.kh.bookjeok.book.model.vo.MidCategory;
 import com.kh.bookjeok.book.model.vo.ReviewAvg;
@@ -298,20 +305,90 @@ public class BookController {
 				 					 .build();
 		 return ResponseEntity.status(HttpStatus.OK).body(responsMsg);
 	 }
-	 /*
-	 @PutMapping("update")
-	 public ResponseEntity<Message> updateBookBybookNo(Book book,
-												        @RequestParam(required = false) String bookCoverText,
-												        @RequestParam(required = false) MultipartFile bookCoverFile,
-												        @RequestParam String categoryString,
-												        HttpSession session){
-		 
-		 
-		 
-		 
-		 return "";
+	 
+
+	 @PostMapping("updateBook")
+	 public ResponseEntity<Message> updateBookBybookNo( Book book,
+												        @RequestParam("categoryString") String categoryString,
+												        @RequestParam(value = "bookCoverFile", required = false) MultipartFile bookCoverFile,
+												        @RequestParam(value = "bookCoverText", required = false) String bookCoverText,
+												        HttpSession session) throws ParseException{
+		
+		Book newBook = bookService.selectBookNo(book.getBookNo());
+		int bookNo = newBook.getBookNo();
+		newBook.setBookAmount(book.getBookAmount());
+		newBook.setBookTitle(book.getBookTitle());
+		newBook.setBookAuthor(book.getBookAuthor());
+		newBook.setBookPublisher(book.getBookPublisher());
+		newBook.setBookPubDate(book.getBookPubDate());
+		newBook.setBookIsbn(book.getBookIsbn());
+		newBook.setBookPrice(book.getBookPrice());
+		newBook.setBookDescription(book.getBookDescription());
+
+		if(bookCoverFile != null && !bookCoverFile.isEmpty()) {
+			String coverPath = fileUploadService.saveFile(bookCoverFile, session);
+			newBook.setBookCover(coverPath);
+		} else if (bookCoverText != null && !bookCoverText.isEmpty()) {
+			newBook.setBookCover(bookCoverText); 
+		} else {
+			log.info("북 커버가 없어서 기본 이미지 넣어요");
+			newBook.setBookCover("bookbook.jpg");
+		}
+		    
+		// 카테고리 저장 및 ID 반환
+		Integer categoryId = bookCategoryService.saveCategory(categoryString);
+		newBook.setCategoryId(categoryId);
+		
+		int result = bookService.updateBook(newBook);
+
+		if (result > 0) {
+			Message responsMsg = Message.builder()
+										.data(bookNo)
+										.message("도서 수정 성공")
+										.build();
+			return ResponseEntity.status(HttpStatus.OK).body(responsMsg);
+		
+		} else {
+			return 	ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+																	.message("도서 수정 실패")
+																	.build());
+		}
 		 
 	 }
-	*/
+	 
+	 
+	 @PostMapping("updateBookDetail")
+		public ResponseEntity<Message> updateBookDetail(BookDetail bookDetail,
+													    @RequestParam("bookNo") int bookNo,
+													    @RequestParam(required = false) MultipartFile detailImage,
+													    @RequestParam(required = false) String detailDescription,
+													    HttpSession session){
+			BookDetail newBookDetail = bookService.selectBookDetailBybookNo(bookDetail.getBookNo());
+			
+			if(detailImage != null && !detailImage.isEmpty() ) {
+				String detailImagePath = fileUploadService.saveFile(detailImage, session);
+				newBookDetail.setDetailImage(detailImagePath);
+			} else{
+				log.info("북 커버가 없어서 기본 이미지 넣어요");
+				newBookDetail.setDetailImage("bookbook.jpg");
+			}
+			
+			//설명 저장(null)허용
+			if(detailDescription != null && !detailDescription.isEmpty()) {
+				newBookDetail.setDetailDescription(detailDescription);
+			}
+			
+			int result = bookService.updateBookDetail(bookDetail);
+			if(result > 0) {
+				return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+															.message("도서 상세정보 수정 성공")
+															.build());
+			} else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder()
+														.message("도서 상세정보 수정 실패")
+														.build());
+			}
+		}
+	
 	
 }

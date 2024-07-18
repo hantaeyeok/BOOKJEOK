@@ -478,6 +478,32 @@ WHERE
 
 </select>
 
+<update id="updateBook" parameterType="book">
+UPDATE
+		BOOK
+SET
+		CATEGORY_ID = #{categoryId},
+		BOOK_TITLE = #{bookTitle},
+		BOOK_AUTHOR = #{bookAuthor},
+		BOOK_PUBLISHER = #{bookPublisher},
+		BOOK_PUB_DATE =#{bookPubDate},
+		BOOK_PRICE = #{bookPrice},
+		BOOK_DESCRIPTION = #{bookDescription},
+		BOOK_COVER = #{bookCover},
+		BOOK_UPDATE_DATE = SYSDATE,
+		BOOK_AMOUNT = #{bookAmount}	
+WHERE
+		BOOK_NO = #{bookNo}
+</update>
 
+<update id="updateBookDetail" parameterType="bookDetail">
+UPDATE
+		BOOK_DETAIL
+SET
+		DETAIL_IMAGE = #{detailImage}
+		DETAIL_DESCRIPTION =#{detailDescription}
+WHERE
+		BOOK_NO = #{bookNo}
+</update>
 
 </mapper>
