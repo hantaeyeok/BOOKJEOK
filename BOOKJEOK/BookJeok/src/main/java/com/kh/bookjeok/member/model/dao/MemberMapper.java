@@ -31,5 +31,7 @@ public interface MemberMapper{
 	int pwdResetKeyInsert(PwResetKey pwResetKey);
 
 	PwResetKey pwdResetKeySelectOne(PwResetKey pwResetKey);
+
+	int pwdResetKeyDelete(PwResetKey pwResetKey);
 	
 }

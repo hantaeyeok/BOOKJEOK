@@ -106,6 +106,13 @@ public class MemberServiceImp1 implements MemberService{
 	}
 
 
+	@Override
+	public int pwdResetKeyDelete(PwResetKey pwResetKey) {
+		// TODO Auto-generated method stub
+		return memberMapper.pwdResetKeyDelete(pwResetKey);
+	}
+
+
 
 
 

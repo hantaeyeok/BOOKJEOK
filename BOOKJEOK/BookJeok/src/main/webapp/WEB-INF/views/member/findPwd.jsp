@@ -40,23 +40,25 @@
   				userId: $('#userId').val(),
   				email: $('#email').val()
 	  		}
-	  		$.ajax({
-	  			url:'/member/findPwd',
-	  			type: 'post',
-	  			data: requestData,
-	  			success : response => {
-					if (response.data == 'success') {
-						$page1.hide();
-						$page2.show();
-						$page3.hide();
-					}
-					if (response.data == 'fail') {
-						$page1.hide();
-						$page2.hide();
-						$page3.show();
-					}
-	  			}
-	  		});
+
+   	  		$.ajax({
+   	  			url:'/member/findPwd',
+   	  			type: 'post',
+   	  			data: requestData,
+   	  			success : response => {
+   					if (response.data == 'success') {
+   						$page1.hide();
+   						$page2.show();
+   						$page3.hide();
+   					}
+   					if (response.data == 'fail') {
+   						$page1.hide();
+   						$page2.hide();
+   						$page3.show();
+   					}
+   	  			}
+   	  		});
+
 	  	}
 	  </script>
 	</form>

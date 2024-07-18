@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -82,7 +83,7 @@ public class MemberController {
 												  .build();
 				int i = memberService.pwdResetKeyInsert(pwResetKey);
 				if (i>0) {
-					String link = "http://localhost:8091/member/pwdreset?id="+memberFind.getUserId()+"&code="+code;
+					String link = "http://localhost/member/pwdreset?id="+memberFind.getUserId()+"&key="+code;
 					helper.setSubject("북적북적 - 비밀번호 재설정");
 					helper.setText("<h1>비밀번호 재설정</h1><h3>"+memberFind.getUserId()+"</h3>님<br/><p>아래 링크로 접속하셔서 비밀번호를 재설정해주세요.</p><br/>"+ link +"<br/><p>절대 타인과 이 링크를 공유하지 마세요!</p>" ,true);
 					helper.setTo(memberFind.getEmail());
@@ -114,7 +115,8 @@ public class MemberController {
 	}
 	
 	@GetMapping("pwdreset")
-	public ModelAndView pwdreset(PwResetKey pwResetKey, ModelAndView mv) {
+	public ModelAndView pwdreset(String id, String key, ModelAndView mv) {
+		PwResetKey pwResetKey = PwResetKey.builder().userId(id).code(key).build();
 		Member member = memberService.login(Member.builder().userId(pwResetKey.getUserId()).build());
 		if( pwResetKey!=null && memberService.pwdResetKeySelectOne(pwResetKey).getCode().equals(pwResetKey.getCode())  ) {
 			if( member!=null && bCryptPasswordEncoder.matches(member.getUserName(), pwResetKey.getCode()) ) {
@@ -134,7 +136,7 @@ public class MemberController {
 	@PostMapping("pwdresetPro")
 	public ResponseEntity<Message> pwdresetPro(Member member, String code) {
 		PwResetKey pwResetKey = memberService.pwdResetKeySelectOne( PwResetKey.builder().userId(member.getUserId()).code(code).build() );
-		String rst="";
+		member.setUserPwd( bCryptPasswordEncoder.encode(member.getUserPwd().replaceAll(" ", "")) );
 		if(member!=null && pwResetKey.getCode().equals(code)) {
 			int i = memberService.pwdResetKeyDelete(pwResetKey);
 			int j = memberService.updatePwd(member);

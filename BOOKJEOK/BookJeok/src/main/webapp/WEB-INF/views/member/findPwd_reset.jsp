@@ -17,7 +17,7 @@
 	<div style="width:30%;" id="page1">
 	<form>
 	  <div class="row mb-3">
-	  	<input type="hidden" value="${member.userId }">
+	  	<input type="hidden" value="${member.userId }" id="userId">
 	    <label for="userPwd" class="col-sm-2 col-form-label">새 비밀번호</label>
 	    <div class="col-sm-10">
 	      <input type="password" class="form-control" id="userPwd">
@@ -33,25 +33,37 @@
 	  <button type="button" class="btn btn-primary btn-lg btn-block" onclick="pwdReset();">비밀번호 재설정</button>
 	  <script>
 	  	function pwdReset() {
+	  		const pw_pattern = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/;
 	  		const $page1 = $('#page1');
 	  		const $page2 = $('#page2');
+	  		const $userPwd = $('#userPwd');
+	  		const $userPwdRetype = $('#userPwdRetype');
+	  		
 	  		
 	  		memberData = {
   				userId: $('#userId').val(),
   				userPwd: $('#userPwd').val(),
-  				code: '${code}'
+  				code: '${pwResetKey.code}'
 	  		}
-	  		$.ajax({
-	  			url:'/member/pwdresetPro',
-	  			type: 'post',
-	  			data: memberData,
-	  			success : response => {
-					if (response.data == 'success') {
-						$page1.hide();
-						$page2.show();
-					}
-	  			}
-	  		});
+	    	if(pw_pattern.test($userPwd.val())) { //패스워드 정규식
+	        	if($userPwd.val()===$userPwdRetype.val()) { //비밀번호와 비밀번호확인 일치여부
+			  		$.ajax({
+			  			url:'/member/pwdresetPro',
+			  			type: 'post',
+			  			data: memberData,
+			  			success : response => {
+							if (response.data == 'success') {
+								$page1.hide();
+								$page2.show();
+							}
+			  			}
+			  		});
+	        	} else {
+	        		alert('비밀번호와 비밀번호확인란이 일치하지 않습니다.');
+	        	}
+	    	} else {
+	    		alert('비밀번호는 영어 대문자, 영어 소문자, 숫자, 특수문자가 하나씩 포함된 문자열로 작성하여주세요.');
+	    	}
 	  	}
 	  </script>
 	</form>
