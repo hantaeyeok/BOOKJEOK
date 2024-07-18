@@ -37,5 +37,8 @@ public interface NoticeService {
 
 			int update(Notice notice);
 
+			//test
+			List<Notice> noticeList();
+
 			
 }

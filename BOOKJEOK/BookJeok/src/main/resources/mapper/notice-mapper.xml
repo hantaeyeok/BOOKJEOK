@@ -2,7 +2,8 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kh.bookjeok.notice.model.dao.NoticeMapper">
+
+<mapper namespace="com.kh.bookjeok.notice.model.dao.NoticeRepository">
 			<sql id="selectNotice">
 			SELECT
 			 	  NOTICE_NO noticeNo,
@@ -12,7 +13,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			 	  NOTICE_VISITED noticeVisited,
 				  NOTICE_IMG_ORIGINNAME noticeImgOriginName,
 				  NOTICE_ORIGINNAME noticeOriginName,
-				  NOTICE_STATUS noticeStatus;
+				  NOTICE_STATUS noticeStatus,
 			 	  USER_ID userId
 			 	  
 			 FROM
@@ -218,4 +219,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</resultMap>
 		
 		
+		<select id="noticeList" resultType="notice">
+			SELECT
+			 	  *
+			 FROM
+			      NOTICE
+		
+		</select>
 </mapper>

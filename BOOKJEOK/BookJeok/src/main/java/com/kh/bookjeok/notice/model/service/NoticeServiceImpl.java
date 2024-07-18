@@ -70,6 +70,11 @@ public class NoticeServiceImpl implements NoticeService {
 			// TODO Auto-generated method stub
 			return 0;
 		}
+
+		@Override
+		public List<Notice> noticeList() {
+			return noticeRepository.noticeList(sqlSession);
+		}
 	/*	
 		@Override  (수정요망)
 		public List<NoticeFile> selectNoticeFile() {
@@ -80,4 +85,7 @@ public class NoticeServiceImpl implements NoticeService {
 		public NoticeFile updateNoticeFile(NoticeFile noticeFile) {
 			return noticeRepository.updateNoticeFile(sqlSession, noticeFile);
 		}*/
+		
+		
+		
 }

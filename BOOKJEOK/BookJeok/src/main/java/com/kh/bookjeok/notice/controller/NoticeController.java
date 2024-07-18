@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -97,18 +98,28 @@ public class NoticeController {
 	      map.put("startValue", startValue);
 	      map.put("endValue", endValue);
 	      
-	      List<Notice> noticeList = noticeService.findAll(map);
-
-	      log.info("조회된 게시물의 개수 : {}", noticeList.size());
+	      //List<Notice> noticeList = noticeService.findAll(map);
+	      
+	      
+	      //System.out.println("noticeList.."+noticeList.size());
+	      //log.info("조회된 게시물의 개수 : {}", noticeList.size());
 	      log.info("-----------------------------------------");
-	      log.info("조회된 게시글 목록 : {}", noticeList);
+	      //log.info("조회된 게시글 목록 : {}", noticeList);
 
-	      model.addAttribute("noticeList", noticeList);
+	      //model.addAttribute("noticeList", noticeList);
+	      
 	      model.addAttribute("pageInfo", pageInfo);	      
 	      
+	      List<Notice> notitiList = noticeService.noticeList();
+	      model.addAttribute("noticeList", notitiList);
 	      
-	      return "notice/listNotice";
+	      return "notice/listNotice1";
 	   }
+	   
+	   
+	   
+	   
+	   
 	   
 	   //검색기능(조건 조회 + 페이징 처리_)
 	   @GetMapping("search.do")

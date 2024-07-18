@@ -63,5 +63,9 @@ public class NoticeRepository {
 				return sqlSession.update("noticeMapper.updatetNoticeFile", noticeFile);
 			}
 
+			public List<Notice> noticeList(SqlSessionTemplate sqlSession) {
+				return sqlSession.selectList("noticeMapper.noticeList");
+			}
+
 
 }
