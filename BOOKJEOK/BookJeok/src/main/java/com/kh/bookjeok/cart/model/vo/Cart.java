@@ -1,4 +1,4 @@
-package com.kh.bookjeok.book.model.vo;
+package com.kh.bookjeok.cart.model.vo;
 
 
 import lombok.AllArgsConstructor;
@@ -14,9 +14,12 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BookDetail {
-    private int detailNo;
-    private int bookNo;
-    private String detailImage;
-    private String detailDescription;
+public class Cart {
+	
+	private int cartNo;
+	private int bookNo;
+	private String userId;
+	private int cartTotal;
+	private int cartAmount;
+
 }

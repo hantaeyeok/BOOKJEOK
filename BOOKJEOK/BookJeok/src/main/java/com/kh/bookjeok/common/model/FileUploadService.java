@@ -10,6 +10,9 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class FileUploadService {
 	public String saveFile(MultipartFile upfile, HttpSession session) {
@@ -27,7 +30,8 @@ public class FileUploadService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        System.out.println(changeName);
+        log.info("changName : {}",changeName);
         return "resources/uploadFiles/" + changeName;
     }
 
