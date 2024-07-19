@@ -23,21 +23,26 @@
             background-color:white;
         }
 
-        #enrollForm>table {width:100%;}
-        #enrollForm>table * {margin:5px;}
-        #img-area{
+        #enrollForm>table { width:100%; }
+        #enrollForm>table * { margin:5px; }
+        #img-area {
             width : 100%;
             margin : auto;
             text-align: center;
         }
-        #img-area > img{
+        
+        #img-area > img {
             width : 80%;
+        }
+        
+        #cancelButton {
+        	display : none;
         }
     </style>
 </head>
 <body>
         
-    <!-- <jsp:include page="" /> -->
+    <jsp:include page="../common/menubar.jsp" />
 
     <div class="content">
         <br><br>
@@ -53,7 +58,7 @@
                     </tr>
                     <tr>
                         <th><label for="writer">작성자</label></th>
-                        <td><input type="text" id="writer" class="form-control" value="user01" name="userId" readonly></td>
+                        <td><input type="text" id="writer" class="form-control" value="${sessionScope.loginUser.userId }" name="userId" readonly></td>
                     </tr>
                     <tr>
                         <th><label for="content">내용</label></th>
@@ -61,13 +66,35 @@
                     </tr>
                     <tr>
                         <th><label for="upfile">첨부파일</label></th>
-                        <td><input type="file" id="upfile" class="form-control-file border" name="upfile" accept=".zip"></td>
+                        <td>
+                        	<input type="file" id="upfile" class="form-control-file border" name="upfile" accept=".zip">
+                        	<button type="button" id="cancelButton" class="btn btn-danger btn-sm" onclick="clearFile()">파일 선택취소</button>
+                        </td>
                     </tr>
                     <tr>
                         <th></th>
                         <td><small style="color: red; font-weight: bold;">※ 첨부 파일은 ZIP파일만 업로드가 가능합니다.</small></td>
                     </tr>
                 </table>
+                <script>
+			        const upfile = document.getElementById('upfile');
+			        const cancelButton = document.getElementById('cancelButton');
+			
+			        // 파일 선택 이벤트 리스너
+			        upfile.addEventListener('change', function() {
+			            if (upfile.files.length > 0) {
+			            	cancelButton.style.display = 'inline-block'; // 파일이 선택되면 삭제 버튼 표시
+			            } else {
+			            	cancelButton.style.display = 'none'; // 파일이 선택되지 않으면 삭제 버튼 숨김
+			            }
+			        });
+			
+			        // 파일 선택 취소 클릭 시 호출되는 함수
+			        function clearFile() {
+			            upfile.value = ''; // 파일 선택 취소
+			            cancelButton.style.display = 'none'; // 버튼 숨김
+			        }
+			    </script>
                 <br>
 
                 <div align="center">

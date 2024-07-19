@@ -16,7 +16,7 @@ import lombok.ToString;
 @Builder
 public class BookDetail {
     private int detailNo;
-    private Book bookNo; // 외래키 참조로 객체를 사용
+    private int bookNo;
     private String detailImage;
     private String detailDescription;
 }
