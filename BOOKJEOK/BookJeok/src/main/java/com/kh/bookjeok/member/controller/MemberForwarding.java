@@ -18,8 +18,15 @@ public class MemberForwarding {
 		return "member/join";
 	}
 		
-	@GetMapping("editMemberInfoBfr")
-	public String editMemberInfoBfr() {
-		return "member/EditMemberInfoBfr";
+
+	
+	@GetMapping("findId")
+	public String findId() {
+		return "member/findId";
+	}
+	
+	@GetMapping("findPwd")
+	public String findPwd() {
+		return "member/findPwd";
 	}
 }

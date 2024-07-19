@@ -287,8 +287,6 @@ $RECYCLE.BIN/
 
 servers
 
-#private
-mybatis-config.xml
-
 # End of https://www.toptal.com/developers/gitignore/api/windows,git,java,maven,eclipse,intellij,visualstudiocode
+
 

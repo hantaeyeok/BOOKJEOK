@@ -27,6 +27,7 @@
    	<typeAlias type="com.kh.bookjeok.notice.model.vo.NoticeFile" alias="noticeFile"/>
     <typeAlias type="com.kh.bookjeok.qna.model.vo.Answer" alias="answer"/>
     <typeAlias type="com.kh.bookjeok.clubboard.model.vo.Clubboard" alias="clubboard"/>
+    <typeAlias type="com.kh.bookjeok.member.model.vo.PwResetKey" alias="PwResetKey"/>
 
 	</typeAliases>
 	

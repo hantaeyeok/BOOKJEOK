@@ -82,8 +82,8 @@
                         </tr>
                         <tr>
                           <td style="font-size: 12px; color: #5b5b5b; font-family: 'Open Sans', sans-serif; line-height: 18px; vertical-align: top; text-align: left;">
-                            &lt;사용자&gt;님, 저희 북적북적을 이용해주셔서 감사합니다.
-                            <br>&lt;사용자&gt;님의 &lt;주문번호&gt; 건 주문 내역은 아래와 같습니다.
+                            &lt;${loginUser.userId }&gt;님, 저희 북적북적을 이용해주셔서 감사합니다.
+                            <br>&lt;${loginUser.userId }&gt;님의 &lt;${order.orderNo }&gt; 건 주문 내역은 아래와 같습니다.
                           </td>
                         </tr>
                       </tbody>
@@ -110,8 +110,8 @@
                         </tr>
                         <tr>
                           <td style="font-size: 12px; color: #5b5b5b; font-family: 'Open Sans', sans-serif; line-height: 18px; vertical-align: top; text-align: right;">
-                            <small>ORDER</small> 주문번호<br />
-                            <small>주문날짜</small>
+                            <small>ORDER</small> ${order.orderNo }<br />
+                            <small>${order.paymentDate }</small>
                           </td>
                         </tr>
                       </tbody>
@@ -128,6 +128,7 @@
 </table>
 <!-- /Header -->
 <!-- Order Details -->
+<c:set var="total" value="0"/>
 <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#e1e1e1">
   <tbody>
     <tr>
@@ -165,26 +166,19 @@
                     <tr>
                       <td height="10" colspan="4"></td>
                     </tr>
-                    <tr>
-                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #ff0000;  line-height: 18px;  vertical-align: top; padding:10px 0;" class="article">
-                        Beats Studio Over-Ear Headphones
-                      </td>
-                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e;  line-height: 18px;  vertical-align: top; padding:10px 0;"><small>MH792AM/A</small></td>
-                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e;  line-height: 18px;  vertical-align: top; padding:10px 0;" align="center">1</td>
-                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #1e2b33;  line-height: 18px;  vertical-align: top; padding:10px 0;" align="right">$299.95</td>
-                    </tr>
-                    <tr>
-                      <td height="1" colspan="4" style="border-bottom:1px solid #e4e4e4"></td>
-                    </tr>
-                    <tr>
-                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #ff0000;  line-height: 18px;  vertical-align: top; padding:10px 0;" class="article">Beats RemoteTalk Cable</td>
-                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e;  line-height: 18px;  vertical-align: top; padding:10px 0;"><small>MHDV2G/A</small></td>
-                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e;  line-height: 18px;  vertical-align: top; padding:10px 0;" align="center">1</td>
-                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #1e2b33;  line-height: 18px;  vertical-align: top; padding:10px 0;" align="right">$29.95</td>
-                    </tr>
-                    <tr>
-                      <td height="1" colspan="4" style="border-bottom:1px solid #e4e4e4"></td>
-                    </tr>
+               		<c:forEach items="${order.orderList }" var="orderPerbook">
+						<tr>
+	                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #ff0000;  line-height: 18px;  vertical-align: top; padding:10px 0;" class="article">
+	                        ${orderPerbook.book.bookTitle }
+	                      </td>
+	                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e;  line-height: 18px;  vertical-align: top; padding:10px 0;"><small>${orderPerbook.book.bookIsbn }</small></td>
+	                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e;  line-height: 18px;  vertical-align: top; padding:10px 0;" align="center">${orderPerbook.orderQuan }권</td>
+	                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #1e2b33;  line-height: 18px;  vertical-align: top; padding:10px 0;" align="right">${orderPerbook.book.bookPrice }원</td>
+	                    </tr>
+	                    <tr>
+	                      <td height="1" colspan="4" style="border-bottom:1px solid #e4e4e4"></td>
+	                    </tr>
+                    </c:forEach>
                   </tbody>
                 </table>
               </td>
@@ -200,6 +194,7 @@
 </table>
 <!-- /Order Details -->
 <!-- Total -->
+
 <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#e1e1e1">
   <tbody>
     <tr>
@@ -217,9 +212,10 @@
                         금액 합계
                       </td>
                       <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e; line-height: 22px; vertical-align: top; text-align:right; white-space:nowrap;" width="80">
-                        $329.90
+                        ${order.bookSumPrice }
                       </td>
                     </tr>
+                    <!-- 
                     <tr>
                       <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e; line-height: 22px; vertical-align: top; text-align:right; ">
                         부가금액
@@ -227,12 +223,14 @@
                       <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e; line-height: 22px; vertical-align: top; text-align:right; ">
                         $15.00
                       </td>
+                     </tr>
+                     -->
                      <tr>
                       <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e; line-height: 22px; vertical-align: top; text-align:right; ">
                         사용 마일리지
                       </td>
                       <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e; line-height: 22px; vertical-align: top; text-align:right; ">
-                        $0.00
+                        ${order.mileageUsed }
                       </td>
                       </tr>
                       <tr>
@@ -240,7 +238,7 @@
                         누적 마일리지
                       </td>
                       <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e; line-height: 22px; vertical-align: top; text-align:right; ">
-                        $15.00
+                        ${order.mileageGet }
                       </td>
                     </tr>
                     <tr>
@@ -248,19 +246,11 @@
                         <strong>총계(세금 포함)</strong>
                       </td>
                       <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #000; line-height: 22px; vertical-align: top; text-align:right; ">
-                        <strong>$344.90</strong>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #b0b0b0; line-height: 22px; vertical-align: top; text-align:right; "><small>세금</small></td>
-                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #b0b0b0; line-height: 22px; vertical-align: top; text-align:right; ">
-                        <small>$72.40</small>
+                        <strong>${order.paymentPrice }</strong>
                       </td>
                     </tr>
                   </tbody>
                 </table>
-                <!-- /Table Total -->
-
               </td>
             </tr>
           </tbody>
@@ -303,7 +293,7 @@
                             </tr>
                             <tr>
                               <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 20px; vertical-align: top; ">
-                                OO카드<br> 5555-5555-5555-5555<br> 배송지<br> 배송지Detail + 우편번호<br> 전화번호
+                                ${order.paymentCard }<br> ${order.paymentCardNum }<br> ${loginUser.address }<br> ${loginUser.addressDetail } + ${loginUser.postnum }<br> ${loginUser.phone }
                               </td>
                             </tr>
                           </tbody>
@@ -324,10 +314,34 @@
                               <td width="100%" height="10"></td>
                             </tr>
                             <tr>
-                              <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 20px; vertical-align: top; ">
-                                배송중
-                              </td>
-                            </tr>
+	                        <c:choose>
+								<c:when test="${order.paymentStatus eq '1'}">
+	                              <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 20px; vertical-align: top; ">
+	                                배송 전
+	                              </td>
+								</c:when>
+								<c:when test="${order.paymentStatus eq '2'}">
+	                              <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 20px; vertical-align: top; ">
+	                                배송중
+	                              </td>
+								</c:when>
+								<c:when test="${order.paymentStatus eq '3'}">
+	                              <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 20px; vertical-align: top; ">
+	                                배송완료
+	                              </td>
+								</c:when>
+								<c:when test="${order.paymentStatus eq '4'}">
+	                              <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 20px; vertical-align: top; ">
+	                                환불중
+	                              </td>
+								</c:when>
+								<c:otherwise>
+	                              <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 20px; vertical-align: top; ">
+	                                환불완료
+	                              </td>
+								</c:otherwise>
+							</c:choose>
+							</tr>
                           </tbody>
                         </table>
                       </td>
@@ -341,8 +355,16 @@
                 <table width="480" border="0" cellpadding="0" cellspacing="0" align="center" class="fullPadding">
                   <tbody>
                     <tr>
-                      <td>
-                      <button class="btn btn-primary" style="width:100%">환불</button>
+                      <td id="refundBtn">
+                      	<br>
+						<c:choose>
+							<c:when test="${order.paymentStatus eq '1'}">
+								<button class="btn btn-primary" style="width:100%" onclick="refundDetail();" style="display:block;">환불가능</button>
+							</c:when>
+							<c:otherwise>
+								<button class="btn btn-secondary" style="width:100%" disabled>환불불가</button>
+							</c:otherwise>
+						</c:choose>
                       </td>
                     </tr>
                   </tbody>
@@ -355,6 +377,8 @@
     </tr>
   </tbody>
 </table>
+
+
 <!-- /Information -->
 <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#e1e1e1">
 
@@ -366,10 +390,38 @@
             <table width="480" border="0" cellpadding="0" cellspacing="0" align="center" class="fullPadding">
               <tbody>
                 <tr>
-                  <td style="font-size: 12px; color: #5b5b5b; font-family: 'Open Sans', sans-serif; line-height: 18px; vertical-align: top; text-align: left;">
-                    감사합니다.
+                  <td>
+                  <br>
+                  	<input type="text" class="refund_detail" id="refundForm" name="refund_detail" style="display:none; width:100%; height:300px; margin-bottom:10px;" class="form-control">
                   </td>
                 </tr>
+                <tr>
+	                <td>
+	                	<div class="refund_detail" style="display:none;">
+		                	<div class="btn-group" role="group">
+							  <button type="button" class="btn btn-primary" onclick="fnc_refund();">환불</button>
+							  <button type="button" class="btn btn-secondary" onclick="refund_cancel();">취소</button>
+		                	</div>
+	                	</div>
+	                	<script>
+	                	function fnc_refund() {
+	                		const requestData = {
+	                			orderNo: '${order.orderNo}',
+	                			refundForm: $('#refundForm').val()
+	                		};
+	                    	$.ajax({
+	                    		url : '/mypage/orderRefund',
+	                    		type : 'post',
+	                    		data : requestData,
+	                    		success : response => { 
+	                    			console.log(response);
+	                    		}
+	                    	});
+	                	}
+	                	</script>
+	                </td>
+                </tr>
+
               </tbody>
             </table>
           </td>
@@ -385,5 +437,21 @@
     <td height="20"></td>
   </tr>
 </table>
+<script>
+	function refundDetail() {
+		const refund_detail = $('.refund_detail');
+		const refund_Btn = $('#refundBtn');
+		refund_detail.show();
+		refund_Btn.hide();
+	}
+	
+	function refund_cancel() {
+		const refund_detail = $('.refund_detail');
+		const refund_Btn = $('#refundBtn');
+		refund_detail.hide();
+		refund_Btn.show();
+	}
+	
+</script>
 </body>
 </html>
