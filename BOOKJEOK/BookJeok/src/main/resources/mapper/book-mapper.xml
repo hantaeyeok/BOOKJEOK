@@ -500,7 +500,7 @@ WHERE
 UPDATE
 		BOOK_DETAIL
 SET
-		DETAIL_IMAGE = #{detailImage}
+		DETAIL_IMAGE = #{detailImage},
 		DETAIL_DESCRIPTION =#{detailDescription}
 WHERE
 		BOOK_NO = #{bookNo}

@@ -30,11 +30,13 @@ public class FileUploadService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println("changeName"+changeName);
         return "resources/uploadFiles/" + changeName;
     }
 	
-	public int deleteFile() {
-		//도준님 구현하세요.
+	public int deleteFile(String url) {
+		//해당 파일이 저장소에 있는지를 비교
+		
 		
 		int i = 0;
 		return i == 0 ? 0 : 1;

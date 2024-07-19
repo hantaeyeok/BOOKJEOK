@@ -86,7 +86,7 @@ public class BookController {
 			book.setBookCover(bookCoverText); 
 		} else {
 			log.info("북 커버가 없어서 기본 이미지 넣어요");
-			book.setBookCover("bookbook.jpg");
+			book.setBookCover("resources/uploadFiles/bookbasicImage.jpg");
 		}
 	        
 		// 카테고리 저장 및 ID 반환
@@ -315,6 +315,7 @@ public class BookController {
 												        HttpSession session) throws ParseException{
 		
 		Book newBook = bookService.selectBookNo(book.getBookNo());
+		System.out.println("bookCover : "+newBook.getBookCover());
 		int bookNo = newBook.getBookNo();
 		newBook.setBookAmount(book.getBookAmount());
 		newBook.setBookTitle(book.getBookTitle());
@@ -330,10 +331,7 @@ public class BookController {
 			newBook.setBookCover(coverPath);
 		} else if (bookCoverText != null && !bookCoverText.isEmpty()) {
 			newBook.setBookCover(bookCoverText); 
-		} else {
-			log.info("북 커버가 없어서 기본 이미지 넣어요");
-			newBook.setBookCover("bookbook.jpg");
-		}
+		} 
 		    
 		// 카테고리 저장 및 ID 반환
 		Integer categoryId = bookCategoryService.saveCategory(categoryString);
@@ -359,24 +357,32 @@ public class BookController {
 	 
 	 @PostMapping("updateBookDetail")
 		public ResponseEntity<Message> updateBookDetail(BookDetail bookDetail,
-													    @RequestParam("bookNo") int bookNo,
-													    @RequestParam(required = false) MultipartFile detailImage,
+													    int bookNo,
+													    @RequestParam(required = false) MultipartFile detailImageFile,
+													    @RequestParam(required = false) String detailImageString,
 													    @RequestParam(required = false) String detailDescription,
 													    HttpSession session){
-			BookDetail newBookDetail = bookService.selectBookDetailBybookNo(bookDetail.getBookNo());
 			
-			if(detailImage != null && !detailImage.isEmpty() ) {
-				String detailImagePath = fileUploadService.saveFile(detailImage, session);
+		 	System.out.println("BookNo"+bookDetail.getBookNo());
+		 	BookDetail newBookDetail = bookService.selectBookDetailBybookNo(bookDetail.getBookNo());
+		 	
+			if(detailImageFile != null && !detailImageFile.isEmpty()) {
+				String detailImagePath = fileUploadService.saveFile(detailImageFile, session);
+				System.out.println("detailImagePath"+detailImagePath);
 				newBookDetail.setDetailImage(detailImagePath);
-			} else{
+			} else if (detailImageString != null && !detailImageString.isEmpty()) {
+				newBookDetail.setDetailImage(detailImageString);
+			} else {
 				log.info("북 커버가 없어서 기본 이미지 넣어요");
-				newBookDetail.setDetailImage("bookbook.jpg");
+				newBookDetail.setDetailImage("resources/uploadFiles/bookbasicImage.jpg");
 			}
 			
 			//설명 저장(null)허용
-			if(detailDescription != null && !detailDescription.isEmpty()) {
+			if(detailDescription != null) {
 				newBookDetail.setDetailDescription(detailDescription);
 			}
+			
+			
 			
 			int result = bookService.updateBookDetail(bookDetail);
 			if(result > 0) {

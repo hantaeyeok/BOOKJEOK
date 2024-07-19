@@ -80,33 +80,33 @@
 					            <img id="coverPreview" src="http://via.placeholder.com/150x150" class="img-fluid" alt="책 표지 미리보기">
                             </div>
                         </div>
-                        <script>
-                            document.getElementById('coverType').addEventListener('change', function() {
-                                var coverType = document.getElementById('coverType').value;
-                                var textInput = document.getElementById('bookCoverText');
-                                var fileInput = document.getElementById('bookCoverFile');
-                            
-                                if (coverType === 'basic') {
-                                    textInput.name = 'bookCoverText';
-                                    fileInput.style.display = 'none';
-                                    fileInput.name = '';
-                                } else if (coverType === 'custom') {
-                                    fileInput.style.display = '';
-                                    fileInput.name = 'bookCoverFile';
-                                    textInput.name = '';
-                                }
-                            });
-                            
-                            function previewCoverImage(input) {
-                                if (input.files && input.files[0]) {
-                                    var reader = new FileReader();
-                                    reader.onload = function(e) {
-                                    	document.getElementById('coverPreview').src = e.target.result;
-                                    }
-                                    reader.readAsDataURL(input.files[0]);
-                                }
-                            }
-                        </script>
+<script>
+document.getElementById('coverType').addEventListener('change', function() {
+    const coverType = document.getElementById('coverType').value;
+    const textInput = document.getElementById('bookCoverText');
+    const fileInput = document.getElementById('bookCoverFile');
+
+    if (coverType === 'basic') {
+        textInput.name = 'bookCoverText';
+        fileInput.style.display = 'none';
+        fileInput.name = '';
+    } else if (coverType === 'custom') {
+        fileInput.style.display = '';
+        fileInput.name = 'bookCoverFile';
+        textInput.name = '';
+    }
+});
+
+function previewCoverImage(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+        	document.getElementById('coverPreview').src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="title">책제목</label>
@@ -199,10 +199,13 @@
 					            <option value="custom">이미지 변경</option>
 					        </select>
 					        <br>
-					        <input type="file" class="form-control" id="detailImageFile" name="detailImage" style="display: none" onchange="previewImage(this, 'imagePreview')">
+					        <input type="file" class="form-control" id="detailImageFile" name="detailImageFile" style="display: none" onchange="previewImage(this, 'imagePreview')">
+					        <input type="file" class="form-control" id="detailImageString" name="detailImageString" style="display: none" onchange="previewImage(this, 'imagePreview')">
+					        
 					        <div class="image-preview" id="imagePreview">
 					            <img src="" alt="상세 설명 이미지" style="max-height: 300px;" id="detailImage">
 					        </div>
+					        
 					    </div>
 					    <div class="form-group">
 					        <label for="detailDescription">상세 설명</label>
@@ -211,32 +214,39 @@
 					    <button type="submit" class="btn btn-primary" style="display: none">도서 등록 및 상세 정보 저장</button>
 					</form>
                 <button class="btn btn-primary" id="saveAllbtn">도서 등록 및 상세 수정</button>
+                
             </div>
         </div>
     </div>
-    
-    if (coverType === 'basic') {
-                                    textInput.name = 'bookCoverText';
-                                    fileInput.style.display = 'none';
-                                    fileInput.name = '';
-                                } else if (coverType === 'custom') {
-                                    fileInput.style.display = '';
-                                    fileInput.name = 'bookCoverFile';
-                                    textInput.name = '';
-                                }
+
 <script>
-		document.getElementById('detailImageType').addEventListener('change', function() {
-		    var detailImageSelect = document.getElementById('detailImageType').value;
-		    var detailImageUpload = document.getElementById('detailImageFile');
-		    
-		    if (detailImageSelect === 'basic') {
-		        detailImageUpload.style.display = 'none';
-		        detailImageUpload.name = '';
-		    } else if (detailImageSelect === 'custom') {
-		        detailImageUpload.style.display = '';
-		        detailImageUpload.name = 'detailImage';
-		    }
-		});
+	document.getElementById('detailImageType').addEventListener('change', function() {
+	    const detailImageSelect = document.getElementById('detailImageType').value;
+	    const detailImageFile = document.getElementById('detailImageFile');
+	    const detailImageString = document.getElementById('detailImageString');
+	
+	    if (detailImageSelect === 'basic') {
+	    	detailImageFile.style.display = 'none';
+	        detailImageFile.name = '';
+	        detailImageString.style.display = 'none';
+	        detailImageString.name = 'detailImageString';
+	    } else if (detailImageSelect === 'custom') {
+	    	detailImageFile.style.display = '';
+	    	detailImageFile.name = 'detailImageFile';
+	        detailImageString.style.display = 'none';
+	        detailImageString.name = '';
+	    }
+	});
+
+function previewImage(input, previewId) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById(previewId).querySelector('img').src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
 
 
 
@@ -287,17 +297,13 @@ function selectBook(bookId) {
     $('#title').val(book.bookTitle);
     $('#author').val(book.bookAuthor);
     $('#publisher').val(book.bookPublisher);
-
-    
-    
     $('#isbn').val(book.bookIsbn);
     $('#description').val(book.bookDescription);
     $('#price').val(book.bookPrice);
-    $('#bookAmount').val(book.bookAmount);  // 재고 데이터 불러오기
-    $('#detailImage').attr('src', book.detailImage); // 상세 설명 이미지 불러오기
-    $('#detailDescription').val(book.bookDescription); // 상세 설명 불러오기
+    $('#bookAmount').val(book.bookAmount);
+    $('#detailImage').attr('src', book.detailImage);
+    $('#detailDescription').val(book.detailDescription);
     $('#bookNo').val(book.bookNo);
-
     $('#pubDate').val(book.bookPubDate);
     setCategory('topCategory', book.topCategoryName);
     setCategory('upperCategory', book.upperCategoryName);
@@ -305,22 +311,15 @@ function selectBook(bookId) {
     setCategory('lowerCategory', book.lowerCategoryName);
 }
 
-function formatDate(date) {
-    return date.toLocaleDateString();
-}
-
 function closeModal() {
     $('#bookModal').modal('hide');
 }
 
 
-
 function setCategory(categoryId, categoryValue) {
-    var categorySelect = $('#' + categoryId);
-    var categoryInput = $('#' + categoryId + 'Input');
-
+    const categorySelect = $('#' + categoryId);
+    const categoryInput = $('#' + categoryId + 'Input');
     if (categorySelect.find('option[value="' + categoryValue + '"]').length > 0) {
-    	
         categorySelect.val(categoryValue).change();
     } else {
         categorySelect.val('custom').change();
@@ -332,7 +331,6 @@ $(document).ready(function() {
     $('#saveAllbtn').on('click', function(event) {  
             saveAll();
     });
-    
     fetchTopCategories();
 });
 
@@ -342,7 +340,7 @@ function fetchTopCategories() {
         type: 'GET',
         success: response => {
             $('#topCategory').html('<option value="">선택</option><option value="custom">직접 입력</option>');
-            response.forEach(category => {
+            response.forEach( category => {
                 $('#topCategory').append('<option value="' + category.topCategoryNo + '">' + category.topCategoryName + '</option>');
             });
         }
@@ -417,9 +415,8 @@ function fetchLowerCategories(selectedValue) {
 }
 
 function toggleCustomInput(categoryLevel) {
-    var selectElement = $('#' + categoryLevel);
-    var inputElement = $('#' + categoryLevel + 'Input');
-
+    const selectElement = $('#' + categoryLevel);
+    const inputElement = $('#' + categoryLevel + 'Input');
     if (selectElement.val() === 'custom') {
         inputElement.show();
         inputElement.attr('name', categoryLevel);
@@ -432,77 +429,37 @@ function toggleCustomInput(categoryLevel) {
 }
 
 let responseData;
-function logFormData(formData) {
-    for (var pair of formData.entries()) {
-        console.log(pair[0] + ': ' + pair[1]);
-        
-        // 키의 타입은 항상 string입니다.
-        console.log('Type of ' + pair[0] + ': ' + typeof pair[0]);
-        
-        // 값의 타입을 확인합니다.
-        if (pair[1] instanceof File) {
-            console.log('Type of ' + pair[0] + ': File');
-        } else if (pair[1] instanceof Blob) {
-            console.log('Type of ' + pair[0] + ': Blob');
-        } else {
-            console.log('Type of ' + pair[0] + ': ' + typeof pair[1]);
-        }
-    }
-}
+
 //도서 정보와 상세 정보를 순차적으로 저장
 function saveAll() {
-	var topCategory, upperCategory, midCategory, lowerCategory, categoryString;
+	let topCategory, upperCategory, midCategory, lowerCategory, categoryString;
+	
+	$('#topCategory').val() === 'custom' ? topCategory = $('#topCategoryInput').val(): topCategory = $('#topCategory option:selected').text();
+	$('#upperCategory').val() === 'custom' ? upperCategory = $('#upperCategoryInput').val(): upperCategory = $('#upperCategory option:selected').text();
+	$('#midCategory').val() === 'custom' ?  midCategory = $('#midCategoryInput').val(): midCategory = $('#midCategory option:selected').text();
+	$('#lowerCategory').val() === 'custom' ? lowerCategory = $('#lowerCategoryInput').val() : lowerCategory = $('#lowerCategory option:selected').text() ;
 
-	// 상위 카테고리 값을 설정
-	if ($('#topCategory').val() === 'custom') {
-	    topCategory = $('#topCategoryInput').val(); // 사용자가 '직접 입력'한 값을 사용
-	} else {
-	    topCategory = $('#topCategory option:selected').text(); // 드롭다운에서 선택된 값을 사용
-	}
-
-	// 중위 카테고리 값을 설정
-	if ($('#upperCategory').val() === 'custom') {
-	    upperCategory = $('#upperCategoryInput').val(); // 사용자가 '직접 입력'한 값을 사용
-	} else {
-	    upperCategory = $('#upperCategory option:selected').text(); // 드롭다운에서 선택된 값을 사용
-	}
-
-	// 하위 카테고리 값을 설정
-	if ($('#midCategory').val() === 'custom') {
-	    midCategory = $('#midCategoryInput').val(); // 사용자가 '직접 입력'한 값을 사용
-	} else {
-	    midCategory = $('#midCategory option:selected').text(); // 드롭다운에서 선택된 값을 사용
-	}
-
-	// 최하위 카테고리 값을 설정
-	if ($('#lowerCategory').val() === 'custom') {
-	    lowerCategory = $('#lowerCategoryInput').val(); // 사용자가 '직접 입력'한 값을 사용
-	} else {
-	    lowerCategory = $('#lowerCategory option:selected').text(); // 드롭다운에서 선택된 값을 사용
-	}
-
-	// 카테고리 문자열을 구성
-	categoryString = topCategory; // 상위 카테고리로 시작
-	if (upperCategory) { // 중위 카테고리가 있다면 추가
+	categoryString = topCategory; 
+	if (upperCategory) {
 	    categoryString += '>' + upperCategory;
 	}
-	if (midCategory) { // 하위 카테고리가 있다면 추가
+	if (midCategory) {
 	    categoryString += '>' + midCategory;
 	}
-	if (lowerCategory) { // 최하위 카테고리가 있다면 추가
+	if (lowerCategory) { 
 	    categoryString += '>' + lowerCategory;
 	}
     
-
     const $bookNo = $('#bookNo').val();
-
-    
-    var bookFormDatal = new FormData($('#bookForm').get(0));
+    const coverTypeBook = document.getElementById('coverType').value;
+    const textInputBook = document.getElementById('bookCoverText');
+    const fileInputBook = document.getElementById('bookCoverFile');
+    const bookFormDatal = new FormData($('#bookForm').get(0));
     bookFormDatal.append('bookNo', $bookNo);
     bookFormDatal.append('categoryString',categoryString);
-
-    //logFormData(bookFormDatal);
-    
+    coverTypeBook === 'basic' ? bookFormDatal.delete('bookCoverFile') : bookFormDatal.append('bookCoverText',textInputBook.value) ;
+    coverTypeBook === 'custom' ? bookFormDatal.append('bookCoverFile', fileInputBook.value) : bookFormDatal.delete('bookCoverText');
+     
     $.ajax({
         url: '/bookjeok/book/updateBook',
         type: 'POST',
@@ -523,22 +480,16 @@ function saveAll() {
     });
 }
 
-
 function saveBookDetail() {
-	var bookDetailForm = new FormData($('#bookDetailForm').get(0));
-	bookDetailForm.append('bookNo', responseData);
-	var detailImageType = document.getElementById('detailImageType').value;
-	var fileInput = document.getElementById('detailImageFile');
-	
-	logFormData(bookDetailForm);
-	if (detailImageType === 'basic') {
-	    // 기존 이미지를 유지하는 경우, detailImage 필드를 제외하거나 기존 이미지 경로를 추가
-	    bookDetailForm.delete('detailImage');
-	} else if (detailImageType === 'custom' && fileInput.files.length > 0) {
-	    bookDetailForm.append('detailImage', fileInput.files[0]);
-	}
-
-
+ 	const detailImageSelect = document.getElementById('detailImageType').value; 
+	const fileInput = document.getElementById('detailImageFile');
+    const stringInput = document.getElementById('detailImageString');
+	const bookDetailForm = new FormData($('#bookDetailForm').get(0));
+		  bookDetailForm.append('bookNo', responseData);
+   
+	detailImageSelect === 'basic' ? bookDetailForm.delete('detailImageString'): bookDetailForm.append('detailImageString', stringInput.value) ;
+	detailImageSelect === 'custom' ? bookDetailForm.append('detailImageFile',fileInput): bookDetailForm.delete('detailImageString');
+				
     $.ajax({
         url: '/bookjeok/book/updateBookDetail',
         type: 'POST',
@@ -558,15 +509,6 @@ function saveBookDetail() {
     });
 }
 
-function previewImage(input, previewId) {
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById(previewId).querySelector('img').src = e.target.result;
-        }
-        reader.readAsDataURL(input.files[0]);
-    }
-}
 </script>
 </body>
 </html>

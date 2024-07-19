@@ -133,6 +133,14 @@
         function checkboxALL() {
             $('.itemCheckbox').prop('checked', $('#selectAll').prop('checked'));
         }
+        
+        /*
+        구매할 때 
+        1번 로그인 여부 확인해야하고,
+        2번 비회원 -> 회원 으로 전환할때 해당 데이터 id값 변경
+        3번 checkbox 가 선택된 항목들의 cart데이터가 구매하기로 이동해야함.
+        */
+        
     </script>
 </body>
 </html>
