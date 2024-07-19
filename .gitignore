@@ -289,10 +289,3 @@ servers
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,git,java,maven,eclipse,intellij,visualstudiocode
 /BOOKJEOK/BookJeok/src/main/webapp/WEB-INF/views/book
-/BOOKJEOK/BookJeok/src/main/webapp/WEB-INF/views/notice
-/BOOKJEOK/BookJeok/src/main/webapp/WEB-INF/views/notice
-BOOKJEOK/BookJeok/src/main/webapp/WEB-INF/views/notice/noticeEdit.jsp
-BOOKJEOK/BookJeok/src/main/webapp/WEB-INF/views/notice/noticeInsert.jsp
-BOOKJEOK/BookJeok/src/main/webapp/WEB-INF/views/notice/noticeList.jsp
-BOOKJEOK/BookJeok/src/main/webapp/WEB-INF/views/notice/noticeEdit.jsp
-BOOKJEOK/BookJeok/src/main/webapp/WEB-INF/views/notice/noticeInsert.jsp
