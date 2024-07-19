@@ -119,6 +119,7 @@ body {
 		      <br>
 		      <img alt="카카오 로그인" id="login_kakao" src="/resources/img/kakao_login_medium_narrow.png"/>
 		      <p class="message">아이디가 없으신가요? <a href="/member/joinform">회원가입</a></p>
+		      <p class="message"><a href="/member/findId">아이디찾기 </a> / <a href="/member/findPwd"> 비밀번호찾기</a></p>
 		    </form>
 		  </div>
 		</div>
@@ -133,7 +134,5 @@ body {
 			};
 		</script>
 	</div>
-
-<a href="/mypage/orderList"> mypage/orderList</a>
 </body>
 </html>

@@ -14,7 +14,7 @@
 <body>
 <br>
 <div style="width:100%; height:1200px; display:flex; justify-content:center;">
-	<div style="width:30%;" id="page1">
+	<div style="width:600px;" id="page1">
 	<form>
 	  <div class="row mb-3">
 	    <label for="userId" class="col-sm-2 col-form-label">아이디</label>
@@ -28,7 +28,7 @@
 	      <input type="email" class="form-control" id="email">
 	    </div>
 	  </div>
-	  <div style="width:100%; height:300px;"></div>
+	  <div style="width:600px; height:500px;"></div>
 	  <button type="button" class="btn btn-primary btn-lg btn-block" onclick="idFind();">비밀번호 찾기</button>
 	  <script>
 	  	function idFind() {

@@ -14,6 +14,16 @@
     <link rel="stylesheet" href="/resources/css/common.css">
     <style>
     	li {list-style-type: none; list-style:none;}
+    	a {text-decoration-line:none; color:#333;}
+    	a:hover {text-decoration-line:none; color:#333;}
+    	.gnb_list {display:flex; justify-content:center; align-items:center;}
+    	.gnb_list > ul {width:100%; height:100%; display:flex; justify-content:center; align-items:center; margin:0px; padding:0px 30px;}
+    	.gnb_list > ul > li {width:100%; height:100%;display:flex; justify-content:center; align-items:center;}
+    	.gnb_list > ul > li:hover {cursor:pointer; background-color:#CCC; transition:0.3s}
+    	.user_menu_wrap {height:100%;}
+    	.user_menu {height:100%;}
+    	.login_div {padding:0 20px; height:100%; display:flex; justify-content:center; align-items:center;}
+    	.login_div:hover {background-color:#CCC; transition:0.3s;}
     </style>
 </head>
 <body>
@@ -21,14 +31,14 @@
         <div class="header_wrapper columns">
             <nav id="global-navigation">
                 <div class="gnb_wrap">
-                    <div class="column is-5">
+                    <div class="column is-5 gnb_list">
                         <div class="anb_wrap"><img src="https://cdn-icons-png.flaticon.com/512/94/94225.png" alt=""></div>
-                        <ul class="gnb_list">
-                            <li class="gnb_items">노트북</li>
-                            <li class="gnb_items">스마트폰</li>
-                            <li class="gnb_items">태블릿</li>
-                            <li class="gnb_items">스마트워치</li>
-                            <li class="gnb_items">이어폰</li>
+                        <ul>
+                            <li class="gnb_items">메뉴1</li>
+                            <li class="gnb_items">메뉴2</li>
+                            <li class="gnb_items">메뉴3</li>
+                            <li class="gnb_items">메뉴4</li>
+                            <li class="gnb_items">메뉴5</li>
                         </ul>
                     </div>
                     <div class="seacrh_wrap column is-6">
@@ -39,7 +49,22 @@
                         </div>
                     </div>
                     <div class="user_menu_wrap column is-1">
-                        <div class="user_menu"><i class="fas fa-home"></i><i class="fas fa-bars"></i></div>
+                        <div class="user_menu">
+	                        <i class="fas fa-home"></i><i class="fas fa-bars"></i>
+	                        <c:choose>
+	                        	<c:when test="${empty loginUser}">
+			                        <a class="login_div" href="/member/loginform">로그인</a>
+			                        <a class="login_div" href="/member/joinform">회원가입</a>
+	                        	</c:when>
+	                        	<c:when test="${loginUser.userId eq 'admin' }">
+	                        		<a class="login_div" href="">관리자게시판</a>
+	                        		<a class="login_div" href="/member/logout">로그아웃</a>
+	                        	</c:when>
+	                        	<c:otherwise>
+	                        		<a class="login_div" href="/member/logout">로그아웃</a>
+	                        	</c:otherwise>
+	                        </c:choose>
+                        </div>
                     </div>
                 </div>
             </nav>
