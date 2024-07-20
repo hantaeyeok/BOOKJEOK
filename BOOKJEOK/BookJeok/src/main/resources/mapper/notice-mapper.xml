@@ -4,21 +4,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="noticeMapper">
-			<sql id="selectNotice">
+			
+
+
+
+		<sql id="selectNotice">
 			
 			SELECT
-				NOTICE.NOTICE_NO AS noticeNo,
-				NOTICE.NOTICE_TITLE AS noticeTitle,
-				NOTICE.NOTICE_CONTENT AS noticeContent,
-				NOTICE.NOTICE_DATE AS noticeDate,
-				NOTICE.NOTICE_VISITED AS noticeVisited,
-				NOTICE_FILE.NOTICE_IMG_ORIGINNAME AS noticeImgOriginName,
-				NOTICE_FILE.NOTICE_TEXT_ORIGINNAME AS noticeTextOriginName,
-				NOTICE.NOTICE_STATUS AS noticeStatus,
-				NOTICE.USER_ID AS userId
-			FROM
-				NOTICE
-			LEFT JOIN NOTICE_FILE ON NOTICE.NOTICE_NO = NOTICE_FILE.NOTICE_NO;		
+			 	  NOTICE_NO noticeNo,
+			 	  NOTICE_TITLE noticeTitle,
+			 	  NOTICE_CONTENT noticeContent,
+			 	  NOTICE_DATE noticeDate,
+			 	  NOTICE_VISITED noticeVisited,
+				  NOTICE_IMG_ORIGINNAME noticeImgOriginName,
+				  NOTICE_TEXT_ORIGINNAME noticeTextOriginName,
+				  NOTICE_STATUS noticeStatus,
+			 	  USER_ID userId 
+			 FROM
+			      NOTICE
 
 		</sql>
 		<select id="noticeCount" resultType="_int">
@@ -39,7 +42,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		                 USER_ID,
 		                 NOTICE_VISITED,
 		                 NOTICE_DATE,
-				   		 NOTICE_IMG_ORIGINNAME
+				   		 NOTICE_IMG_ORIGINNAME,
+				   		 NOTICE_TEXT_ORIGINNAME,
 		                 ROWNUM RNUM
 		            FROM
 		                (SELECT
@@ -48,7 +52,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				                 USER_ID,
 				                 NOTICE_VISITED,
 				                 NOTICE_DATE,
-						   		 NOTICE_IMG_ORIGINNAME
+						   		 NOTICE_IMG_ORIGINNAME,
+						   		 NOTICE_TEXT_ORIGINNAME
 		                  FROM
 		                       NOTICE
 		                 WHERE
@@ -117,7 +122,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			      NOTICE_CONTENT,
 			      USER_ID,
 			      NOTICE_IMG_ORIGINNAME,
-			      NOTICE_ORIGINNAME
+			      NOTICE_TEXT_ORIGINNAME
 			      )
 		     VALUE
 		</insert>
@@ -158,8 +163,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				   NOTICE_CONTENT = #{noticeContent},
 				   NOTICE_IMG_ORIGINNAME = #{noticeImgOriginName},
 				   NOTICE_IMG_CHANGENAME = #{noticeImgChangeName},
-				   NOTICE_ORIGINNAME = #{noticeOriginName},
-				   NOTICE_CHANGENAME = #{noticeChangeName},
+				   NOTICE_TEXT_ORIGINNAME = #{noticeTextOriginName},
+				   NOTICE_TEXT_CHANGENAME = #{noticeTextChangeName},
 			 WHERE
 				   NOTICE_NO = #{noticeNo}
 		</update>
@@ -170,7 +175,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			SELECT
 				NOTICE_NO noticeNo,
 				NOTICE_IMG_ORIGINNAME noticeImgOriginName,
-				NOTICE_ORIGINNAME noticeOriginName
+				NOTICE_TEXT_ORIGINNAME noticeTextOriginName
 			FROM
 				NOTICE
 			WHERE
@@ -191,34 +196,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				(
 				NOTICE_NO noticeNo,
 				NOTICE_IMG_ORIGINNAME noticeImgOriginName,
-				NOTICE_ORIGINNAME noticeOriginName
+				NOTICE_TEXT_ORIGINNAME noticeTextOriginName
 				)
 		  VALUES
 			    (
 				#{noticeNo},
 				#{noticeImgOriginName},
-				#{noticeOriginName}
+				#{noticeTextOriginName}
 				)
 				
 		</select>	
-			
-		<resultMap id="noticeResultSet" type="notice">
-		   <id     column="NOTICE_NO"      property="noticeNo" />
-		   <result column="NOTICE_TITLE"   property="noticeTitle" />
-		   <result column="NOTICE_CONTENT" property="noticeContent" />
-		   <result column="NOTICE_WRITER"  property="noticeWriter" />
-		   <result column="NOTICE_VISITED"         property="noticeVisited" />
-		
-		   <result column="NOTICE_DATE" property="noticeDate" />
-		   <collection resultMap="noticeFileResultSet" property="noticeFileList" />
-		</resultMap>
-		<resultMap id="noticeFileResultSet" type="noticeFile">
-			<id     column="NOTICE_NO"        property="noticeNo" />
-		   <result column="NOTICE_IMG_ORIGINNAME"   property="noticeImgOriginName" />
-		   <result column="NOTICE_IMG_CHANGENAME"   property="noticeImgChangeName" />
-		   <result column="NOTICE_ORIGINNAME"   property="noticeOriginName" />
-		   <result column="NOTICE_CHANGENAME"   property="noticeChangeName" />
-		</resultMap>
+
 		
 		
 		<select id="noticeList" resultType="notice">

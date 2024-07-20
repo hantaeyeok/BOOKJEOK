@@ -35,10 +35,12 @@ public interface NoticeService {
 			// 게시글 수정하기
 			int update(NoticeFile noticeFile);
 
-			int update(Notice notice);
+			int updateNotice(Notice notice);
 
 			//test
 			List<Notice> noticeList();
+
+			int deleteNotice(int noticedNo);
 
 			
 }
