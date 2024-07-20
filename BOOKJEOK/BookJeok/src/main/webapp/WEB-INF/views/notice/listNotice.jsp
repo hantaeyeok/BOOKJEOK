@@ -84,7 +84,7 @@
                           <td>${ notice.noticeVisited }</td>
                           <td>${ notice.noticeDate }</td>
                           <td>
-                             <c:if test="${ not empty notice.noticeOriginName }">
+                             <c:if test="${ not empty noticeFile.noticeTextOriginName }">
                                 📄  
                              </c:if>
                           </td>

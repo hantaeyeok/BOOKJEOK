@@ -174,10 +174,7 @@ public class NoticeController {
 	   }
 
 
-	   
-
-	   
-
+	  
 	   @PostMapping("insertForm.do")
 	   public String insert(Notice notice, NoticeFile noticeFile, MultipartFile upfile, HttpSession session, Model model) {   //MultipartFile[] 여러 개의 파일이 배열로 한번에 들어옴
 	      
@@ -216,7 +213,7 @@ public class NoticeController {
 	   
 
 
-	   @GetMapping("notice-detail")
+	   @GetMapping("noticeDetail")
 	   public ModelAndView findBynoticeNo(int noticeNo,
 			   							 ModelAndView mv) {
 		   
@@ -231,6 +228,11 @@ public class NoticeController {
 		   }
 		   return mv;
 	   }
+	   
+	   
+	   
+	   
+	   
 
 	   @PostMapping("notice-delete")
 	   public String deleteById(int noticeNo,

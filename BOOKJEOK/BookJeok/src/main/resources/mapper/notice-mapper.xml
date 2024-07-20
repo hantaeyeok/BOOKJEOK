@@ -19,8 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		   FROM
 			    NOTICE N
 	  LEFT JOIN 
-	            NOTICE_FILE F ON N.NOTICE_NO = F.NOTICE_NO	 	  
-			 	  
+	            NOTICE_FILE F ON N.NOTICE_NO = F.NOTICE_NO	 	   	  
 		</sql>
 		<select id="noticeCount" resultType="_int">
 		   SELECT
@@ -35,30 +34,33 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<include refid="selectNotice"/>
 		      FROM
 		          (SELECT
-		                 NOTICE_NO,
-		                 NOTICE_TITLE,
-		                 USER_ID,
-		                 NOTICE_VISITED,
-		                 NOTICE_DATE,
-				   		 NOTICE_IMGORI,
-				   		 NOTICE_TEXTORI,
-		                 ROWNUM RNUM
-		            FROM
-		                (SELECT
-				                 NOTICE_NO,
-				                 NOTICE_TITLE,
-				                 USER_ID,
-				                 NOTICE_VISITED,
-				                 NOTICE_DATE,
-						   		 NOTICE_IMGORI,
-						   		 NOTICE_TEXTORI
-		                  FROM
-		                       NOTICE
-		                 WHERE
-		                      NOTICE_STATUS ='Y'
-		                 ORDER
-		                    BY
-		                      NOTICE_NO DESC))
+			            N.NOTICE_NO,
+			            N.NOTICE_TITLE,
+			            N.USER_ID,
+			            N.NOTICE_VISITED,
+			            N.NOTICE_DATE,
+			            F.NOTICE_IMGORI,
+			            F.NOTICE_TEXTORI,
+			            ROWNUM RNUM
+			        FROM
+			            (
+			                SELECT
+			                    NOTICE.NO,
+			                    NOTICE.TITLE,
+			                    NOTICE.USER_ID,
+			                    NOTICE.VISITED,
+			                    NOTICE.DATE,
+			                    NOTICE_FILE.IMGORI,
+			                    NOTICE_FILE.TEXTORI
+			                FROM
+			                    NOTICE
+			                LEFT JOIN NOTICE_FILE ON NOTICE.NOTICE_NO = NOTICE_FILE.NOTICE_NO
+			                WHERE
+			                    NOTICE_STATUS = 'Y'
+			                ORDER BY
+			                    NOTICE_NO DESC
+			            ) 
+			    )
 		   WHERE
 		        RNUM BETWEEN #{startValue} AND #{endValue}	
 		</select>

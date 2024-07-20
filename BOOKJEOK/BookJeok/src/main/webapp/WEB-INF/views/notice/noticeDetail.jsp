@@ -54,15 +54,21 @@
                 <tr>
                     <th>첨부파일</th>
                     <c:choose>
-                    	<c:when test="${ empty notice.originName }">
+                    	<c:when test="${ empty noticeFile.noticeTextOriginName && empty noticeFile.noticeImgOriginName }">
                     		<td colspan="3">
                     			파일이 존재하지 않습니다.
 		                    </td>
 		                </c:when>
 		                <c:otherwise>
 		                    <td colspan="3">
-		                        <a href="${ notice.changeName }"
-		                        	download="${ notice.originName }">${ notice.originName }</a>
+					            <c:if test="${ not empty noticeFile.noticeTextOriginName }">
+					                <a href="${ noticeFile.noticeTextChangeName }"
+					                   download="${ noticeFile.noticeTextOriginName }">${ noticeFile.noticeTextOriginName }</a>
+					            </c:if>
+					            <c:if test="${ not empty noticeFile.noticeImgOriginName }">
+					                <a href="${ noticeFile.noticeImgChangeName }"
+					                   download="${ noticeFile.noticeImgOriginName }">${ noticeFile.noticeImgOriginName }</a>
+					            </c:if>
 		                    </td>
 		                </c:otherwise>
 		             </c:choose>
@@ -80,18 +86,19 @@
             <div align="center">
 	            <c:if test="${ sessionScope.loginUser.userId eq requestScope.notice.userId }">
 	                <!-- 수정하기, 삭제하기 버튼은 이 글이 본인이 작성한 글일 경우에만 보여져야 함 -->
-                <a class="btn btn-primary" href="updateForm.noticenotice?noticeNo=${notice.noticeNo }">수정</a>
+                <a class="btn btn-primary" href="updateEdit?noticeNo=${notice.noticeNo }">수정</a>
                 <a class="btn btn-danger" href="noticeDelete?noticeNo=${notice.noticeNo }">삭제</a>
 	            </c:if>
 	            
 	            <form method="post" action="" id="postForm">
 	            	<input type="hidden" name="noticeNo" value="${ notice.noticeNo }" />
-	            	<input type="hidden" name="filePath" value="${ notice.changeName }" />
+	            	<input type="hidden" name="filePath" value="${ noticeFile.noticeTextChangeName }" />
+	            	<input type="hidden" name="filePath" value="${ noticeFile.noticeImgChangeName }" />
 	            </form>
 	            
 	            <script>
 	            	function postSubmit(el) {	       
-	            		const attrValue = '수정하기' === el ? 'noticeUpdateForm.do' : 'noticeDelete.do';            		
+	            		const attrValue = '수정하기' === el ? 'updateEdit.do' : 'noticeDelete.do';            		
 	            		$('#postForm').attr('action', attrValue).submit();
 	            	}
 	            </script>
