@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.RowBounds;
-import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Service;
 
 import com.kh.bookjeok.notice.model.dao.NoticeMapper;
@@ -40,7 +39,7 @@ public class NoticeServiceImpl implements NoticeService {
 		}
 		
 		@Override
-		public int insert(Notice notice) {
+		public int insertNotice(Notice notice) {
 			return noticeMapper.insertNotice(notice);
 		}
 		
@@ -70,6 +69,19 @@ public class NoticeServiceImpl implements NoticeService {
 		public List<Notice> noticeList() {
 			return noticeMapper.noticeList();
 		}
+
+		@Override
+		public int updateNoticeFile(NoticeFile noticeFile) {
+			return noticeMapper.updateNotice(noticeFile);
+
+		}
+
+
+
+		//@Override
+		//public int update(NoticeFile noticeFile) {
+
+		}
 	/*	
 		@Override  (수정요망)
 		public List<NoticeFile> selectNoticeFile() {
@@ -80,7 +92,3 @@ public class NoticeServiceImpl implements NoticeService {
 		public NoticeFile updateNoticeFile(NoticeFile noticeFile) {
 			return noticeMapper.updateNoticeFile(sqlSession, noticeFile);
 		}*/
-		
-		
-		
-}

@@ -192,7 +192,7 @@ public class NoticeController {
 	      // 첨부파일이 존재하지 않을 경우 notice : 제목 / 내용 /작성자
 	      // 첨부파일이 존재할 경우 notice : 제목 / 내용 /작성자
 	      
-	      if(noticeService.insert(notice) > 0) {
+	      if(noticeService.insertNotice(notice) > 0) {
 	         
 	         session.setAttribute("alertMsg", "게시글 작성 성공~");
 	         
@@ -238,7 +238,7 @@ public class NoticeController {
 			   					HttpSession session,
 			   					Model model) {
 		   
-		   if(noticeService.delete(noticeNo) > 0) {
+		   if(noticeService.deleteNotice(noticeNo) > 0) {
 			   
 			   if(!"".equals(filePath)) {		//filePath는 null일 가능성 O. 따라서 filePath를 기준으로 잡으면 오타 발생 시 nullPointerException이 발생할 가능성이 있다. 따라서 빈 문자열 ""를 기준으로 .equals 비교를 한다면 nullPointerException 오류 발생은 막을 수 있다.
 				   	new File(session.getServletContext().getRealPath(filePath)).delete();
@@ -272,7 +272,7 @@ public class NoticeController {
 			   noticeFile.setNoticeTextChangeName(saveFile(reUpFile, session));
 		   }
 		   
-		   if(noticeService.update(noticeFile) > 0) {
+		   if(noticeService.updateNoticeFile(noticeFile) > 0) {
 			   
 			   session.setAttribute("alertMsg", "수정 완료");
 			   return "redirect:notice-detail?noticeNo="+noticeFile.getNoticeNo();
