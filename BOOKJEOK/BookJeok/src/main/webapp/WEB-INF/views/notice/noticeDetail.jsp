@@ -80,28 +80,35 @@
                 <tr>
                     <td colspan="4"><p style="height:150px;">${notice.noticeContent }</p></td>
                 </tr>
+                
             </table>
             <br>
 
-            <div align="center">
-	            <c:if test="${ sessionScope.loginUser.userId eq requestScope.notice.userId }">
-	                <!-- 수정하기, 삭제하기 버튼은 이 글이 본인이 작성한 글일 경우에만 보여져야 함 -->
-                <a class="btn btn-primary" href="editFormNotice?noticeNo=${notice.noticeNo }">수정</a>
-                <a class="btn btn-danger" href="noticeDelete?noticeNo=${notice.noticeNo }">삭제</a>
-	            </c:if>
+
 	            
-	            <form method="post" action="" id="postForm">
-	            	<input type="hidden" name="noticeNo" value="${ notice.noticeNo }" />
-	            	<input type="hidden" name="filePath" value="${ notice.noticeTextChangeName }" />
-	            	<input type="hidden" name="filePath" value="${ notice.noticeImgChangeName }" />
-	            </form>
+    <div align="center">
+        <c:if test="${ sessionScope.loginUser.userId eq requestScope.notice.userId }">
+            <!-- 수정하기, 삭제하기 버튼은 이 글이 본인이 작성한 글일 경우에만 보여져야 함 -->
+            <a class="btn btn-primary" href="editFormNotice?noticeNo=${notice.noticeNo}">수정</a>
+            <button class="btn btn-danger" onclick="postSubmit('deleteNotice')">삭제</button>
+        </c:if>
+
+        <form method="post" action="" id="postForm">
+            <input type="hidden" name="noticeNo" value="${ notice.noticeNo }" />
+            <input type="hidden" name="filePathText" value="${ notice.noticeTextChangeName }" />
+            <input type="hidden" name="filePathImg" value="${ notice.noticeImgChangeName }" />
+        </form>
+    </div>
+
+    <script>
+        function postSubmit(action) {
+            const form = document.getElementById('postForm');
+            form.action = action;
+            form.submit();
+        }
+    </script>
 	            
-	            <script>
-	            	function postSubmit(el) {	       
-	            		const attrValue = '수정하기' === el ? 'updateEdit.do' : 'noticeDelete.do';            		
-	            		$('#postForm').attr('action', attrValue).submit();
-	            	}
-	            </script>
+
             </div>
             <br><br>
 

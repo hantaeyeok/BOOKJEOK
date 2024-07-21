@@ -156,7 +156,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			   	  NOTICE_STATUS = 'Y'	  
 		</select>
 
-		<update id="delete" parameterType="_int">
+		<update id="deleteNotice" parameterType="_int">
 			UPDATE
 				   NOTICE
 			   SET
@@ -165,7 +165,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			 	   NOTICE_NO = #{noticeNo}
 		</update>
 
-		<update id="update" parameterType="notice">
+		<update id="updateNotice" parameterType="notice">
 			UPDATE
 				   NOTICE
 			   SET
@@ -174,7 +174,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				   NOTICE_IMGORI = #{noticeImgOriginName},
 				   NOTICE_IMGCHAN = #{noticeImgChangeName},
 				   NOTICE_TEXTORI = #{noticeTextOriginName},
-				   NOTICE_TEXTCHAN = #{noticeTextChangeName},
+				   NOTICE_TEXTCHAN = #{noticeTextChangeName}
 			 WHERE
 				   NOTICE_NO = #{noticeNo}
 		</update>
@@ -197,23 +197,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				NOTICE_NO DESC               	
 		</select>
 
-		<!-- update를 할 떄 공지사항 글만 업데이를 하면 되는지(첨부파일 포함) , 아님 파일을 따로 업데이트 해야 하는지  -->	
-		<select id="updateNotice" resultType="notice" parameterType="notice">
-		  INSERT
-			INTO
-				NOTICE
-				(
-				NOTICE_NO noticeNo,
-				NOTICE_IMGORI noticeImgOriginName,
-				NOTICE_TEXTORI noticeTextOriginName
-				)
-		  VALUES
-			    (
-				#{noticeNo},
-				#{noticeImgOriginName},
-				#{noticeTextOriginName}
-				)
-				
-		</select>	
 
 </mapper>

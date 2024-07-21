@@ -178,136 +178,99 @@ public class NoticeController {
 	      return "notice/listNotice";
 	   }
 
-		@GetMapping("editFormNotice")
+
+		
+		@GetMapping("insertForm")
 		public String insertForm() {
-			return "notice/noticeEdit";
+			return "notice/noticeInsert";
 		}
+		
+		
+		
+		
+		
+		
 	  
 	   @PostMapping("insertNotice")
-	   public String insertNotice(Notice notice, MultipartFile upfile, HttpSession session, Model model) {   //MultipartFile[] 여러 개의 파일이 배열로 한번에 들어옴
+	   public String insertNotice(Notice notice, 
+			                      MultipartFile upfile, 
+			                      HttpSession session, 
+			                      Model model) {   //MultipartFile[] 여러 개의 파일이 배열로 한번에 들어옴
 	      
 	      
-	      if(!upfile.getOriginalFilename().equals("")) {
-	         
+	      if(!upfile.getOriginalFilename().equals("")) {  
 	         notice.setNoticeTextOriginName(upfile.getOriginalFilename());
 	         notice.setNoticeTextChangeName(saveFile(upfile, session));
 	      }
 	      
-	      
-	      // 첨부파일이 존재하지 않을 경우 notice : 제목 / 내용 /작성자
-	      // 첨부파일이 존재할 경우 notice : 제목 / 내용 /작성자
-	      
-	      if(noticeService.insertNotice(notice) > 0) {
-	         
-	         session.setAttribute("alertMsg", "게시글 작성 성공~");
-	         
-	         // 무조건 리다이렉트 해야함!!!!!
-	         
-	         return "redirect:noticeList";
+	      if(noticeService.insertNotice(notice) > 0) { 
+	         session.setAttribute("alertMsg", "공지사항 작성 성공~");
+	         return "redirect:listNotice";
 	      } else {
-	         
-	         model.addAttribute("errorMsg", "게시글 작성 실패....");
+	         model.addAttribute("errorMsg", "공지사항 작성 실패....");
 	         return "common/errorPage";
 	      }
-	      
-
-	      
-//	      return "redirect:/noticeForm.do";
-	      
-
-	      
-
 	   }
+
+
 	   
-
-
-	   @GetMapping("noticeDetail")
+	   
+	   
+	   
+	   
+	 @GetMapping("noticeDetail")
 	   public ModelAndView findBynoticeNo(int noticeNo,
 			   							 ModelAndView mv) {
-		   
-
 		   if(noticeService.increaseNoticeVisited(noticeNo) > 0) {	//count수 증가 성공 시
-
 			   mv.addObject("notice", noticeService.findById(noticeNo))
 			   .setViewName("notice/noticeDetail");
-			   
 		   } else {
-			   mv.addObject("errMsg", "게시글 상세조회에 실패했습니다.").setViewName("common/errorPage");
+			   mv.addObject("errMsg", "공지사항 조회에 실패했습니다.").setViewName("common/errorPage");
 		   }
 		   return mv;
 	   }
-	   
-	   
-	   
-	   
+	
 	   
 
-	   @PostMapping("noticeDetail")
-	   public String deleteById(int noticeNo,
+	 
+	 
+	 
+	   @PostMapping("deleteNotice")
+	   public String delete(int noticeNo,
 			   					String filePath,
 			   					HttpSession session,
 			   					Model model) {
 		   
 		   if(noticeService.deleteNotice(noticeNo) > 0) {
-			   
 			   if(!"".equals(filePath)) {		//filePath는 null일 가능성 O. 따라서 filePath를 기준으로 잡으면 오타 발생 시 nullPointerException이 발생할 가능성이 있다. 따라서 빈 문자열 ""를 기준으로 .equals 비교를 한다면 nullPointerException 오류 발생은 막을 수 있다.
 				   	new File(session.getServletContext().getRealPath(filePath)).delete();
 			   }
-			   
-			   session.setAttribute("alertMsg", "게시물 삭제 성공");
-			   return "redirect:noticeList";
-			   
+			   session.setAttribute("alertMsg", "공지사항 삭제 성공");
+			   return "redirect:listNotice"; 
 		   } else {
-			   model.addAttribute("errorMsg", "게시글 삭제 실패");
+			   model.addAttribute("errorMsg", "공지사항 삭제 실패");
 			   return "common/errorPage";
 		   }
 	   }
+
 	   
 	   
-		@GetMapping("insertForm")
-		public String updateForm() {
-			return "notice/noticeInsert";
+	   
+
+		@GetMapping("editFormNotice")
+		public ModelAndView updateForm(ModelAndView mv, int noticeNo) {
+			mv.addObject("notice", noticeService.findById(noticeNo))
+			  .setViewName("notice/noticeEdit");
+			return mv;
 		}
 	   
-	   
-	   /*@GetMapping("insertForm")
-	   public ModelAndView updateForm(ModelAndView mv, int noticeNo) {
-		   
-		   mv.addObject("notice", noticeService.findById(noticeNo))
-		   	.setViewName("notice/noticeInsert");
-		   return mv;
-	   }*/
-	   
-		   @PostMapping("noticeInsert")
-		   public String insert(Notice notice, 
-				                MultipartFile upfile, 
-				                HttpSession session, 
-				                Model model) {   //MultipartFile[] 여러 개의 파일이 배열로 한번에 들어옴
-		      
-
-		      if(!upfile.getOriginalFilename().equals("")) {
-
-		    	 notice.setNoticeTextOriginName(upfile.getOriginalFilename());
-		    	 notice.setNoticeTextChangeName(saveFile(upfile, session));
-		    	 notice.setNoticeImgOriginName(upfile.getOriginalFilename());
-		    	 notice.setNoticeImgChangeName(saveFile(upfile, session));
-		      }
-
-		      if(noticeService.insertNotice(notice) > 0) {
-		         
-		         session.setAttribute("alertMsg", "게시글 작성 성공~");
-
-		         return "redirect:noticeList";
-		      } else {
-		         
-		         model.addAttribute("errorMsg", "게시글 작성 실패....");
-		         return "common/errorPage";
-		      }
-
-		   }
-		   
-	   
-	   @PostMapping("noticeEdit")
+		
+		
+		
+		
+		
+		
+	   @PostMapping("editNotice")
 	   public String update(Notice notice,
 			   				MultipartFile reUpFile,
 			   				HttpSession session) {
@@ -330,6 +293,9 @@ public class NoticeController {
 		   }
 	   }
 
+	   
+	   
+	   
 	// changeName 생성 메서드 만들기
 	     public String saveFile(MultipartFile upfile, HttpSession session) {
 		   String originName = upfile.getOriginalFilename();
