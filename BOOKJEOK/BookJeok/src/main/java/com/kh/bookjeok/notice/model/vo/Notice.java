@@ -25,7 +25,11 @@ public class Notice {
 	private int noticeVisited;
 	private String noticeStatus;
 	private Date noticeDate;
-	private List<NoticeFile> noticeFileList;
+	private String noticeImgOriginName;
+	private String noticeImgChangeName;
+	private String noticeTextOriginName;
+	private String noticeTextChangeName;
+	//private List<NoticeFile> noticeFileList;
 
 	
 }

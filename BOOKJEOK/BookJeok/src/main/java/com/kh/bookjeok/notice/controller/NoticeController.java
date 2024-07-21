@@ -24,7 +24,7 @@ import com.kh.bookjeok.common.template.PageInfo;
 import com.kh.bookjeok.model.Page;
 import com.kh.bookjeok.notice.model.service.NoticeService;
 import com.kh.bookjeok.notice.model.vo.Notice;
-import com.kh.bookjeok.notice.model.vo.NoticeFile;
+//import com.kh.bookjeok.notice.model.vo.NoticeFile;
 import com.kh.bookjeok.template.PageTemplate;
 
 import lombok.RequiredArgsConstructor;
@@ -98,7 +98,7 @@ public class NoticeController {
 	      map.put("startValue", startValue);
 	      map.put("endValue", endValue);
 	      
-	      //List<Notice> noticeList = noticeService.findAll(map);
+	      List<Notice> noticeList = noticeService.findAll(map);
 	      
 	      
 	      //System.out.println("noticeList.."+noticeList.size());
@@ -106,11 +106,11 @@ public class NoticeController {
 	      log.info("-----------------------------------------");
 	      //log.info("조회된 게시글 목록 : {}", noticeList);
 
-	      //model.addAttribute("noticeList", noticeList);
+	      model.addAttribute("noticeList", noticeList);
 	      
 	      model.addAttribute("pageInfo", pageInfo);	      
 	      
-	      List<Notice> noticeList = noticeService.noticeList();
+	      //List<Notice> noticeList = noticeService.noticeList();
 	      model.addAttribute("noticeList", noticeList);
 	      
 	      return "notice/listNotice";
@@ -124,16 +124,19 @@ public class NoticeController {
 	   //검색기능(조건 조회 + 페이징 처리_)
 	   @GetMapping("search.do")
 	   public String search(String condition,
-	                  String keyword,
-	                  @RequestParam(value="page", defaultValue = "1") int page, Model model) {
+	                  		String keyword,
+	                  		@RequestParam(value="page", defaultValue = "1") int page, Model model) {
 	      
 	      log.info("검색 조건 : {}",condition);
 	      log.info("검색 키워드 : {}",keyword);
 	      
+	      System.out.println("검색 조건 : " + condition);
+	      System.out.println("검색 키워드 : " + keyword);
 
 	      Map<String, String> map = new HashMap();
 	      map.put("condition", condition);
 	      map.put("keyword", keyword);
+	      
 	      
 	      //검색결과 수
 	      int searchCount = noticeService.searchCount(map);
@@ -168,7 +171,9 @@ public class NoticeController {
 	      List<Notice> noticeList = noticeService.findByConditionAndKeyword(map, rowBounds);
 	      
 	      model.addAttribute("keyword", keyword);
+		  model.addAttribute("pageInfo", pageInfo);
 	      model.addAttribute("condition", condition);
+	      model.addAttribute("noticeList", noticeList);
 	      
 	      return "notice/listNotice";
 	   }
@@ -176,13 +181,13 @@ public class NoticeController {
 
 	  
 	   @PostMapping("insertForm.do")
-	   public String insert(Notice notice, NoticeFile noticeFile, MultipartFile upfile, HttpSession session, Model model) {   //MultipartFile[] 여러 개의 파일이 배열로 한번에 들어옴
+	   public String insert(Notice notice, MultipartFile upfile, HttpSession session, Model model) {   //MultipartFile[] 여러 개의 파일이 배열로 한번에 들어옴
 	      
 	      
 	      if(!upfile.getOriginalFilename().equals("")) {
 	         
-	         noticeFile.setNoticeTextOriginName(upfile.getOriginalFilename());
-	         noticeFile.setNoticeTextChangeName(saveFile(upfile, session));
+	         notice.setNoticeTextOriginName(upfile.getOriginalFilename());
+	         notice.setNoticeTextChangeName(saveFile(upfile, session));
 	      }
 	      
 	      
@@ -234,7 +239,7 @@ public class NoticeController {
 	   
 	   
 
-	   @PostMapping("notice-delete")
+	   @PostMapping("noticeDetail")
 	   public String deleteById(int noticeNo,
 			   					String filePath,
 			   					HttpSession session,
@@ -255,7 +260,11 @@ public class NoticeController {
 		   }
 	   }
 	   
-	   @PostMapping("noticeUpdateForm.do")
+	   
+
+	   
+	   
+	   @GetMapping("noticeForm")
 	   public ModelAndView updateForm(ModelAndView mv, int noticeNo) {
 		   
 		   mv.addObject("notice", noticeService.findById(noticeNo))
@@ -263,21 +272,23 @@ public class NoticeController {
 		   return mv;
 	   }
 	   
+	   
+	   
 	   @PostMapping("noticeFile-update")
-	   public String update(NoticeFile noticeFile,
+	   public String update(Notice notice,
 			   				MultipartFile reUpFile,
 			   				HttpSession session) {
 		   
 
 		   if(!reUpFile.getOriginalFilename().equals("")) {	  
-			   noticeFile.setNoticeTextOriginName(reUpFile.getOriginalFilename());
-			   noticeFile.setNoticeTextChangeName(saveFile(reUpFile, session));
+			   notice.setNoticeTextOriginName(reUpFile.getOriginalFilename());
+			   notice.setNoticeTextChangeName(saveFile(reUpFile, session));
 		   }
 		   
-		   if(noticeService.updateNoticeFile(noticeFile) > 0) {
+		   if(noticeService.updateNotice(notice) > 0) {
 			   
 			   session.setAttribute("alertMsg", "수정 완료");
-			   return "redirect:notice-detail?noticeNo="+noticeFile.getNoticeNo();
+			   return "redirect:noticeDetail?noticeNo="+notice.getNoticeNo();
 			   
 		   } else {
 			   

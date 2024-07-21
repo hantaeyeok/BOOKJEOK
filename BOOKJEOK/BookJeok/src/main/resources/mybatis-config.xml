@@ -23,7 +23,6 @@
 	  	<typeAlias type="com.kh.bookjeok.mypage.model.vo.PaymentPerbook" alias="paymentperbook"/>
 	 	  <typeAlias type="com.kh.bookjeok.qna.model.vo.Question" alias="question"/>
 	    <typeAlias type="com.kh.bookjeok.notice.model.vo.Notice" alias="notice"/>
-	   	<typeAlias type="com.kh.bookjeok.notice.model.vo.NoticeFile" alias="noticeFile"/>   
 
 	</typeAliases>
 	

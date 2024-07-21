@@ -37,9 +37,9 @@ public class NoticeForwardController {
 		return "notice/noticeInsert";
 	}
 	
-	@PostMapping("noticeEdit")
-	public String noticeEdit() {
-		return "notice/noticeEdit";
-	}
+	//@PostMapping("noticeEdit")
+	//public String noticeEdit() {
+	//	return "notice/noticeEdit";
+	//}
 	
 }

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.kh.bookjeok.notice.model.dao.NoticeMapper;
 import com.kh.bookjeok.notice.model.vo.Notice;
-import com.kh.bookjeok.notice.model.vo.NoticeFile;
+//import com.kh.bookjeok.notice.model.vo.NoticeFile;
 
 import lombok.RequiredArgsConstructor;
 
@@ -70,9 +70,9 @@ public class NoticeServiceImpl implements NoticeService {
 			return noticeMapper.noticeList();
 		}
 
-		@Override
-		public int updateNoticeFile(NoticeFile noticeFile) {
-			return noticeMapper.updateNotice(noticeFile);
+		//@Override
+		//public int updateNoticeFile(NoticeFile noticeFile) {
+		//	return noticeMapper.updateNotice(noticeFile);
 
 		}
 
@@ -80,8 +80,8 @@ public class NoticeServiceImpl implements NoticeService {
 
 		//@Override
 		//public int update(NoticeFile noticeFile) {
+		//}
 
-		}
 	/*	
 		@Override  (수정요망)
 		public List<NoticeFile> selectNoticeFile() {

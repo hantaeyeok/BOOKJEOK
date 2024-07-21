@@ -37,7 +37,7 @@
             <h2> 공지사항 상세보기</h2>
             <br>
 
-            <a class="btn btn-secondary" style="float:right;" href="">목록으로</a>
+            <a class="btn btn-secondary" style="float:right;" href="listNotice?noticeNo=${notice.noticeNo }">목록으로</a>
             <br><br>
 
             <table id="contentArea" algin="center" class="table">
@@ -54,20 +54,20 @@
                 <tr>
                     <th>첨부파일</th>
                     <c:choose>
-                    	<c:when test="${ empty noticeFile.noticeTextOriginName && empty noticeFile.noticeImgOriginName }">
+                    	<c:when test="${ empty notice.noticeTextOriginName && empty notice.noticeImgOriginName }">
                     		<td colspan="3">
                     			파일이 존재하지 않습니다.
 		                    </td>
 		                </c:when>
 		                <c:otherwise>
 		                    <td colspan="3">
-					            <c:if test="${ not empty noticeFile.noticeTextOriginName }">
-					                <a href="${ noticeFile.noticeTextChangeName }"
-					                   download="${ noticeFile.noticeTextOriginName }">${ noticeFile.noticeTextOriginName }</a>
+					            <c:if test="${ not empty notice.noticeTextOriginName }">
+					                <a href="${ notice.noticeTextChangeName }"
+					                   download="${ notice.noticeTextOriginName }">${ notice.noticeTextOriginName }</a>
 					            </c:if>
-					            <c:if test="${ not empty noticeFile.noticeImgOriginName }">
-					                <a href="${ noticeFile.noticeImgChangeName }"
-					                   download="${ noticeFile.noticeImgOriginName }">${ noticeFile.noticeImgOriginName }</a>
+					            <c:if test="${ not empty notice.noticeImgOriginName }">
+					                <a href="${ notice.noticeImgChangeName }"
+					                   download="${ notice.noticeImgOriginName }">${ notice.noticeImgOriginName }</a>
 					            </c:if>
 		                    </td>
 		                </c:otherwise>
@@ -86,14 +86,14 @@
             <div align="center">
 	            <c:if test="${ sessionScope.loginUser.userId eq requestScope.notice.userId }">
 	                <!-- 수정하기, 삭제하기 버튼은 이 글이 본인이 작성한 글일 경우에만 보여져야 함 -->
-                <a class="btn btn-primary" href="updateEdit?noticeNo=${notice.noticeNo }">수정</a>
+                <a class="btn btn-primary" href="noticeEdit?noticeNo=${notice.noticeNo }">수정</a>
                 <a class="btn btn-danger" href="noticeDelete?noticeNo=${notice.noticeNo }">삭제</a>
 	            </c:if>
 	            
 	            <form method="post" action="" id="postForm">
 	            	<input type="hidden" name="noticeNo" value="${ notice.noticeNo }" />
-	            	<input type="hidden" name="filePath" value="${ noticeFile.noticeTextChangeName }" />
-	            	<input type="hidden" name="filePath" value="${ noticeFile.noticeImgChangeName }" />
+	            	<input type="hidden" name="filePath" value="${ notice.noticeTextChangeName }" />
+	            	<input type="hidden" name="filePath" value="${ notice.noticeImgChangeName }" />
 	            </form>
 	            
 	            <script>

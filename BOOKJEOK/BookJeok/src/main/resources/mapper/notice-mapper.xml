@@ -4,22 +4,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.kh.bookjeok.notice.model.dao.NoticeMapper">
-
 		<sql id="selectNotice">
 		  SELECT
-			    N.NOTICE_NO noticeNo,
-			    N.NOTICE_TITLE noticeTitle,
-			    N.NOTICE_CONTENT noticeContent,
-			    N.NOTICE_DATE noticeDate,
-			    N.NOTICE_VISITED noticeVisited,
-			    F.NOTICE_IMGORI noticeImgOriginName,
-			    F.NOTICE_TEXTORI noticeTextOriginName,
-			    N.NOTICE_STATUS noticeStatus,
-			    N.USER_ID userId
-		   FROM
-			    NOTICE N
-	  LEFT JOIN 
-	            NOTICE_FILE F ON N.NOTICE_NO = F.NOTICE_NO	 	   	  
+			    NOTICE_NO noticeNo,
+			    NOTICE_TITLE noticeTitle,
+			    NOTICE_CONTENT noticeContent,
+			    NOTICE_DATE noticeDate,
+			    NOTICE_VISITED noticeVisited,
+			    NOTICE_IMGORI noticeImgOriginName,
+			    NOTICE_TEXTORI noticeTextOriginName,
+			    NOTICE_STATUS noticeStatus,
+			    USER_ID userId        	  
 		</sql>
 		<select id="noticeCount" resultType="_int">
 		   SELECT
@@ -34,27 +29,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<include refid="selectNotice"/>
 		      FROM
 		          (SELECT
-			            N.NOTICE_NO,
-			            N.NOTICE_TITLE,
-			            N.USER_ID,
-			            N.NOTICE_VISITED,
-			            N.NOTICE_DATE,
-			            F.NOTICE_IMGORI,
-			            F.NOTICE_TEXTORI,
+			            NOTICE_NO,
+			            NOTICE_TITLE,
+			            NOTICE_CONTENT,
+			            USER_ID,
+			            NOTICE_VISITED,
+			            NOTICE_DATE,
+			            NOTICE_IMGORI,
+			            NOTICE_TEXTORI,
+			            NOTICE_STATUS,
 			            ROWNUM RNUM
 			        FROM
 			            (
-			                SELECT
-			                    NOTICE.NO,
-			                    NOTICE.TITLE,
-			                    NOTICE.USER_ID,
-			                    NOTICE.VISITED,
-			                    NOTICE.DATE,
-			                    NOTICE_FILE.IMGORI,
-			                    NOTICE_FILE.TEXTORI
+				        SELECT
+					            NOTICE_NO,
+					            NOTICE_TITLE,
+					            NOTICE_CONTENT,
+					            USER_ID,
+					            NOTICE_VISITED,
+					            NOTICE_DATE,
+					            NOTICE_IMGORI,
+					            NOTICE_TEXTORI,
+					            NOTICE_STATUS
 			                FROM
 			                    NOTICE
-			                LEFT JOIN NOTICE_FILE ON NOTICE.NOTICE_NO = NOTICE_FILE.NOTICE_NO
 			                WHERE
 			                    NOTICE_STATUS = 'Y'
 			                ORDER BY
@@ -64,25 +62,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		   WHERE
 		        RNUM BETWEEN #{startValue} AND #{endValue}	
 		</select>
-		<select id="searchCount" resultType="hashmap" parameterType="int">
-			<include refid="selectNotice"/>
-		    FROM
-		        NOTICE
-		   WHERE
-		        NOTICE_STATUS = 'Y'
+		<select id="searchCount" resultType="_int" parameterType="hashmap">
+		SELECT
+               COUNT(NOTICE_NO)
+            FROM
+				NOTICE
+		   WHERE      
+		   		NOTICE_STATUS = 'Y'
 		   <if test="condition == 'writer'">
-		    AND
+		   AND
 		       USER_ID
 		   </if>
 		   <if test="condition == 'title'">
-		    AND
+		   AND
 		       NOTICE_TITLE
 		   </if>
 		   <if test="condition == 'content'">
-		    AND
+		   AND
 		        NOTICE_CONTENT
 		   </if>
-		
 		        LIKE '%' || #{keyword} || '%'
 		</select>
 
@@ -126,7 +124,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		     VALUE
 		</insert>
 		
-		<update id="increaseCount" parameterType="_int">
+		<update id="increaseNoticeVisited" parameterType="_int">
 			UPDATE
 				   NOTICE
 			   SET
@@ -139,8 +137,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		
 		<select id="findById" parameterType="_int" resultType="notice">
 			<include refid="selectNotice" />
-			 FROM
-				  NOTICE
+			FROM
+			     NOTICE
 			WHERE
 				  NOTICE_NO = #{noticeNo}
 		</select>
@@ -169,7 +167,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</update>
 
 		<!--  -->
-		<select id="selectNoticeFile" resultType="noticeFile" parameterType="noticeFile">
+		<select id="selectNotice" resultType="notice" parameterType="notice">
 			SELECT
 				NOTICE_NO noticeNo,
 				NOTICE_IMGORI noticeImgOriginName,
@@ -179,7 +177,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			WHERE
 				NOTICE_STATUS = 'Y'
 			AND
-				SEQ_NNO = #{noticeNo}
+				NOTICE_NO_SEQ = #{noticeNo}
 				
 			ORDER
 			   BY
@@ -187,10 +185,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</select>
 
 		<!-- update를 할 떄 공지사항 글만 업데이를 하면 되는지(첨부파일 포함) , 아님 파일을 따로 업데이트 해야 하는지  -->	
-		<select id="updateNoticeFile" resultType="noticeFile" parameterType="noticeFile">
+		<select id="updateNotice" resultType="notice" parameterType="notice">
 		  INSERT
 			INTO
-				NOTICE_FILE
+				NOTICE
 				(
 				NOTICE_NO noticeNo,
 				NOTICE_IMGORI noticeImgOriginName,
@@ -205,11 +203,4 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				
 		</select>	
 
-
-		
-		
-		<select id="noticeList" resultType="notice">
-			<include refid="selectNotice" />
-		
-		</select>
 </mapper>

@@ -6,7 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.session.RowBounds;
 
 import com.kh.bookjeok.notice.model.vo.Notice;
-import com.kh.bookjeok.notice.model.vo.NoticeFile;
+//import com.kh.bookjeok.notice.model.vo.NoticeFile;
 
 public interface NoticeService {
 
@@ -33,7 +33,7 @@ public interface NoticeService {
 			int deleteNotice(int noticedNo);
 			
 			// 게시글 수정하기
-			int updateNoticeFile(NoticeFile noticeFile);
+			//int updateNoticeFile(NoticeFile noticeFile);
 
 			int updateNotice(Notice notice);
 
