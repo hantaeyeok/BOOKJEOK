@@ -84,13 +84,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		        LIKE '%' || #{keyword} || '%'
 		</select>
 
-		<select id="findByConditionAndKeyword" parameterType="hashmap" resultType="notice">
+		<select id="findByConditionAndKeyword" parameterType="hashmap" resultType="_int">
 			<include refid="selectNotice"/>
 		      FROM
 		          NOTICE
 		     WHERE
-		          NOTICE_STATUS ='Y'
-		
+		          NOTICE_STATUS ='Y'		
 		  <choose>
 		  	<when test="condition == 'writer'">
 		  	   AND USER_ID
@@ -109,7 +108,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</select>
 		
 		
-		<insert id="insert" parameterType="notice">
+		<insert id="insertNotice" parameterType="notice">
 			INSERT
 			  INTO
 			      NOTICE
@@ -119,9 +118,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			      NOTICE_CONTENT,
 			      USER_ID,
 			      NOTICE_IMGORI,
-			      NOTICE_TEXTORI
+			      NOTICE_IMGCHAN,			      
+			      NOTICE_TEXTORI,
+			      NOTICE_TEXTCHAN
 			      )
-		     VALUE
+		     VALUES
+		     	  (
+		          NOTICE_NO_SEQ.NEXTVAL,
+		          #{noticeTitle},
+			      #{noticeContent},
+			      #{userId},
+			      #{noticeTextOriginName},
+			      #{noticeTextChangeName},
+			      #{noticeImgOriginName},
+			      #{noticeImgChangeName}	      
+			     )
 		</insert>
 		
 		<update id="increaseNoticeVisited" parameterType="_int">
@@ -137,10 +148,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		
 		<select id="findById" parameterType="_int" resultType="notice">
 			<include refid="selectNotice" />
-			FROM
-			     NOTICE
+		     FROM
+			      NOTICE
 			WHERE
 				  NOTICE_NO = #{noticeNo}
+			  AND
+			   	  NOTICE_STATUS = 'Y'	  
 		</select>
 
 		<update id="delete" parameterType="_int">

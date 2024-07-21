@@ -37,7 +37,7 @@
             <h2>게시글 수정하기</h2>
             <br>
 
-            <form id="updateForm" method="post" action="updateEdit?noticeNo=${notice.noticeNo }" enctype="multipart/form-data">
+            <form id="updateForm" method="post" action="editForm?noticeNo=${notice.noticeNo }" enctype="multipart/form-data">
                 <table algin="center">
                     <tr>
                         <th><label for="title">제목</label></th>
@@ -54,9 +54,9 @@
                             
                             <c:if test="S${ not empty noticeFile.noticeTextoriginName }">	<!-- 첨부파일이 있을 때만 -->
 	                            현재 업로드된 파일 : 
-	                            <a href="${ noticeFile.noticeTextChangeName }" download="${ noticeFile.noticeTextoriginName }">${ noticeFile.noticeTextoriginName }</a>
-				                <input type="hidden" name="changeName" value="${ noticeFile.noticeTextChangeName }" />
-				                <input type="hidden" name="originName" value="${ noticeFile.noticeTextoriginName }" />
+	                            <a href="${ noticeFile.noticeTextChangeName }" download="${ notice.noticeTextoriginName }">${ noticeFile.noticeTextoriginName }</a>
+				                <input type="hidden" name="changeName" value="${ notice.noticeTextChangeName }" />
+				                <input type="hidden" name="originName" value="${ notice.noticeTextoriginName }" />
                             </c:if>
                             
                         </td>

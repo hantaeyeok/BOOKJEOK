@@ -178,10 +178,13 @@ public class NoticeController {
 	      return "notice/listNotice";
 	   }
 
-
+		@GetMapping("editFormNotice")
+		public String insertForm() {
+			return "notice/noticeEdit";
+		}
 	  
-	   @PostMapping("insertForm.do")
-	   public String insert(Notice notice, MultipartFile upfile, HttpSession session, Model model) {   //MultipartFile[] 여러 개의 파일이 배열로 한번에 들어옴
+	   @PostMapping("insertNotice")
+	   public String insertNotice(Notice notice, MultipartFile upfile, HttpSession session, Model model) {   //MultipartFile[] 여러 개의 파일이 배열로 한번에 들어옴
 	      
 	      
 	      if(!upfile.getOriginalFilename().equals("")) {
@@ -261,20 +264,50 @@ public class NoticeController {
 	   }
 	   
 	   
-
+		@GetMapping("insertForm")
+		public String updateForm() {
+			return "notice/noticeInsert";
+		}
 	   
 	   
-	   @GetMapping("noticeForm")
+	   /*@GetMapping("insertForm")
 	   public ModelAndView updateForm(ModelAndView mv, int noticeNo) {
 		   
 		   mv.addObject("notice", noticeService.findById(noticeNo))
-		   	.setViewName("notice/noticeEdit");
+		   	.setViewName("notice/noticeInsert");
 		   return mv;
-	   }
+	   }*/
 	   
+		   @PostMapping("noticeInsert")
+		   public String insert(Notice notice, 
+				                MultipartFile upfile, 
+				                HttpSession session, 
+				                Model model) {   //MultipartFile[] 여러 개의 파일이 배열로 한번에 들어옴
+		      
+
+		      if(!upfile.getOriginalFilename().equals("")) {
+
+		    	 notice.setNoticeTextOriginName(upfile.getOriginalFilename());
+		    	 notice.setNoticeTextChangeName(saveFile(upfile, session));
+		    	 notice.setNoticeImgOriginName(upfile.getOriginalFilename());
+		    	 notice.setNoticeImgChangeName(saveFile(upfile, session));
+		      }
+
+		      if(noticeService.insertNotice(notice) > 0) {
+		         
+		         session.setAttribute("alertMsg", "게시글 작성 성공~");
+
+		         return "redirect:noticeList";
+		      } else {
+		         
+		         model.addAttribute("errorMsg", "게시글 작성 실패....");
+		         return "common/errorPage";
+		      }
+
+		   }
+		   
 	   
-	   
-	   @PostMapping("noticeFile-update")
+	   @PostMapping("noticeEdit")
 	   public String update(Notice notice,
 			   				MultipartFile reUpFile,
 			   				HttpSession session) {
