@@ -51,8 +51,6 @@ public interface BookMapper {
 	List<MidCategory> midCategoryByupperNo(Integer upperCategoryNo);
 	List<LowerCategory> lowerCategoryBymidCategoryNo(Integer midCategory);
 	
-	
-	
 	int saveBookDetail(BookDetail bookDetail);
 	BookDetail selectBookDetailBybookNo(int bookNo);
 	
@@ -71,5 +69,12 @@ public interface BookMapper {
 	int updateBook(Book book);
 	
 	int updateBookDetail(BookDetail bookDetail);
+	//리뷰 업데이트 및 삭제
+	BookReview selectBookReviewByBookNoUserId(Map<String, Object> params);
+	int updateReview(BookReview bookReview);
+
+	
+	int deleteReview(Map<String, Object> params);
+
 	
 }

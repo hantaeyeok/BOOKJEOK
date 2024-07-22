@@ -45,5 +45,13 @@ public interface BookService {
 	List<BookCategoryDetail> bookCategoryDetail(String keyword);
 	int updateBook(Book book);
 	int updateBookDetail(BookDetail bookDetail);
+	
+	//리뷰
+	BookReview selectBookReviewByBookNoUserId(Map<String, Object> params);
+	int updateReview(BookReview bookReview);
+	//int updateAdminReview(BookReview bookReview);
+	int deleteReview(Map<String, Object> params);
+	
+
 
 }

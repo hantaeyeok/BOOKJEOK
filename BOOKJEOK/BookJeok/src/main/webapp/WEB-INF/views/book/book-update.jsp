@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>도서 등록 페이지</title>
+    <title>도서 수정 페이지</title>
 
 </head>
 <body>

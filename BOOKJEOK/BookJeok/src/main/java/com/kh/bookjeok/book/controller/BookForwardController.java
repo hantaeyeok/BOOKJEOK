@@ -44,4 +44,15 @@ public class BookForwardController {
 	public String updateBook() {
 		return "book/book-update";
 	}
+	
+	@GetMapping("adminReview1")
+	public String adminReview() {
+		return "book/book-adReview";
+	}
+	
+	@GetMapping("adminReview12")
+	public String adminReview1() {
+		return "book/book-adminReview";
+	}
+	
 }

@@ -128,12 +128,30 @@ public class BookServiceImple implements BookService{
 	public int updateBookDetail(BookDetail bookDetail) {
 		return bookMapper.updateBookDetail(bookDetail);
 	}
+
 	
-	
-	
-	
+	//리뷰
+	@Override
+	public BookReview selectBookReviewByBookNoUserId(Map<String, Object> params) {
+		return bookMapper.selectBookReviewByBookNoUserId(params);
+	}
+
+	@Override
+	public int updateReview(BookReview bookReview) {
+		return bookMapper.updateReview(bookReview);
+	} 
+
+	@Override
+	public int deleteReview(Map<String, Object> params) {
+		return bookMapper.deleteReview(params);
+	}
+
 	
 
+	//
+	
+	
+	
 
 	
 }

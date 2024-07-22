@@ -27,8 +27,7 @@
                          <ul class="nav flex-column"> 
                              <li class="nav-item"><a href="/bookjeok/book/1" class="nav-link link-dark">도서 등록하기</a></li>
                              <li class="nav-item"><a href="/bookjeok/book/upup" class="nav-link link-dark">도서 수정하기</a></li>
-                             <li class="nav-item"><a href="#" class="nav-link link-dark">도서 재고관리</a></li>
-                             <li class="nav-item"><a href="#" class="nav-link link-dark">도서 리뷰관리</a></li>                                
+                             <li class="nav-item"><a href="/bookjeok/book/adminReview" class="nav-link link-dark">도서 리뷰관리</a></li>                                
                          	 <li class="nav-item"><a href="/bookjeok/book/30" class="nav-link link-dark">도서상세보기예시(30)</a></li>                                
                          
                          </ul>

@@ -107,16 +107,7 @@
         <p>교환 및 반품에 대한 정책...</p>
     </div>
 
-    <div class="fixed-bottom-bar">
-        <span class="total-price">총 상품 금액: ${book.bookPrice}</span>
-        <span class="quantity-selector">
-            <button class="btn btn-secondary" onclick="decreaseQuantity()">-</button>
-            <input type="text" id="quantity" value="1">
-            <button class="btn btn-secondary" onclick="increaseQuantity()">+</button>
-        </span>
-        <button class="btn btn-primary" onclick="addToCart()">장바구니</button>
-        <button class="btn btn-success" onclick="purchase()">구매하기</button>
-    </div>
+    
 
     <!-- 리뷰 모달 -->
     <div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
@@ -154,6 +145,16 @@
     </div>
 </div>
 
+<div class="fixed-bottom-bar">
+        <span class="total-price">총 상품 금액: ${book.bookPrice}</span>
+        <span class="quantity-selector">
+            <button class="btn btn-secondary" onclick="decreaseQuantity()">-</button>
+            <input type="text" id="quantity" value="1">
+            <button class="btn btn-secondary" onclick="increaseQuantity()">+</button>
+        </span>
+        <button class="btn btn-primary" onclick="addToCart()">장바구니</button>
+        <button class="btn btn-success" onclick="purchase()">구매하기</button>
+</div>
 <script>
     function decreaseQuantity() {
         var quantity = parseInt($('#quantity').val());

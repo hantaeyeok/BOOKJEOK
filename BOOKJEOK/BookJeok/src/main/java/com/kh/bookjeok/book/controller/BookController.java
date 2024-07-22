@@ -9,8 +9,10 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,6 +40,7 @@ import com.kh.bookjeok.book.model.vo.UpperCategory;
 import com.kh.bookjeok.common.model.FileUploadService;
 import com.kh.bookjeok.common.model.vo.Message;
 import com.kh.bookjeok.common.template.PageInfo;
+import com.kh.bookjeok.member.model.vo.Member;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -112,7 +115,9 @@ public class BookController {
 	}
 
 	@PostMapping("saveBookDetail")
-	public ResponseEntity<Message> saveBookDetail(@RequestParam("bookNo") int bookNo,
+	public ResponseEntity<Message> saveBookDetail( 
+			
+			@RequestParam("bookNo") int bookNo,
 												  @RequestParam(required = false) MultipartFile detailImage,
 												  @RequestParam(required = false) String detailDescription,
 												  HttpSession session){
@@ -126,7 +131,7 @@ public class BookController {
 			bookDetail.setDetailImage(detailImagePath);
 		} else{
 			log.info("북 커버가 없어서 기본 이미지 넣어요");
-			bookDetail.setDetailImage("bookbook.jpg");
+			bookDetail.setDetailImage("resources/uploadFiles/bookbasicImage.jpg");
 		}
 		
 		//설명 저장(null)허용
@@ -238,7 +243,7 @@ public class BookController {
 	 
 	 
 	 @GetMapping("reviewAvg/{bookNo}")
-	    public ResponseEntity<Message> getReviewSummary(@PathVariable int bookNo) {
+	 public ResponseEntity<Message> getReviewSummary(@PathVariable int bookNo) {
 	        List<ReviewAvg> reviewAvgList = bookService.reviewAvg(bookNo);
 	        
 	        // 전체 리뷰 수를 계산
@@ -279,6 +284,36 @@ public class BookController {
             return ResponseEntity.status(HttpStatus.OK).body(responseMsg);
 	    }
 
+	
+	 @GetMapping("adminReview")
+	 public ResponseEntity<Message> selectReviewByBookNo(@RequestParam(required = false, defaultValue = "1") int page,
+			 											 @RequestParam String keyword){
+		 
+		 List<Book> bookList = bookService.bookByKeyword(keyword);
+		 
+		 int pageLimit = 10; int pageSize = 5; int totalBooks = bookList.size();
+		 PageInfo pageInfo = PageInfo.getPageInfo(totalBooks, page, pageLimit, pageSize);
+		 int start = pageInfo.getStartValue();
+		 int end = Math.min(pageInfo.getEndValue(),totalBooks);
+		 
+		 List<Book> paginatedBook = bookList.subList(start, end);
+		 
+		 Message responsMsg = Message.builder()
+									 .data(paginatedBook)
+									 .message("성공")
+									 .build();
+		 
+		 return ResponseEntity.status(HttpStatus.OK).body(responsMsg);
+	 }
+	 
+
+	
+	
+		 
+		 
+		 
+	 
+	 
 	 @GetMapping("update")
 	 public ResponseEntity<Message> selectBookAndBookDetailByKeyword(
 			 @RequestParam(required = false, defaultValue = "1") int page,
@@ -356,45 +391,90 @@ public class BookController {
 	 
 	 
 	 @PostMapping("updateBookDetail")
-		public ResponseEntity<Message> updateBookDetail(BookDetail bookDetail,
+	 public ResponseEntity<Message> updateBookDetail(BookDetail bookDetail,
 													    int bookNo,
 													    @RequestParam(required = false) MultipartFile detailImageFile,
 													    @RequestParam(required = false) String detailImageString,
 													    @RequestParam(required = false) String detailDescription,
 													    HttpSession session){
 			
-		 	System.out.println("BookNo"+bookDetail.getBookNo());
-		 	BookDetail newBookDetail = bookService.selectBookDetailBybookNo(bookDetail.getBookNo());
-		 	
-			if(detailImageFile != null && !detailImageFile.isEmpty()) {
-				String detailImagePath = fileUploadService.saveFile(detailImageFile, session);
-				System.out.println("detailImagePath"+detailImagePath);
-				newBookDetail.setDetailImage(detailImagePath);
-			} else if (detailImageString != null && !detailImageString.isEmpty()) {
-				newBookDetail.setDetailImage(detailImageString);
-			} else {
-				log.info("북 커버가 없어서 기본 이미지 넣어요");
-				newBookDetail.setDetailImage("resources/uploadFiles/bookbasicImage.jpg");
-			}
-			
-			//설명 저장(null)허용
-			if(detailDescription != null) {
-				newBookDetail.setDetailDescription(detailDescription);
-			}
-			
-			
-			
-			int result = bookService.updateBookDetail(bookDetail);
-			if(result > 0) {
-				return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
-															.message("도서 상세정보 수정 성공")
-															.build());
-			} else {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder()
-														.message("도서 상세정보 수정 실패")
-														.build());
-			}
+		System.out.println("BookNo"+bookDetail.getBookNo());
+		BookDetail newBookDetail = bookService.selectBookDetailBybookNo(bookDetail.getBookNo());
+		
+		if(detailImageFile != null && !detailImageFile.isEmpty()) {
+			String detailImagePath = fileUploadService.saveFile(detailImageFile, session);
+			System.out.println("detailImagePath"+detailImagePath);
+			newBookDetail.setDetailImage(detailImagePath);
+		} else if (detailImageString != null && !detailImageString.isEmpty()) {
+			newBookDetail.setDetailImage(detailImageString);
+		} else {
+			log.info("북 커버가 없어서 기본 이미지 넣어요");
+		newBookDetail.setDetailImage("resources/uploadFiles/bookbasicImage.jpg");
 		}
+		
+		//설명 저장(null)허용
+		if(detailDescription != null) {
+			newBookDetail.setDetailDescription(detailDescription);
+		}
+		
+		
+		
+		int result = bookService.updateBookDetail(bookDetail);
+		if(result > 0) {
+			return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+														.message("도서 상세정보 수정 성공")
+														.build());
+		} else {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder()
+													.message("도서 상세정보 수정 실패")
+													.build());
+		}
+	 }
+	
+	@PutMapping("updateUserReview")
+	public ResponseEntity<Message> updateUserReview(int bookNo, 
+													int reviewRating, 
+													String reviewContext ,
+													HttpSession session){
+		
+		Member loginUser = (Member) session.getAttribute("loginUser");
+		String userId = loginUser.getUserId();
+		Map<String, Object> params = new HashMap<>();
+		params.put("userid", userId);
+		params.put("bookNo", bookNo);
+		BookReview bookReview = bookService.selectBookReviewByBookNoUserId(params);
+		bookReview.setReviewRating(reviewRating);
+		bookReview.setReviewContext(reviewContext);
+		
+		int result = bookService.updateReview(bookReview);
+		return result > 0 ? 
+			   ResponseEntity.status(HttpStatus.OK).body(Message.builder().message("성공").build()) 
+			: 
+			   ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder().message("실패").build());
+	}
+	
+	
+	@PutMapping("updateAdminReview")
+	public ResponseEntity<Message> updateAdminReview(@RequestBody BookReview bookReview){
+		int result = bookService.updateReview(bookReview);
+		System.out.println("result = "+result);
+		return result > 0 ? 
+				   ResponseEntity.status(HttpStatus.OK).body(Message.builder().message("성공").build()) 
+				: 
+				   ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder().message("실패").build());
+	}
+	
+	@DeleteMapping("deleteAdminReview")
+	public ResponseEntity<Message> deleteReview(int bookNo, String userId){
+		Map<String, Object> params = new HashMap<>();
+		params.put("userid", userId);
+		params.put("bookNo", bookNo);
+		int result = bookService.deleteReview(params);
+		return result > 0 ? 
+				   ResponseEntity.status(HttpStatus.OK).body(Message.builder().message("성공").build()) 
+				: 
+				   ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder().message("실패").build());
+	}
 	
 	
 }
