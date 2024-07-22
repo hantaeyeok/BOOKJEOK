@@ -219,8 +219,9 @@ public class MemberController {
 		return "redirect:/";
 	}
 	
+	@ResponseBody
 	@PostMapping("login")
-	public String login(Member member, HttpSession session) {
+	public ResponseEntity<Message> login(Member member, HttpSession session) {
 		Member loginUser;
 		loginUser = memberService.login(member);
 		
@@ -228,12 +229,13 @@ public class MemberController {
 			session.setAttribute("loginUser", loginUser);
 			System.out.println("로그인 성공 - session객체 loginUser : "+ session.getAttribute("loginUser"));
 			System.out.println();
+			return ResponseEntity.status(HttpStatus.OK).body(Message.builder().message("success")
+																			  .data(loginUser)
+																			  .build());
 		} else {
-			System.out.println("로그인 실패");
+			return ResponseEntity.status(HttpStatus.OK).body(Message.builder().message("fail")
+																			  .build());
 		}
-		
-		return "redirect:/";
-
 	}
 	
 	@PostMapping("join")

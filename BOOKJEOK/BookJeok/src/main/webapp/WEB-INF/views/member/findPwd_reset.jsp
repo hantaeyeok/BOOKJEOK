@@ -12,7 +12,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
-<br>
+<jsp:include page="../common/menubar.jsp"></jsp:include>
 <div style="width:100%; height:1200px; display:flex; justify-content:center;">
 	<div style="width:30%;" id="page1">
 	<form>
@@ -74,6 +74,6 @@
 		<button type="submit" class="btn btn-primary btn-lg btn-block" onclick="location.href='/member/loginform';">로그인 창으로</button>
 	</div>
 </div>
-
+<jsp:include page="../common/footer.jsp"></jsp:include>
 </body>
 </html>

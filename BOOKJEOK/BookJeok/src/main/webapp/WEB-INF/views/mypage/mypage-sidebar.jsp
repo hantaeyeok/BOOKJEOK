@@ -10,17 +10,29 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="/resources/css/common.css">
-       <style>
-    	li {list-style-type: none; list-style:none;}
+    <style>
+    	.sidebar {width:100%; background-color:#FFF; padding:20px; transition:0.3s;}
+    	.sidebar:hover {width:100%; background-color:#CCC; padding:20px;}
     </style>
 </head>
 <body>
-<jsp:include page="./common/menubar.jsp"></jsp:include>
+<div style="width:100%; height:800px; background-color:#FFF; padding:20px;">
+	<h1 style="padding:20px;background-color:#DDD">마이페이지</h1>
+	<div class="sidebar" onclick="toEditMemberInfo();">
+		회원정보 변경
+	</div>
+	<div class="sidebar" >
+		장바구니
+	</div>
+	<div class="sidebar" >
+		주문 목록
+	</div>
+</div>
+<script>
+function toEditMemberInfo() {
+	location.href="/member/editMemberInfoBfr";
+};
 
-<div style="width:100%; height:800px; background-color:#FFF"></div>
-
-<jsp:include page="./common/footer.jsp"></jsp:include>
-
+</script>
 </body>
 </html>

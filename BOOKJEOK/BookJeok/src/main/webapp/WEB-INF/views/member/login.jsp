@@ -6,6 +6,13 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 <title>B강의장 프로젝트 입니다</title>
 <style>
 @import url(https://fonts.googleapis.com/css?family=Roboto:300);
@@ -112,10 +119,10 @@ body {
 	<div id="content">
 		<div class="login-page">
 		  <div class="form">
-		    <form action="/member/login" method="post" class="login-form">
+		    <form action="/member/login" method="post" class="login-form" id="formdata">
 		      <input type="text" placeholder="아이디" name="userId"/>
 		      <input type="password" placeholder="패스워드" name="userPwd"/>
-		      <button type="submit" style="margin-bottom:10px;">login</button>
+		      <button type="button" style="margin-bottom:10px;" onclick="loginfnc()">login</button>
 		      <br>
 		      <img alt="카카오 로그인" id="login_kakao" src="/resources/img/kakao_login_medium_narrow.png"/>
 		      <p class="message">아이디가 없으신가요? <a href="/member/joinform">회원가입</a></p>
@@ -132,6 +139,22 @@ body {
 						 '&scope=profile_nickname,profile_image';
 				location.href=text;
 			};
+			function loginfnc() {
+				$formdata = $("#formdata").serialize();
+				$.ajax({
+					url: "/member/login",
+					type: "POST",
+					data: $formdata,
+					success: rst => {
+						if (rst.message==="success") {
+							location.href="/";
+						} else {
+							alert("아이디나 비밀번호가 틀립니다.");
+						}
+					}
+					
+				});
+			}
 		</script>
 	</div>
 </body>

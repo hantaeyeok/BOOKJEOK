@@ -239,7 +239,7 @@ select option {
 </style>
 </head>
 <body>
-
+<jsp:include page="../common/menubar.jsp"></jsp:include>
 <div class="container">
     <form action="/member/join" method="post" id="join_form">
         <div class="row">
@@ -494,6 +494,6 @@ IP주소, 쿠키, 방문 일시, OS 종류, 브라우저 종류, 단말기 모�
 	  </div>
 	</div>
 </div>
-
+<jsp:include page="../common/footer.jsp"></jsp:include>
 </body>
 </html>
