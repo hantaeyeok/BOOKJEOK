@@ -30,15 +30,16 @@ public class FileUploadService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(changeName);
-        log.info("changName : {}",changeName);
+        System.out.println("changeName"+changeName);
         return "resources/uploadFiles/" + changeName;
     }
-
+	
+	public int deleteFile(String url) {
+		//해당 파일이 저장소에 있는지를 비교
+		
+		
+		int i = 0;
+		return i == 0 ? 0 : 1;
+		 
+	}
 }
-
-/*
- 파일 업로드 service 만들어서 메서드 호출해서 사용하세용
- 
- 
- */

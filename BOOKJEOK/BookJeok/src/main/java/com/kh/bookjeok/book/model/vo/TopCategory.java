@@ -13,7 +13,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class TopCategory {
     private Integer topCategoryNo;
     private String topCategoryName;

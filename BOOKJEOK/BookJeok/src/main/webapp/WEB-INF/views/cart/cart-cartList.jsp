@@ -9,6 +9,9 @@
     <title>장바구니 리스트</title>
 </head>
 <body>
+
+<jsp:include page="../common/menubar.jsp" />
+
     <div class="container">
         <h2>장바구니</h2>
         <div class="row">
@@ -51,32 +54,33 @@
 
         function loadCartItems() {
             $.ajax({
-                url: 'cart/list',
+                url: 'list',
                 type: 'GET',
-                success: function(cartItems) {
+                success: function(response) {
+                    const cartItems = response.data;
                     $('#cartItemsContainer').empty();
                     if (cartItems.length === 0) {
                         $('#cartItemsContainer').append('<tr><td colspan="6">장바구니에 상품이 없습니다.</td></tr>');
                     } else {
                         var totalPrice = 0;
                         cartItems.forEach(function(cart) {
-                            var itemHtml = '<tr>' +
+                            var itemHtml = '<tr data-book-no="' + cart.bookNo + '">' +
                                 '<td><input type="checkbox" class="itemCheckbox"></td>' +
-                                '<td><img src="' + cart.cover + '" alt="' + cart.bookTitle + '" style="width: 50px; height: 50px;"></td>' +
+                                '<td><img src="' + cart.bookCover + '" alt="' + cart.bookTitle + '" style="width: 50px; height: 50px;"></td>' +
                                 '<td>' + cart.bookTitle + '</td>' +
                                 '<td>' + cart.bookPrice + '</td>' +
                                 '<td>' +
                                     '<button class="btn btn-outline-primary btn-sm" onclick="changeQuantity(' + cart.bookNo + ', -1)">-</button>' +
-                                    '<span id="quantity-' + cart.bookNo + '">' + cart.quantity + '</span>' +
+                                    '<span id="quantity-' + cart.bookNo + '">' + cart.cartAmount + '</span>' +
                                     '<button class="btn btn-outline-primary btn-sm" onclick="changeQuantity(' + cart.bookNo + ', 1)">+</button>' +
                                 '</td>' +
                                 '<td><button class="btn btn-outline-danger btn-sm" onclick="deleteFromCart(' + cart.bookNo + ')">삭제</button></td>' +
                                 '</tr>';
                             $('#cartItemsContainer').append(itemHtml);
-                            totalPrice += cart.bookPrice * cart.quantity;
+                            totalPrice += cart.bookPrice * cart.cartAmount;
                         });
                         $('#totalPrice').text(totalPrice);
-                        $('#finalPrice').text(totalPrice); // 배송비 등 추가 금액이 있으면 조정
+                        $('#finalPrice').text(totalPrice); 
                         $('#mileage').text(totalPrice * 0.1); // 마일리지 적립 예: 10%
                     }
                 },
@@ -92,7 +96,7 @@
             $('#quantity-' + bookNo).text(quantity);
             // 서버에 수량 변경 요청
             $.ajax({
-                url: 'cart/updateQuantity',
+                url: 'updateQuantity',
                 type: 'POST',
                 data: { bookNo: bookNo,
                         quantity: quantity },
@@ -108,7 +112,7 @@
         function deleteFromCart(bookNo) {
             if (confirm('정말로 이 항목을 삭제하시겠습니까?')) {
                 $.ajax({
-                    url: 'cart/delete',
+                    url: 'delete',
                     type: 'POST',
                     data: { bookNo: bookNo },
                     success: function(response) {
@@ -126,40 +130,17 @@
             }
         }
 
-        function purchaseItems() {
-            var selectedBookNos = [];
-            $('.itemCheckbox:checked').each(function() {
-                var bookNo = $(this).closest('tr').data('bookNo');
-                selectedBookNos.push(bookNo);
-            });
-            
-            if (selectedBookNos.length === 0) {
-                alert('구매할 항목을 선택해 주세요.');
-                return;
-            }
-
-            $.ajax({
-                url: 'cart/purchase',
-                type: 'POST',
-                data: { bookNos: selectedBookNos },
-                traditional: true,
-                success: function(response) {
-                    if (response.message === '구매가 완료되었습니다.') {
-                        alert('구매가 완료되었습니다.');
-                        location.href = 'purchase/complete';
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function() {
-                    alert('구매 중 오류가 발생했습니다.');
-                }
-            });
-        }
-
         function checkboxALL() {
             $('.itemCheckbox').prop('checked', $('#selectAll').prop('checked'));
         }
+        
+        /*
+        구매할 때 
+        1번 로그인 여부 확인해야하고,
+        2번 비회원 -> 회원 으로 전환할때 해당 데이터 id값 변경
+        3번 checkbox 가 선택된 항목들의 cart데이터가 구매하기로 이동해야함.
+        */
+        
     </script>
 </body>
 </html>

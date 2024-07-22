@@ -70,7 +70,6 @@
     		 )
 </insert>
 
-
 <!-- UpperCategory 조회 -->
 <select id="selectUpperCategoryByNameAndParentId" resultType="upperCategory" parameterType="map" >
 
@@ -87,7 +86,6 @@
     		TOP_CATEGORY_NO = #{topCategoryNo}
 </select>
 
-
 <!-- UpperCategory 삽입 -->
 <insert id="insertUpperCategory" parameterType="upperCategory">
     INSERT 
@@ -97,7 +95,6 @@
     VALUES 
     		(upper_category_seq.NEXTVAL, #{upperCategoryName}, #{topCategoryNo}, 'Y')
 </insert>
-
 
 <!-- MidCategory 조회 -->
 <select id="selectMidCategoryByNameAndParentId" resultType="midCategory"  parameterType="map">
@@ -114,11 +111,14 @@
     	UPPER_CATEGORY_NO = #{upperCategoryNo}
 </select>
 
-
 <!-- MidCategory 삽입 -->
 <insert id="insertMidCategory" parameterType="midCategory">
-    INSERT INTO MID_CATEGORY (MID_CATEGORY_NO, MID_CATEGORY_NAME, UPPER_CATEGORY_NO, CATEGORY_STATUS)
-    VALUES (mid_category_seq.NEXTVAL, #{midCategoryName}, #{upperCategoryNo}, 'Y')
+    INSERT 
+    INTO 
+    	MID_CATEGORY 
+		(MID_CATEGORY_NO, MID_CATEGORY_NAME, UPPER_CATEGORY_NO, CATEGORY_STATUS)
+    VALUES 
+    	(mid_category_seq.NEXTVAL, #{midCategoryName}, #{upperCategoryNo}, 'Y')
 </insert>
 
 <!-- LowerCategory 조회 -->
@@ -146,7 +146,7 @@
     		(lower_category_seq.NEXTVAL, #{lowerCategoryName}, #{midCategoryNo}, 'Y')
 </insert>
 
-
+<!-- isbn 유효성 체크 -->
 <select id="isbnCheck" parameterType="String" resultType="int">
 	SELECT
 			COUNT(*)
@@ -156,6 +156,7 @@
 			BOOK_ISBN = #{isbn}
 </select>
 
+<!-- insert BookDetail -->
 <insert id="saveBookDetail" parameterType="bookDetail">
 	INSERT
 	INTO
@@ -175,6 +176,7 @@
 			)
 </insert>
 
+<!-- isbn으로 bookNo 불러오기 -->
 <select id="isbnSelect" resultType="book" parameterType="String">
 	SELECT
 			BOOK_NO bookNo
@@ -185,6 +187,7 @@
 
 </select>
 
+<!-- bookNo로 book 가져오기 -->
 <select id="selectBookNo" resultType="book" parameterType="_int">
 	SELECT
 			BOOK_NO bookNo,
@@ -203,9 +206,7 @@
 			BOOK
 	WHERE
 			BOOK_NO = #{bookNo}
-
 </select>
-
 
 <select id="keywrodByBook" resultType="book" parameterType="String">
 	  SELECT 
@@ -249,7 +250,6 @@
 	WHERE 
    			RNUM BETWEEN 1 AND 5
 </select> 
-
 <select id="topCategoryAll" resultType="topCategory" >
 	SELECT
 			TOP_CATEGORY_NO topCategoryNo,
@@ -276,7 +276,6 @@
 			CATEGORY_STATUS = 'Y'
 </select>	
 
-
 <select id="midCategoryByupperNo" resultType="midCategory" parameterType="Integer">
 	SELECT
 			MID_CATEGORY_NO midCategoryNo,
@@ -291,7 +290,6 @@
 			CATEGORY_STATUS = 'Y'
 			
 </select>
-
 
 <select id="lowerCategoryBymidCategoryNo" resultType="lowerCategory" parameterType="Integer">
 	SELECT
@@ -320,6 +318,7 @@
 			BOOK_NO = #{bookNo}
 
 </select>
+
 <!-- 리뷰 삽입 -->
 <insert id="saveReview" parameterType="bookReview">
     INSERT INTO BOOK_REVIEW 
@@ -328,27 +327,6 @@
     (BOOK_REVIEW_SEQ.NEXTVAL, #{userId}, #{orderNo}, #{bookNo}, #{reviewContext}, #{reviewRating}, SYSDATE, NULL, 'Y')
 </insert>
 
-<!-- 특정 도서의 리뷰 선택 -->
-<select id="selectBookReviewBybookNo" parameterType="int" resultType="bookReview">
-    SELECT 
-        REVIEW_NO reviewNo, 
-        USER_ID userId, 
-        ORDER_NO orderNo, 
-        BOOK_NO bookNo, 
-        REVIEW_CONTEXT reviewContext, 
-        REVIEW_RATING reviewRating, 
-        REVIEW_CREATE_DATE reviewCreateDate, 
-        REVIEW_UPDATE_DATE reviewUpdateDate, 
-        REVIEW_STATUS reviewStatus
-    FROM 
-        BOOK_REVIEW
-    WHERE 
-        BOOK_NO = #{bookNo}
-    AND 
-        REVIEW_STATUS = 'Y'
-    ORDER BY 
-        REVIEW_CREATE_DATE DESC
-</select>
 
 
 <select id="reviewAvg" parameterType="int" resultType="reviewAvg">
@@ -403,5 +381,177 @@
     AND 
     		REVIEW_STATUS = 'Y'
 </select>
+
+<select id="getBookPrice" resultType="_int">
+	SELECT
+			BOOK_PRICE bookPrice
+	FROM
+			BOOK
+	WHERE
+			BOOK_NO = #{bookNo}
+</select>
+
+<select id="bookByKeyword" resultType="book" parameterType="String">
+SELECT
+		BOOK_NO bookNo,
+		CATEGORY_ID categoryId,
+		BOOK_TITLE bookTitle,
+		BOOK_AUTHOR bookAuthor,
+		BOOK_PUBLISHER bookPublisher,
+		BOOK_PUB_DATE bookPubDate,
+		BOOK_ISBN bookIsbn, 
+		BOOK_PRICE bookPrice,
+		BOOK_DESCRIPTION bookDescription,
+		BOOK_COVER bookCover,
+		BOOK_CREATE_DATE bookCreateDate,
+		BOOK_AMOUNT bookAmount,
+		BOOK_STATUS bookStatus
+FROM
+   		BOOK
+WHERE
+     	BOOK_STATUS = 'Y'
+AND 
+		(BOOK_TITLE LIKE '%' || #{keyword} || '%' OR BOOK_AUTHOR LIKE '%' || #{keyword} || '%')
+</select>
+
+
+<select id="bookCategoryDetail" resultType="bookCategoryDetail" parameterType="String">
+SELECT 
+	    b.BOOK_NO bookNo,
+	    b.BOOK_TITLE bookTitle,
+	    b.BOOK_AUTHOR bookAuthor,
+	    b.BOOK_PUBLISHER bookPublisher,
+	    TO_CHAR(b.BOOK_PUB_DATE, 'YYYY-MM-DD') bookPubDate,
+	    b.BOOK_ISBN bookIsbn,
+	    b.BOOK_PRICE bookPrice,
+	    b.BOOK_DESCRIPTION bookDescription,
+	    b.BOOK_COVER bookCover,
+	    b.BOOK_CREATE_DATE bookCreateDate,
+	    b.BOOK_UPDATE_DATE bookUpdateDate,
+	    b.BOOK_AMOUNT bookAmount,
+	    b.BOOK_STATUS bookAmount,
+	    b.CATEGORY_ID categoryId,
+	    t.TOP_CATEGORY_NAME topCategoryName,
+	    u.UPPER_CATEGORY_NAME upperCategoryName,
+	    m.MID_CATEGORY_NAME midCategoryName,
+	    l.LOWER_CATEGORY_NAME lowerCategoryName,
+	    d.DETAIL_NO detailNo,
+	    d.DETAIL_IMAGE detailImage,
+	    d.DETAIL_DESCRIPTION detailDescription
+FROM 
+    	BOOK b
+LEFT JOIN 
+		LOWER_CATEGORY l ON b.CATEGORY_ID = l.LOWER_CATEGORY_NO
+LEFT JOIN 
+		MID_CATEGORY m ON l.MID_CATEGORY_NO = m.MID_CATEGORY_NO
+LEFT JOIN 
+		UPPER_CATEGORY u ON m.UPPER_CATEGORY_NO = u.UPPER_CATEGORY_NO
+LEFT JOIN 
+		TOP_CATEGORY t ON u.TOP_CATEGORY_NO = t.TOP_CATEGORY_NO
+LEFT JOIN 
+		BOOK_DETAIL d ON b.BOOK_NO = d.BOOK_NO
+WHERE
+	(b.BOOK_TITLE LIKE '%' || #{keyword} || '%' OR b.BOOK_AUTHOR LIKE '%' || #{keyword} || '%')
+
+</select>
+
+<update id="updateBook" parameterType="book">
+UPDATE
+		BOOK
+SET
+		CATEGORY_ID = #{categoryId},
+		BOOK_TITLE = #{bookTitle},
+		BOOK_AUTHOR = #{bookAuthor},
+		BOOK_PUBLISHER = #{bookPublisher},
+		BOOK_PUB_DATE =#{bookPubDate},
+		BOOK_PRICE = #{bookPrice},
+		BOOK_DESCRIPTION = #{bookDescription},
+		BOOK_COVER = #{bookCover},
+		BOOK_UPDATE_DATE = SYSDATE,
+		BOOK_AMOUNT = #{bookAmount}	
+WHERE
+		BOOK_NO = #{bookNo}
+</update>
+
+<update id="updateBookDetail" parameterType="bookDetail">
+UPDATE
+		BOOK_DETAIL
+SET
+		DETAIL_IMAGE = #{detailImage},
+		DETAIL_DESCRIPTION =#{detailDescription}
+WHERE
+		BOOK_NO = #{bookNo}
+</update>
+
+	
+<update id="updateReview" parameterType="bookReview">
+UPDATE
+		BOOK_REVIEW
+SET
+		REVIEW_CONTEXT = #{reviewContext},             
+		REVIEW_RATING = #{reviewRating},
+		REVIEW_UPDATE_DATE = SYSDATE
+WHERE
+		USER_ID = #{userId}
+AND
+		BOOK_NO = #{bookNo}
+</update>
+<!-- 
+<update id="updateAdminReview">
+UPDATE
+		BOOK_REVIEW
+SET
+		REVIEW_CONTEXT = #{reviewContext},             
+		REVIEW_RATING = #{reviewRating},
+		REVIEW_UPDATE_DATE = SYSDATE
+WHERE
+		BOOK_NO = #{bookNo}
+AND		
+		USER_ID = #{userId}
+</update>
+ -->
+<update id="deleteUserReview">
+UPDATE
+		BOOK_REVIEW
+SET
+		REVIEW_UPDATE_DATE = SYSDATE,
+		REVIEW_STATUS = 'N'
+WHERE
+		BOOK_NO = #{bookNo}
+AND		
+		USER_ID = #{userId}
+</update>
+
+<delete id="deleteReview" parameterType="_int">
+DELETE
+FROM
+		BOOK_REVIEW
+WHERE
+		BOOK_NO = #{bookNo}
+</delete>
+
+<select id="selectBookReviewByBookNoUserId" resultType="bookReview" parameterType="map">
+SELECT 
+		USER_ID userId,       
+		BOOK_NO bookNo,
+		REVIEW_CONTEXT reviewContext,   
+		REVIEW_RATING reviewRating,
+		REVIEW_STATUS reviewStatus
+FROM
+		BOOK_REVIEW
+WHERE
+		BOOK_NO = #{bookNo}
+AND
+		USER_ID = #{userId}
+</select>
+
+
+
+
+
+
+
+
+
 
 </mapper>

@@ -9,14 +9,22 @@
 <meta charset="UTF-8">
 <title>menubar</title>
 
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<!--
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="/resources/css/common.css">
-    <style>
+-->    
+<style>
     	header {z-index:999; position:fixed; background-color:rgba(255,255,255,0.5);}
     	li {list-style-type: none; list-style:none;}
     	a {text-decoration-line:none; color:#333;}
@@ -30,6 +38,7 @@
     	.login_div {padding:0 20px; height:100%; display:flex; justify-content:center; align-items:center;}
     	.login_div:hover {background-color:#CCC; transition:0.3s;}
     </style>
+
 </head>
     <header>
         <div class="header_wrapper columns">
@@ -128,7 +137,6 @@
             type : 'GET',
             data : { bookKeyword : bookKeyword },
             success : result => {
-                console.log(result);
                 displayResults(result);
             },
             error : e => {
@@ -136,13 +144,41 @@
             }
         });
     }
-    
+    /*
+    function displayResults(books) {
+        var $searchResults = $('#searchResults');
+        $searchResults.empty();  // 이전 결과를 비웁니다.
+
+        if (books.length > 0) {
+            books.forEach(function(book) {
+                // bookNo 값이 정의되어 있고, 숫자형인지 확인합니다.
+                if (book.bookNo && typeof book.bookNo === "number") {
+                    // 드롭다운 아이템을 생성합니다.
+                    var item = $('<a class="dropdown-item" href="/bookjeok/book/' + book.bookNo + '">' +
+                                 '<img src="' + book.bookCover + '" style="width:100px; height:150px;"> ' +
+                                 book.bookTitle + ' - ' + book.bookAuthor + '</a>');
+                    $searchResults.append(item);
+                } else {
+                    // bookNo가 유효하지 않을 경우 콘솔에 로그를 기록합니다.
+                    console.log(' bookNo :', book.bookNo);
+                }
+            });
+        } else {
+            $searchResults.append('<a class="dropdown-item disabled" href="#">검색 결과가 없습니다.</a>');
+        }
+
+        // 드롭다운 메뉴를 활성화합니다.
+        if (!$searchResults.hasClass('show')) {
+            $searchResults.addClass('show');
+        }
+    }
+*/
     function displayResults(books) {
         var $searchResults =  $('#searchResults');
         $searchResults.empty();
         if (books.length > 0) {
             books.forEach(function(book) {
-                var item = $('<a class="dropdown-item" href="/bookjeok/book/' + book.bookNo + '"><img src="' + book.cover + '" style="width:100px;height:150px;">' + book.bookTitle + ' - ' + book.bookAuthor + '</a>');
+                var item = $('<a class="dropdown-item" href="/bookjeok/book/' + book.bookNo + '"><img src="' + book.bookCover + '" style="width:100px;height:150px;">' + book.bookTitle + ' - ' + book.bookAuthor + '</a>');
                 $searchResults.append(item);
             });
         } else {
@@ -152,6 +188,8 @@
             $searchResults.addClass('show');
         }
     }
+
     </script>
+</body>
 
 </html>

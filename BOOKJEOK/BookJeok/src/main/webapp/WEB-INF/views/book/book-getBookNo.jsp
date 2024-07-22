@@ -7,11 +7,6 @@
 <head>
     <meta charset="UTF-8">
     <title>상품 상세 페이지</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
     <style>
         .sticky-top {
             top: 0;
@@ -46,6 +41,9 @@
     </style>
 </head>
 <body>
+
+<jsp:include page="../common/menubar.jsp" />
+
 <div class="container my-5">
     <h2 class="mb-4">도서 상세 페이지</h2>
     <div class="row mb-4">
@@ -109,16 +107,7 @@
         <p>교환 및 반품에 대한 정책...</p>
     </div>
 
-    <div class="fixed-bottom-bar">
-        <span class="total-price">총 상품 금액: ${book.bookPrice}</span>
-        <span class="quantity-selector">
-            <button class="btn btn-secondary" onclick="decreaseQuantity()">-</button>
-            <input type="text" id="quantity" value="1">
-            <button class="btn btn-secondary" onclick="increaseQuantity()">+</button>
-        </span>
-        <button class="btn btn-primary" onclick="addToCart()">장바구니</button>
-        <button class="btn btn-success" onclick="purchase()">구매하기</button>
-    </div>
+    
 
     <!-- 리뷰 모달 -->
     <div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
@@ -156,6 +145,16 @@
     </div>
 </div>
 
+<div class="fixed-bottom-bar">
+        <span class="total-price">총 상품 금액: ${book.bookPrice}</span>
+        <span class="quantity-selector">
+            <button class="btn btn-secondary" onclick="decreaseQuantity()">-</button>
+            <input type="text" id="quantity" value="1">
+            <button class="btn btn-secondary" onclick="increaseQuantity()">+</button>
+        </span>
+        <button class="btn btn-primary" onclick="addToCart()">장바구니</button>
+        <button class="btn btn-success" onclick="purchase()">구매하기</button>
+</div>
 <script>
     function decreaseQuantity() {
         var quantity = parseInt($('#quantity').val());
@@ -248,7 +247,6 @@
                     $('#review-list-container').append('<div class="list-group-item">리뷰가 없습니다.</div>');
                 }
 
-                // 페이지네이션 업데이트
                 updatePagination(pageInfo);
             },
             error: function() {
@@ -351,7 +349,7 @@
             success: function(response) {
                 if (response.message === '장바구니에 추가되었습니다.') {
                     if (confirm('장바구니에 추가되었습니다. 장바구니로 이동하시겠습니까?')) {
-                        window.location.href = 'cart';
+                        window.location.href = '/bookjeok/cart/cartList';
                     }
                 } else {
                     alert('장바구니 추가 실패');

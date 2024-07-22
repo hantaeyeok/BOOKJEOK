@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.kh.bookjeok.book.model.vo.Book;
+import com.kh.bookjeok.book.model.vo.BookCategoryDetail;
 import com.kh.bookjeok.book.model.vo.BookDetail;
 import com.kh.bookjeok.book.model.vo.BookReview;
 import com.kh.bookjeok.book.model.vo.LowerCategory;
@@ -29,36 +30,51 @@ public interface BookMapper {
 	int insertMidCategory(MidCategory mid);
 	int insertLowerCategory(LowerCategory lower);
 	
+	
 	//Book정보 저장하는 메소드
 	int saveBook(Book book);
+	int getBookPrice(int bookNo);
 	
-	//isbnCheck
+	//isbn
 	int isbnCheck(String isbn);
-	
-	//
-	int saveBookDetail(BookDetail bookDetail);
-	
-	//isbnSelect
 	Book isbnSelect(String bookIsbn);
 	
 	//BookNo selectOne
 	Book selectBookNo(int bookNo);
 	
-	
+	//Book 키워드 검색
 	List<Book> keywrodByBook(String bookKeyword);
+	
+	// 카테고리 list 검색
 	List<TopCategory> topCategoryAll();
 	List<UpperCategory> upperCategoryBytopNo(Integer topCategoryNo);
 	List<MidCategory> midCategoryByupperNo(Integer upperCategoryNo);
 	List<LowerCategory> lowerCategoryBymidCategoryNo(Integer midCategory);
 	
-	
+	int saveBookDetail(BookDetail bookDetail);
 	BookDetail selectBookDetailBybookNo(int bookNo);
+	
+	
 	List<BookReview> selectBookReviewBybookNo(int bookNo);
 	int saveReview(BookReview review);
 	
 	List<ReviewAvg> reviewAvg(int bookNo);
-	
 	int countReviews(int bookNo);
+	
 	List<BookReview> selectBookReviewByBookNo(Map<String, Object> params);
+	
+	List<Book> bookByKeyword(String keyword);
+	
+	List<BookCategoryDetail> bookCategoryDetail(String keyword);
+	int updateBook(Book book);
+	
+	int updateBookDetail(BookDetail bookDetail);
+	//리뷰 업데이트 및 삭제
+	BookReview selectBookReviewByBookNoUserId(Map<String, Object> params);
+	int updateReview(BookReview bookReview);
+
+	
+	int deleteReview(Map<String, Object> params);
+
 	
 }

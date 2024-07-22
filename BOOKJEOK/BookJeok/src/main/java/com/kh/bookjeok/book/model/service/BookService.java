@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.kh.bookjeok.book.model.vo.Book;
+import com.kh.bookjeok.book.model.vo.BookCategoryDetail;
 import com.kh.bookjeok.book.model.vo.BookDetail;
 import com.kh.bookjeok.book.model.vo.BookReview;
 import com.kh.bookjeok.book.model.vo.LowerCategory;
@@ -35,4 +36,22 @@ public interface BookService {
 	
 	int countReviews(int bookNo);
     List<BookReview> selectBookReviewByBookNo(Map<String, Object> params);
+    
+    int getBookPrice(int bookNo);
+    
+    //아래 일단 안씀
+	List<Book> bookByKeyword(String keyword);
+
+	List<BookCategoryDetail> bookCategoryDetail(String keyword);
+	int updateBook(Book book);
+	int updateBookDetail(BookDetail bookDetail);
+	
+	//리뷰
+	BookReview selectBookReviewByBookNoUserId(Map<String, Object> params);
+	int updateReview(BookReview bookReview);
+	//int updateAdminReview(BookReview bookReview);
+	int deleteReview(Map<String, Object> params);
+	
+
+
 }

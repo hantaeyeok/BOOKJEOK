@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.kh.bookjeok.book.model.dao.BookMapper;
 import com.kh.bookjeok.book.model.vo.Book;
+import com.kh.bookjeok.book.model.vo.BookCategoryDetail;
 import com.kh.bookjeok.book.model.vo.BookDetail;
 import com.kh.bookjeok.book.model.vo.BookReview;
 import com.kh.bookjeok.book.model.vo.LowerCategory;
@@ -102,10 +103,55 @@ public class BookServiceImple implements BookService{
 	public List<BookReview> selectBookReviewByBookNo(Map<String, Object> params) {
 		return bookMapper.selectBookReviewByBookNo(params);
 	}
+
+	@Override
+	public int getBookPrice(int bookNo) {
+		return bookMapper.getBookPrice(bookNo);
+	}
+
+	@Override
+	public List<Book> bookByKeyword(String keyword) {
+		return bookMapper.bookByKeyword(keyword);
+	}
+
+	@Override
+	public List<BookCategoryDetail> bookCategoryDetail(String keyword) {
+		return bookMapper.bookCategoryDetail(keyword);
+	}
+
+	@Override
+	public int updateBook(Book book) {
+		return bookMapper.updateBook(book);
+	}
+
+	@Override
+	public int updateBookDetail(BookDetail bookDetail) {
+		return bookMapper.updateBookDetail(bookDetail);
+	}
+
 	
-	
+	//리뷰
+	@Override
+	public BookReview selectBookReviewByBookNoUserId(Map<String, Object> params) {
+		return bookMapper.selectBookReviewByBookNoUserId(params);
+	}
+
+	@Override
+	public int updateReview(BookReview bookReview) {
+		return bookMapper.updateReview(bookReview);
+	} 
+
+	@Override
+	public int deleteReview(Map<String, Object> params) {
+		return bookMapper.deleteReview(params);
+	}
+
 	
 
+	//
+	
+	
+	
 
 	
 }
