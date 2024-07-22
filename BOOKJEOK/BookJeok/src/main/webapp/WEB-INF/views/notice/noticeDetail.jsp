@@ -80,11 +80,12 @@
                 <tr>
                     <td colspan="4"><p style="height:150px;">${notice.noticeContent }</p></td>
                 </tr>
+                <tr>
+                    <td><img src="${notice.noticeImgOriginName} || ${notice.noticeImgChangeName}" width="400" height="auto"></td>
+                </tr>
                 
             </table>
             <br>
-
-
 	            
     <div align="center">
         <c:if test="${ sessionScope.loginUser.userId eq requestScope.notice.userId }">

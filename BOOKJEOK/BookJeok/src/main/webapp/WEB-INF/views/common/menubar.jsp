@@ -62,7 +62,7 @@
                             <li class="gnb_items">메뉴2</li>
                             <li class="gnb_items">메뉴3</li>
                             <li class="gnb_items">메뉴4</li>
-                            <li class="gnb_items">메뉴5</li>
+                            <li class="gnb_items"><a href="listNotice">공지사항</li>
                         </ul>
                     </div>
                     <div class="seacrh_wrap column is-6">

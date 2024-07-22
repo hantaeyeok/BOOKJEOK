@@ -235,23 +235,24 @@ public class NoticeController {
 	 
 	 
 	 
-	   @PostMapping("deleteNotice")
-	   public String delete(int noticeNo,
-			   					String filePath,
-			   					HttpSession session,
-			   					Model model) {
-		   
-		   if(noticeService.deleteNotice(noticeNo) > 0) {
-			   if(!"".equals(filePath)) {		//filePath는 null일 가능성 O. 따라서 filePath를 기준으로 잡으면 오타 발생 시 nullPointerException이 발생할 가능성이 있다. 따라서 빈 문자열 ""를 기준으로 .equals 비교를 한다면 nullPointerException 오류 발생은 막을 수 있다.
-				   	new File(session.getServletContext().getRealPath(filePath)).delete();
-			   }
-			   session.setAttribute("alertMsg", "공지사항 삭제 성공");
-			   return "redirect:listNotice"; 
-		   } else {
-			   model.addAttribute("errorMsg", "공지사항 삭제 실패");
-			   return "common/errorPage";
-		   }
-	   }
+		@PostMapping("deleteNotice")
+		 public String delete(@RequestParam("noticeNo") int noticeNo,
+		                      @RequestParam(value = "filePath", required = false) String filePath,
+		                      HttpSession session,
+		                      Model model) {
+		     
+		     if (noticeService.deleteNotice(noticeNo) > 0) {
+		         if (filePath != null && !"".equals(filePath)) {
+		             // filePath가 null이 아니고 빈 문자열도 아닌 경우 파일 삭제
+		             new File(session.getServletContext().getRealPath(filePath)).delete();
+		         }
+		         session.setAttribute("alertMsg", "공지사항 삭제 성공");
+		         return "redirect:listNotice"; 
+		     } else {
+		         model.addAttribute("errorMsg", "공지사항 삭제 실패");
+		         return "common/errorPage";
+		     }
+		 }
 
 	   
 	   
