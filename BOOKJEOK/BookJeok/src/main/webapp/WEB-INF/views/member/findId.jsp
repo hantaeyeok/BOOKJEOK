@@ -13,6 +13,7 @@
 </head>
 <body>
 <br>
+<jsp:include page="../common/menubar.jsp"></jsp:include>
 <div style="width:100%; height:1200px; display:flex; justify-content:center;">
 	<div style="width:600px;" id="page1">
 	<form>
@@ -75,6 +76,6 @@
 		<button type="submit" class="btn btn-primary btn-lg btn-block" onclick="location.href='/member/loginform';">돌아가기</button>
 	</div>
 </div>
-
+<jsp:include page="../common/footer.jsp"></jsp:include>
 </body>
 </html>

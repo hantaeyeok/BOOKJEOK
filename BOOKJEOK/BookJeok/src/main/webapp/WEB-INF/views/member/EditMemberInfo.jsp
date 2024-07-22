@@ -18,7 +18,6 @@
   box-sizing: border-box;
 }
 body {
-  padding: 1em;
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 15px;
   color: #b9b9b9;
@@ -188,9 +187,8 @@ select option {
   max-width: 38em;
   padding: 1em 3em 2em 3em;
   margin: 0em auto;
-  background-color: #fff;
   border-radius: 4.2px;
-  box-shadow: 0px 3px 10px -2px rgba(0, 0, 0, 0.2);
+
 }
 .row {
   zoom: 1;
@@ -239,6 +237,9 @@ select option {
 </style>
 </head>
 <body>
+<jsp:include page="../common/menubar.jsp"></jsp:include>
+<div style="width:100%; height:75px;"></div>
+<div style="width:100%; height:1000px;">
 <c:if test="${PassEncryptPasscheck eq'OK'}">
 	<div class="container">
 	    <form action="/member/EditMemberInfoPwd" method="post" id="pwdForm">
@@ -429,6 +430,7 @@ select option {
 	    </form>
 	</div>
 </c:if>
-
+</div>
+<jsp:include page="../common/footer.jsp"></jsp:include>
 </body>
 </html>

@@ -17,6 +17,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="/resources/css/common.css">
     <style>
+    	header {z-index:999; position:fixed; background-color:rgba(255,255,255,0.5);}
     	li {list-style-type: none; list-style:none;}
     	a {text-decoration-line:none; color:#333;}
     	a:hover {text-decoration-line:none; color:#333;}
@@ -30,7 +31,6 @@
     	.login_div:hover {background-color:#CCC; transition:0.3s;}
     </style>
 </head>
-<body>
     <header>
         <div class="header_wrapper columns">
 
@@ -85,6 +85,7 @@
 	                        		<a class="login_div" href="/member/logout">로그아웃</a>
 	                        	</c:when>
 	                        	<c:otherwise>
+	                        		<a class="login_div" href="/mypage/orderList">마이페이지</a>
 	                        		<a class="login_div" href="/member/logout">로그아웃</a>
 	                        	</c:otherwise>
 	                        </c:choose>
@@ -153,5 +154,4 @@
     }
     </script>
 
-</body>
 </html>

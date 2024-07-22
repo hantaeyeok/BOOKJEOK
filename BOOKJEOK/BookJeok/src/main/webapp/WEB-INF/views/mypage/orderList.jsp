@@ -33,10 +33,14 @@ border-left: solid 1px #CCC; padding:0px 10px; display:flex; align-items:center;
 </style>
 </head>
 <body>
+<jsp:include page="../common/menubar.jsp"></jsp:include>
 	<div style="width: 100%; height: 300px; background-color: #CCC;">
-
 	</div>
-	<div style="width: 80%; float:right; padding:20px;">
+	<div style="background-color:#FFF; display:block; height:1200px;">
+		<div style="width: 20%; float:left; background-color:#FFF; display:block;">
+			<jsp:include page="./mypage-sidebar.jsp"></jsp:include>
+		</div>
+		<div style="width: 80%; float:right; padding:20px; background-color:#FFF; display:block;">
 		<table class="table table-hover table-borderless">
 			<thead>
 				<tr>
@@ -105,6 +109,7 @@ border-left: solid 1px #CCC; padding:0px 10px; display:flex; align-items:center;
 
 		</table>
 	</div>
+	</div>
 <script>
 	$(document).on('click','.orderList > tr', e => {
 		const $order = $(e.currentTarget).children().eq(0).text();
@@ -115,5 +120,6 @@ border-left: solid 1px #CCC; padding:0px 10px; display:flex; align-items:center;
 	});
 </script>
 
+<jsp:include page="../common/footer.jsp"></jsp:include>
 </body>
 </html>
