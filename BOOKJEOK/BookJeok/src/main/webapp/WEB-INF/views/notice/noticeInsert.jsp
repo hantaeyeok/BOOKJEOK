@@ -42,10 +42,10 @@
     <div class="content">
         <br><br>
         <div class="innerOuter">
-            <h2>게시글 작성하기</h2>
+            <h2>공지사항 작성하기</h2>
             <br>
 
-            <form id="enrollForm" method="post" action="noticeForm.do" enctype="multipart/form-data">
+            <form id="enrollForm" method="post" action="insertNotice" enctype="multipart/form-data">
                 <table algin="center">
                     <tr>
                         <th><label for="title">제목</label></th>

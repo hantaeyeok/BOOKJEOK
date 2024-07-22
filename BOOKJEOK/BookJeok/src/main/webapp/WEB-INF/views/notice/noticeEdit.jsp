@@ -37,7 +37,7 @@
             <h2>게시글 수정하기</h2>
             <br>
 
-            <form id="updateForm" method="post" action="notice-update.do" enctype="multipart/form-data">
+            <form id="updateForm" method="post" action="editNotice?noticeNo=${notice.noticeNo }" enctype="multipart/form-data">
                 <table algin="center">
                     <tr>
                         <th><label for="title">제목</label></th>
@@ -52,11 +52,13 @@
                         <td>
                             <input type="file" id="upfile" class="form-control-file border" name="reUpFile">
                             
-                            <c:if test="S${ not empty notice.originName }">	<!-- 첨부파일이 있을 때만 -->
+                            <c:if test="S${ not empty notice.noticeTextOriginName}">	<!-- 첨부파일이 있을 때만 -->
 	                            현재 업로드된 파일 : 
-	                            <a href="${ notice.changeName }" download="${ notice.originName }">${ notice.originName }</a>
-				                <input type="hidden" name="changeName" value="${ notice.changeName }" />
-				                <input type="hidden" name="originName" value="${ notice.originName }" />
+	                            <a href="${ notice.noticeTextChangeName }" download="${ notice.noticeTextOriginName }">${ noticeFile.noticeTextoriginName }</a>
+				                <input type="hidden" name="changeName" value="${ notice.noticeTextChangeName }" />
+                            </c:if>				                
+                            <c:if test="S${ not empty notice.noticeImgOriginName}">				                
+				                <input type="hidden" name="originName" value="${ notice.noticeImgOriginName }" />{ noticeFile.noticeImgOriginName }</a>
                             </c:if>
                             
                         </td>

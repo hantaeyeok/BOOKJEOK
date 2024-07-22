@@ -1,4 +1,4 @@
-package com.kh.bookjeok.notice.model.vo;
+/*package com.kh.bookjeok.notice.model.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,9 +14,9 @@ public class NoticeFile {
 	private int noticeNo;
 	private String noticeImgOriginName;
 	private String noticeImgChangeName;
-	private String noticeOriginName;
-	private String noticeChangeName;
+	private String noticeTextOriginName;
+	private String noticeTextChangeName;
 
 		
 	}
-
+*/

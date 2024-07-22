@@ -37,7 +37,7 @@
             <h2> 공지사항 상세보기</h2>
             <br>
 
-            <a class="btn btn-secondary" style="float:right;" href="">목록으로</a>
+            <a class="btn btn-secondary" style="float:right;" href="listNotice?noticeNo=${notice.noticeNo }">목록으로</a>
             <br><br>
 
             <table id="contentArea" algin="center" class="table">
@@ -54,15 +54,21 @@
                 <tr>
                     <th>첨부파일</th>
                     <c:choose>
-                    	<c:when test="${ empty notice.originName }">
+                    	<c:when test="${ empty notice.noticeTextOriginName && empty notice.noticeImgOriginName }">
                     		<td colspan="3">
                     			파일이 존재하지 않습니다.
 		                    </td>
 		                </c:when>
 		                <c:otherwise>
 		                    <td colspan="3">
-		                        <a href="${ notice.changeName }"
-		                        	download="${ notice.originName }">${ notice.originName }</a>
+					            <c:if test="${ not empty notice.noticeTextOriginName }">
+					                <a href="${ notice.noticeTextChangeName }"
+					                   download="${ notice.noticeTextOriginName }">${ notice.noticeTextOriginName }</a>
+					            </c:if>
+					            <c:if test="${ not empty notice.noticeImgOriginName }">
+					                <a href="${ notice.noticeImgChangeName }"
+					                   download="${ notice.noticeImgOriginName }">${ notice.noticeImgOriginName }</a>
+					            </c:if>
 		                    </td>
 		                </c:otherwise>
 		             </c:choose>
@@ -74,27 +80,35 @@
                 <tr>
                     <td colspan="4"><p style="height:150px;">${notice.noticeContent }</p></td>
                 </tr>
+                
             </table>
             <br>
 
-            <div align="center">
-	            <c:if test="${ sessionScope.loginUser.userId eq requestScope.notice.userId }">
-	                <!-- 수정하기, 삭제하기 버튼은 이 글이 본인이 작성한 글일 경우에만 보여져야 함 -->
-                <a class="btn btn-primary" href="updateForm.noticenotice?noticeNo=${notice.noticeNo }">수정</a>
-                <a class="btn btn-danger" href="noticeDelete?noticeNo=${notice.noticeNo }">삭제</a>
-	            </c:if>
+
 	            
-	            <form method="post" action="" id="postForm">
-	            	<input type="hidden" name="noticeNo" value="${ notice.noticeNo }" />
-	            	<input type="hidden" name="filePath" value="${ notice.changeName }" />
-	            </form>
+    <div align="center">
+        <c:if test="${ sessionScope.loginUser.userId eq requestScope.notice.userId }">
+            <!-- 수정하기, 삭제하기 버튼은 이 글이 본인이 작성한 글일 경우에만 보여져야 함 -->
+            <a class="btn btn-primary" href="editFormNotice?noticeNo=${notice.noticeNo}">수정</a>
+            <button class="btn btn-danger" onclick="postSubmit('deleteNotice')">삭제</button>
+        </c:if>
+
+        <form method="post" action="" id="postForm">
+            <input type="hidden" name="noticeNo" value="${ notice.noticeNo }" />
+            <input type="hidden" name="filePathText" value="${ notice.noticeTextChangeName }" />
+            <input type="hidden" name="filePathImg" value="${ notice.noticeImgChangeName }" />
+        </form>
+    </div>
+
+    <script>
+        function postSubmit(action) {
+            const form = document.getElementById('postForm');
+            form.action = action;
+            form.submit();
+        }
+    </script>
 	            
-	            <script>
-	            	function postSubmit(el) {	       
-	            		const attrValue = '수정하기' === el ? 'noticeUpdateForm.do' : 'noticeDelete.do';            		
-	            		$('#postForm').attr('action', attrValue).submit();
-	            	}
-	            </script>
+
             </div>
             <br><br>
 

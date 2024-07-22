@@ -6,7 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.session.RowBounds;
 
 import com.kh.bookjeok.notice.model.vo.Notice;
-import com.kh.bookjeok.notice.model.vo.NoticeFile;
+//import com.kh.bookjeok.notice.model.vo.NoticeFile;
 
 public interface NoticeService {
 
@@ -21,7 +21,7 @@ public interface NoticeService {
 			List<Notice> findByConditionAndKeyword(Map<String,String> map, RowBounds rowBounds);
 			
 			// 게시글 작성
-			int insert(Notice notice);
+			int insertNotice(Notice notice);
 			
 			// 조회수 증가
 			int increaseNoticeVisited(int NoticeNo);
@@ -30,12 +30,17 @@ public interface NoticeService {
 			Notice findById(int noticeNo);
 			
 			// 게시글 삭제하기
-			int delete(int boardNo);
+			int deleteNotice(int noticedNo);
 			
 			// 게시글 수정하기
-			int update(NoticeFile noticeFile);
+			//int updateNoticeFile(NoticeFile noticeFile);
 
-			int update(Notice notice);
+			int updateNotice(Notice notice);
+
+			//test
+			List<Notice> noticeList();
+
+
 
 			
 }
