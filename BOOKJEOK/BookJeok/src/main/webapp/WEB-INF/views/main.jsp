@@ -17,5 +17,10 @@
 </head>
 <body>
 <jsp:include page="./common/menubar.jsp"></jsp:include>
+
+<div style="width:100%; height:800px; background-color:#FFF"></div>
+
+<jsp:include page="./common/footer.jsp"></jsp:include>
+
 </body>
 </html>

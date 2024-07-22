@@ -3,6 +3,69 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.bookjeok.member.model.dao.MemberMapper">
+	
+	<delete id="pwdResetKeyDelete">
+		DELETE
+			FROM
+				PW_RESET_KEY
+		WHERE
+				USER_ID=#{userId}
+			AND
+				CODE=#{code}
+	</delete>
+	
+	<select id="pwdResetKeySelectOne" parameterType="PwResetKey" resultType="PwResetKey">
+		SELECT
+				USER_ID userId,
+				CODE,
+				ENROLL_DATE
+		FROM
+				PW_RESET_KEY
+		WHERE
+				USER_ID = #{userId}
+			AND
+				CODE=#{code}
+		    AND
+		    	ENROLL_DATE
+		    BETWEEN
+		    	SYSDATE - 1/24
+		    AND
+		    	SYSDATE
+	</select>
+	
+	<insert id="pwdResetKeyInsert" parameterType="PwResetKey">
+		INSERT
+			INTO
+				PW_RESET_KEY
+			VALUES
+				(
+				#{userId},
+				#{code},
+				SYSDATE
+				)
+	</insert>
+	
+	<select id="getMemberByEmail" parameterType="member" resultType="member">
+		SELECT
+				m.USER_ID userId,
+				m.USER_PWD userPwd,
+				m.USER_NAME userName,
+				m.ENROLL_DATE enrollDate,
+				m.MODIFY_DATE modifyDate,
+				m.STATUS status,
+				m.MILEAGE mileage,
+				e.EMAIL email
+		FROM
+				MEMBER m
+			LEFT JOIN
+				MEMBER_EMAIL e
+			ON
+				m.USER_ID = e.USER_ID
+		WHERE
+				e.EMAIL = #{email}
+		AND
+				m.STATUS = 'Y'
+	</select>
 	<update id="updatePwd">
 		UPDATE
 				MEMBER

@@ -8,15 +8,100 @@
 <head>
 <meta charset="UTF-8">
 <title>menubar</title>
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+<!--
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/resources/css/common.css">
+-->    
+<style>
+    	header {z-index:999; position:fixed; background-color:rgba(255,255,255,0.5);}
+    	li {list-style-type: none; list-style:none;}
+    	a {text-decoration-line:none; color:#333;}
+    	a:hover {text-decoration-line:none; color:#333;}
+    	.gnb_list {display:flex; justify-content:center; align-items:center;}
+    	.gnb_list > ul {width:100%; height:100%; display:flex; justify-content:center; align-items:center; margin:0px; padding:0px 30px;}
+    	.gnb_list > ul > li {width:100%; height:100%;display:flex; justify-content:center; align-items:center;}
+    	.gnb_list > ul > li:hover {cursor:pointer; background-color:#CCC; transition:0.3s}
+    	.user_menu_wrap {height:100%;}
+    	.user_menu {height:100%;}
+    	.login_div {padding:0 20px; height:100%; display:flex; justify-content:center; align-items:center;}
+    	.login_div:hover {background-color:#CCC; transition:0.3s;}
+    </style>
+
 </head>
-<body>
     <header>
         <div class="header_wrapper columns">
+
+            <nav id="global-navigation">
+                <div class="gnb_wrap">
+    <!--
+                     <c:choose>
+		            	<c:when test="${ sessionScope.loginUser eq null }">
+			                <a href="member/joinform">회원가입</a>
+			                <a href="member/loginform">로그인</a>
+		                </c:when>
+		                <c:otherwise>
+			                <label>${ sessionScope.loginUser.userName }님 환영합니다</label> &nbsp;&nbsp;
+			                <a href="#">마이페이지</a>
+			                <a href="#">로그아웃</a>
+		                </c:otherwise>
+	                </c:choose>
+	                <div id="header_2">
+			            <ul>
+			                <li><a href="../list.qna">1대1문의</a></li>
+			                <li><a href="../list.clubboard">독서모임게시판</a></li>
+			            </ul>
+			        </div>
+      -->
+                    <div class="column is-5 gnb_list">
+                        <div class="anb_wrap"><img src="https://cdn-icons-png.flaticon.com/512/94/94225.png" alt=""></div>
+                        <ul>
+                            <li class="gnb_items">메뉴1</li>
+                            <li class="gnb_items">메뉴2</li>
+                            <li class="gnb_items">메뉴3</li>
+                            <li class="gnb_items">메뉴4</li>
+                            <li class="gnb_items">메뉴5</li>
+                        </ul>
+                    </div>
+                    <div class="seacrh_wrap column is-6">
+                        <div class="search_bar">
+                            <form class="search-container">
+                                <input type="text" id="search-bar" placeholder="검색">
+                              </form>
+                        </div>
+                    </div>
+                    <div class="user_menu_wrap column is-1">
+                        <div class="user_menu">
+	                        <i class="fas fa-home"></i><i class="fas fa-bars"></i>
+	                        <c:choose>
+	                        	<c:when test="${empty loginUser}">
+			                        <a class="login_div" href="/member/loginform">로그인</a>
+			                        <a class="login_div" href="/member/joinform">회원가입</a>
+	                        	</c:when>
+	                        	<c:when test="${loginUser.userId eq 'admin' }">
+	                        		<a class="login_div" href="">관리자게시판</a>
+	                        		<a class="login_div" href="/member/logout">로그아웃</a>
+	                        	</c:when>
+	                        	<c:otherwise>
+	                        		<a class="login_div" href="/mypage/orderList">마이페이지</a>
+	                        		<a class="login_div" href="/member/logout">로그아웃</a>
+	                        	</c:otherwise>
+	                        </c:choose>
+                        </div>
+                    </div>
+                </div>
+            </nav>
         <form class="form-inline my-4">
             <div class="dropdown w-100">
                 <input type="text" class="form-control w-75" id="searchInput" name="searchInput" placeholder="검색어를 입력하세요" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -106,4 +191,5 @@
 
     </script>
 </body>
+
 </html>

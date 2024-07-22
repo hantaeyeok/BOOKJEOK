@@ -33,10 +33,14 @@ border-left: solid 1px #CCC; padding:0px 10px; display:flex; align-items:center;
 </style>
 </head>
 <body>
+<jsp:include page="../common/menubar.jsp"></jsp:include>
 	<div style="width: 100%; height: 300px; background-color: #CCC;">
-
 	</div>
-	<div style="width: 80%; float:right; padding:20px;">
+	<div style="background-color:#FFF; display:block; height:1200px;">
+		<div style="width: 20%; float:left; background-color:#FFF; display:block;">
+			<jsp:include page="./mypage-sidebar.jsp"></jsp:include>
+		</div>
+		<div style="width: 80%; float:right; padding:20px; background-color:#FFF; display:block;">
 		<table class="table table-hover table-borderless">
 			<thead>
 				<tr>
@@ -48,7 +52,7 @@ border-left: solid 1px #CCC; padding:0px 10px; display:flex; align-items:center;
 					<th scope="col">환불여부</th>
 				</tr>
 			</thead>
-			<tbody id="orderList">
+			<tbody class="orderList">
 				
 				<!-- 줄 단위 블럭 시작 -->
 				<c:forEach items="${orderList }" var="order" varStatus="status">
@@ -91,10 +95,10 @@ border-left: solid 1px #CCC; padding:0px 10px; display:flex; align-items:center;
 						</c:choose>
 						<c:choose>
 							<c:when test="${order.paymentStatus eq '1'}">
-								<td><button type="button" class="btn btn-primary" onclick="alert('123');">환불가능</button></td>
+								<td><button type="button" class="btn btn-primary">환불가능</button></td>
 							</c:when>
 							<c:otherwise>
-								<td><button type="button" class="btn btn-secondary" onclick="alert('123');" disabled>환불불가</button></td>
+								<td><button type="button" class="btn btn-secondary" disabled>환불불가</button></td>
 							</c:otherwise>
 						</c:choose>
 					</tr>
@@ -102,22 +106,20 @@ border-left: solid 1px #CCC; padding:0px 10px; display:flex; align-items:center;
 				</c:forEach>
 				
 			</tbody>
+
 		</table>
 	</div>
+	</div>
 <script>
-	$(document).on('click','#orderList > tr', e => {
+	$(document).on('click','.orderList > tr', e => {
 		const $order = $(e.currentTarget).children().eq(0).text();
 		console.log($order); // 출력 확인 완료\
 		let text='';
 		text += "?orderNo="+$order
 		location.href="orderDetail"+text;
 	});
-	/*
-	 각 항목 요소 클릭 시, 데이터를 가지고 구매내역-상세 / 구매내역-환불 페이지로 이동하도록 내용 구성 → 전송방식 : GET, QueryString
-	 보안을 위해, 쿼리스트링에서 받아온 주문번호에 해당하는 DB-PAYMENT테이블의 ROW에서의 USER_ID(외래 키)가
-	 컨트롤러단에서 session 객체의 userId와 동일한지 확인한다. 
-	 */
 </script>
 
+<jsp:include page="../common/footer.jsp"></jsp:include>
 </body>
 </html>
