@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>      
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,16 +30,8 @@
             margin : auto;
             text-align: center;
         }
-        
         #img-area > img {
             width : 80%;
-        }
-        
-        #deleteButton {
-        	border-radius: 2px; 
-        	border-width: 1px; 
-        	border-color: gray;
-            box-shadow: 0.5px 0.5px rgba(0.5px,0.5px,0.5px,0.5px);
         }
         
         #cancelButton {
@@ -55,25 +47,23 @@
     <div class="content">
         <br><br>
         <div class="innerOuter">
-            <h2>1대1 문의 : 문의 수정하기</h2>
+            <h2>1대1 문의 : 답변 수정하기</h2>
             <br>
 
-            <form id="enrollForm" method="post" action="update.question?qnaNo=${question.qnaNo}" enctype="multipart/form-data">
-                <input type="hidden" value="${question.qnaNo }" id="qnaNo">
+            <form id="enrollForm" method="post" action="update.answer?answerNo=${answer.answerNo}" enctype="multipart/form-data">
+            <input type="hidden" name="qnaNo" value="${answer.qnaNo}">
                 <table align="center">
                     <tr>
-                        <th><label for="title">제목</label></th>
-                        <td><input type="text" id="title" class="form-control" 
-                        		   value="${question.questionTitle }" name="questionTitle" required></td>
-                    </tr>
-                    <tr>
                         <th><label for="writer">작성자</label></th>
-                        <td><input type="text" id="writer" class="form-control" value="${question.userId }" name="userId" readonly></td>
+                        <td><input type="text" id="writer" class="form-control" value="${answer.userId }" name="userId" readonly></td>
                     </tr>
                     <tr>
                         <th><label for="content">내용</label></th>
-                        <td><textarea id="content" class="form-control" rows="10" style="resize:none;" 
-                        	 name="questionContent" required>${question.questionContent }</textarea></td>
+                        <td>
+                        	<textarea id="content" class="form-control" rows="10" style="resize:none;" name="answerContent" required>
+                        		${answer.answerContent }
+                        	</textarea>
+                        </td>
                     </tr>
                     <tr>
                         <th><label for="upfile">첨부파일</label></th>
@@ -88,17 +78,16 @@
                     <tr>
                     	<th></th>
                     	<td>
-                    		<c:if test="${ not empty question.questionOriginname }">
-                            	<a href="${ question.questionChangename }" 
-                            	   download="${ question.questionOriginname }" id="file">
-                            	   ${ question.questionOriginname }</a>
-                            	<input type="hidden" name="questionChangename" 
-                            	       value="${ question.questionChangename }" />
-                				<input type="hidden" name="questionOriginname"
+                    		<c:if test="${ not empty answer.answerOriginname }">
+                            	<a href="${ answer.answerChangename }" 
+                            	   download="${ answer.answerOriginname }">
+                            	   ${ answer.answerOriginname }</a>
+                            	<input type="hidden" name="answerChangename" 
+                            	       value="${ answer.answerChangename }" />
+                				<input type="hidden" name="answerOriginname"
                 					   id="fileName" 
-                				       value="${ question.questionOriginname }" />
-                				<a href="delete-file?qnaNo=${question.qnaNo}&filePath=${question.questionChangename}" 
-                				class="btn btn-danger">파일 제거</a>
+                				       value="${ answer.answerOriginname }" />
+                				<button type="button" id="deleteButton">파일 제거</button>
                             </c:if>
                     	</td>
                     </tr>
@@ -107,9 +96,11 @@
                         <td><small style="color: red; font-weight: bold;">※ 첨부 파일은 ZIP파일만 업로드가 가능합니다.</small></td>
                     </tr>
                 </table>
+                
                 <script>
 			        const upfile = document.getElementById('upfile');
 			        const cancelButton = document.getElementById('cancelButton');
+			        let fileRemoved = false;
 			
 			        // 파일 선택 이벤트 리스너
 			        upfile.addEventListener('change', function() {
@@ -133,27 +124,45 @@
 			    		deleteFile();
 			    	});
 			 		
-			 		function deleteFile() {
-			 			file.style.display = 'none';
-			 			deleteButton.style.display = 'none';
-			 		}
+			    	$('#deleteButton').click(() => {
+			            var qnaNo = $('[name="qnaNo"]').val();
+			            var fileName = $('#fileName').val();
+			            var filePath = '/resources/uploadFiles/' + fileName;
+
+			            $.ajax({
+			                url: 'delete-file',
+			                type: 'POST',
+			                data: { qnaNo: qnaNo, filePath: filePath },
+			                success: result => {
+			                    if (result.success) {
+			                        $('#fileName').remove();
+			                        $('#deleteButton').remove();
+			                        fileRemoved = true;
+			                        alert('파일이 제거되었습니다.');
+			                    } else {
+			                        alert('파일 제거에 실패했습니다.');
+			                    }
+			                },
+			                error: () => {
+			                    alert('파일 제거 중 오류가 발생했습니다.');
+			                }
+			            });
+			        });
 			    </script>
-			   
+			    
                 <br>
 
                 <div align="center">
-                    <button type="submit" class="btn btn-primary">문의 수정하기</button>
-                    <a class="btn btn-danger" href="detail.qna?qnaNo=${question.qnaNo}">취소하기</a>
+                    <button type="submit" class="btn btn-primary">답변 수정하기</button>
+                    <a class="btn btn-danger" href="detail.qna?qnaNo=${answer.qnaNo}">취소하기</a>
                 </div>
-                
-                <input type="hidden" name="qnaNo" value="${question.qnaNo }" />
             </form>
         </div>
         <br><br>
 
     </div>
-    
-    <!-- <jsp:include page="" /> -->
+    <!--  
+    <jsp:include page="" />-->
     
 </body>
 </html>

@@ -1,4 +1,4 @@
-package com.kh.bookjeok.book.model.vo;
+package com.kh.bookjeok.member.model.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,9 +13,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
-public class TopCategory {
-    private Integer topCategoryNo;
-    private String topCategoryName;
-    private String categoryStatus;
+public class SocialMember {
+	private String id;
+	private String nickName;
+	private String thumbnailImg;
 }

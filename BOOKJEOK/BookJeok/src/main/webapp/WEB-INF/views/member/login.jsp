@@ -110,18 +110,29 @@ body {
 </head>
 <body>
 	<div id="content">
-<div class="login-page">
-  <div class="form">
-    <form action="/member/login" method="post" class="login-form">
-      <input type="text" placeholder="아이디" name="userId"/>
-      <input type="password" placeholder="패스워드" name="userPwd"/>
-      <button type="submit">login</button>
-      <p class="message">아이디가 없으신가요? <a href="/member/joinform">회원가입</a></p>
-    </form>
-  </div>
-</div>
+		<div class="login-page">
+		  <div class="form">
+		    <form action="/member/login" method="post" class="login-form">
+		      <input type="text" placeholder="아이디" name="userId"/>
+		      <input type="password" placeholder="패스워드" name="userPwd"/>
+		      <button type="submit" style="margin-bottom:10px;">login</button>
+		      <br>
+		      <img alt="카카오 로그인" id="login_kakao" src="/resources/img/kakao_login_medium_narrow.png"/>
+		      <p class="message">아이디가 없으신가요? <a href="/member/joinform">회원가입</a></p>
+		      <p class="message"><a href="/member/findId">아이디찾기 </a> / <a href="/member/findPwd"> 비밀번호찾기</a></p>
+		    </form>
+		  </div>
+		</div>
+		<script>
+			document.getElementById('login_kakao').onclick = () => {
+				let text='https://kauth.kakao.com/oauth/authorize' +
+						 '?client_id=7c415afe1c27d9e3c6d607c7ab634426' +
+						 '&redirect_uri=http://localhost/member/oauth' +
+						 '&response_type=code' +
+						 '&scope=profile_nickname,profile_image';
+				location.href=text;
+			};
+		</script>
 	</div>
-
-<a href="/mypage/orderList"> mypage/orderList</a>
 </body>
 </html>

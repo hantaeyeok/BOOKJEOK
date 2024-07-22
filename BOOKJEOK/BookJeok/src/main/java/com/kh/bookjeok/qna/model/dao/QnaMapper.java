@@ -1,14 +1,16 @@
-package com.kh.bookjeok.qna.model.service;
+package com.kh.bookjeok.qna.model.dao;
 
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.RowBounds;
 
 import com.kh.bookjeok.qna.model.vo.Answer;
 import com.kh.bookjeok.qna.model.vo.Question;
 
-public interface QnaService {
+@Mapper
+public interface QnaMapper {
 
 	int insertQuestion(Question question);
 
@@ -39,5 +41,4 @@ public interface QnaService {
 	Answer findByAnswerNo(int answerNo);
 
 	int updateAnswer(Answer answer);
-
 }

@@ -3,45 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.bookjeok.mypage.model.dao.PaymentMapper">
-	<resultMap id="orderResultSet" type="payment">
-		<result column="ORDER_NO" property="orderNo"/>
-		<result column="USER_ID" property="userId"/>
-		<result column="PAYMENT_STATUS" property="paymentStatus"/>
-		<result column="PAYMENT_TOOL" property="paymentTool"/>
-		<result column="PAYMENT_DATE" property="paymentDate"/>
-		<result column="PAYMENT_CARD" property="paymentCard"/>
-		<result column="PAYMENT_PERIOD" property="paymentPeriod"/>
-		<result column="PAYMENT_BANK" property="paymentBank"/>
-		<result column="PAYMENT_PRICE" property="paymentPrice"/>
-		<result column="MILEAGE_GET" property="mileageGet"/>
-		<result column="MILEAGE_USED" property="mileageUsed"/>
-		<collection resultMap="perbookResultSet" property="orderList"/>
-	</resultMap>
-	
-	<resultMap id="perbookResultSet" type="paymentperbook">
-		<result column="ORDER_NO" property="orderNo"/>
-		<result column="BOOK_NO" property="bookNo"/>
-		<result column="ORDER_QUAN" property="orderQuan"/>
-		<collection resultMap="perbookResultSetBook" property="book"/>
-	</resultMap>
-	
-	<resultMap id="perbookResultSetBook" type="book">
-		<result column="BOOK_NO" property="bookNo"/>
-		<result column="CATEGORY_ID" property="categoryId"/>
-		<result column="BOOK_TITLE" property="bookTitle"/>
-		<result column="BOOK_AUTHOR" property="bookAuthor"/>
-		<result column="BOOK_PUBLISHER" property="bookPublisher"/>
-		<result column="BOOK_PUB_DATE" property="bookPubDate"/>
-		<result column="BOOK_ISBN" property="bookIsbn"/>
-		<result column="BOOK_PRICE" property="bookPrice"/>
-		<result column="BOOK_DESCRIPTION" property="bookDescription"/>
-		<result column="BOOK_COVER" property="bookCover"/>
-		<result column="BOOK_CREATE_DATE" property="bookCreateDate"/>
-		<result column="BOOK_AMOUNT" property="bookAmount"/>
-		<result column="BOOK_STATUS" property="bookStatus"/>
-	</resultMap>
-	
-	<select id="getAllOrderList" parameterType="payment" resultMap="orderResultSet">
+	<sql id="getOrderSQL">
 		SELECT
 				P.ORDER_NO ,
 				P.USER_ID ,
@@ -49,6 +11,7 @@
 				P.PAYMENT_TOOL ,
 				P.PAYMENT_DATE ,
 				P.PAYMENT_CARD ,
+				P.PAYMENT_CARD_NUM ,
 				P.PAYMENT_PERIOD ,
 				P.PAYMENT_BANK ,
 				P.PAYMENT_PRICE ,
@@ -80,7 +43,56 @@
 				BOOK B
 			ON
 				PB.BOOK_NO = B.BOOK_NO
+	</sql>
+	<resultMap id="orderResultSet" type="payment">
+		<result column="ORDER_NO" property="orderNo"/>
+		<result column="USER_ID" property="userId"/>
+		<result column="PAYMENT_STATUS" property="paymentStatus"/>
+		<result column="PAYMENT_TOOL" property="paymentTool"/>
+		<result column="PAYMENT_DATE" property="paymentDate"/>
+		<result column="PAYMENT_CARD" property="paymentCard"/>
+		<result column="PAYMENT_CARD_NUM" property="paymentCardNum"/>
+		<result column="PAYMENT_PERIOD" property="paymentPeriod"/>
+		<result column="PAYMENT_BANK" property="paymentBank"/>
+		<result column="PAYMENT_PRICE" property="paymentPrice"/>
+		<result column="MILEAGE_GET" property="mileageGet"/>
+		<result column="MILEAGE_USED" property="mileageUsed"/>
+		<collection resultMap="perbookResultSet" property="orderList"/>
+	</resultMap>
+	
+	<resultMap id="perbookResultSet" type="paymentperbook">
+		<result column="ORDER_NO" property="orderNo"/>
+		<result column="BOOK_NO" property="bookNo"/>
+		<result column="ORDER_QUAN" property="orderQuan"/>
+		<collection resultMap="perbookResultSetBook" property="book"/>
+	</resultMap>
+	
+	<resultMap id="perbookResultSetBook" type="book">
+		<result column="BOOK_NO" property="bookNo"/>
+		<result column="CATEGORY_ID" property="categoryId"/>
+		<result column="BOOK_TITLE" property="bookTitle"/>
+		<result column="BOOK_AUTHOR" property="bookAuthor"/>
+		<result column="BOOK_PUBLISHER" property="bookPublisher"/>
+		<result column="BOOK_PUB_DATE" property="bookPubDate"/>
+		<result column="BOOK_ISBN" property="bookIsbn"/>
+		<result column="BOOK_PRICE" property="bookPrice"/>
+		<result column="BOOK_DESCRIPTION" property="bookDescription"/>
+		<result column="BOOK_COVER" property="bookCover"/>
+		<result column="BOOK_CREATE_DATE" property="bookCreateDate"/>
+		<result column="BOOK_AMOUNT" property="bookAmount"/>
+		<result column="BOOK_STATUS" property="bookStatus"/>
+	</resultMap>
+	
+	<select id="getAllOrderList" parameterType="string" resultMap="orderResultSet">
+		<include refid="getOrderSQL"></include>
 		WHERE
 				P.USER_ID = #{userId}
+	</select>
+	<select id="getOrder" parameterType="string" resultMap="orderResultSet">
+		<include refid="getOrderSQL"></include>
+		WHERE
+				P.USER_ID = #{userId}
+		AND
+				P.ORDER_NO = #{orderNo}
 	</select>
 </mapper>

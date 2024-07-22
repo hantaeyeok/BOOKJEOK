@@ -32,9 +32,23 @@
 	   		<property name="maxInMemorySize" value="100000000"/>
 	   </bean>
 
+		<bean class="org.springframework.mail.javamail.JavaMailSenderImpl" id="sender">
+			<property name="host" value="smtp.gmail.com"/>
+			<property name="port" value="587"/>
+			<property name="username" value="enenenxodud"/>
+			<property name="password" value="tacpihkgcazlpibq"/>
+			<property name="javaMailProperties">
+				<props>
+					<prop key="mail.smtp.auth">true</prop>
+					<prop key="mail.smtp.starttls.enable">true</prop>
+				</props>
+			</property>
+		</bean>
 	   
 	   <mybatis-spring:scan base-package="com.kh.bookjeok.book.model.dao"/>
 	   <mybatis-spring:scan base-package="com.kh.bookjeok.member.model.dao"/>
+	   <mybatis-spring:scan base-package="com.kh.bookjeok.qna.model.dao"/>
+	   <mybatis-spring:scan base-package="com.kh.bookjeok.clubboard.model.dao"/>
 	   <mybatis-spring:scan base-package="com.kh.bookjeok.cart.model.dao"/>
 	   <mybatis-spring:scan base-package="com.kh.bookjeok.mypage.model.dao"/>
 	   <mybatis-spring:scan base-package="com.kh.bookjeok.notice.model.dao"/>
