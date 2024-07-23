@@ -10,7 +10,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> 
+    <!--  iamport JavaScript SDK -->
     <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+    <!--  주소찾기 -->
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
     <style>
 
@@ -32,19 +35,13 @@
     margin:auto;
     padding:5% 10%;
     background-color:white;
-
     }
 
     .order-title { font-weight: 800; font-size: 20px;}
-
-
-
     </style>
 
 </head>
 <body>
-
-    
 <div class="order-page"> 
 
 
@@ -55,40 +52,28 @@
         <hr>
         <table class="table table-borderless">
         <thead>
-            <tr class="order-detail" id="cartNo-${ cart.bookNo }"></tr>
-            <th scope="col">구분</th>
-            <th scope="col">이미지</th>            
-            <th scope="col">상품명</th>
-            <th scope="col">정가</th>
-            <th scope="col">수량</th>
-            <th scope="col">마일리지</th>
-            <th scope="col">합계</th>
-            <th scope="col">배송일</th>
+            <tr class="order-detail" id="cartNo-${ cart.cartNo }">
+	            <th scope="col">구분</th>
+	            <th scope="col">이미지</th>            
+	            <th scope="col">상품명</th>
+	            <th scope="col">정가</th>
+	            <th scope="col">수량</th>
+	            <th scope="col">마일리지</th>
+	            <th scope="col">합계</th>
+	            <th scope="col">배송일</th>
             </tr>
         </thead>
         <tbody>
             <tr>
             <th scope="row">${cart.bookNo}</th>
-            <td><img src="${book.bookImg}" width=50 height=50></td>
-            <td>${cart.bookName}</td>
-            <td>${cart.bookPrice}</td>
-            <td>${cart.bookAmount}</td>
-            <td>${cart.mileage}</td>
-            <td>${cart.total}</td>
-            <td>${cart.departureDate}</td>
-            </tr>
-            <tr>
-            <th scope="row">2</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-            </tr>
-            <tr>
-            <th scope="row">3</th>
-            <td colspan="2">Larry the Bird</td>
-            <td>@twitter</td>
-            </tr>
-            
+	            <td><img src="${book.bookImg}" width=50 height=50></td>
+	            <td>${cart.bookTitle}</td>
+	            <td>${book.bookPrice}</td>
+	            <td>${cart.cartAmount}</td>
+	            <td>${memeber.mileage}</td>
+	            <td>${cart.cartTotal}</td>
+	            <td>${cart.departureDate}</td>
+            </tr>  
         </tbody>
         </table>
         <hr>
@@ -99,7 +84,6 @@
             <p>배 송 주 소</p>
         </div>
         <hr>
-
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" checked>
                 <label class="form-check-label" for="inlineRadio1">주소록</label>
@@ -128,22 +112,20 @@
                     <br> <br>
                 <th>기본주소 입력 &nbsp;&nbsp;</th>
                 <td>
-                    <input class="form-control form-control-sm" type="text" name="address1" id="address1" placeholder="기본 주소 입력" value="${address[0] }" onclick="findAddr()" required>
+                    <input class="form-control form-control-sm" type="text" name="address1" id="address1" placeholder="기본 주소 입력" value="${ member.address[0] }" onclick="findAddr()" required>
                 </td>
                     <br>
                 <th>상세주소 입력 &nbsp;&nbsp;</th>
                 &nbsp;&nbsp;<button type="button" id="post_btn" class="btn btn-secondary btn-sm" onclick="insertAddr()">주소록에 추가</button>
                 <td>
-                    <input class="form-control form-control-sm"type="text" name="address2" id="address2" placeholder="상세 주소 입력" value="${address[1] }" required>
+                    <input class="form-control form-control-sm"type="text" name="address2" id="address2" placeholder="상세 주소 입력" value="${member.address[1] }" required>
                     <br>
                 <th>전화번호 &nbsp;&nbsp;</th>
-                    <input class="form-control form-control-sm"type="text" name="address2" id="address2" placeholder="상세 주소 입력" value="${address[1] }" required>
+                    <input class="form-control form-control-sm"type="text" name="phone" id="phone" placeholder="전화번호 입력" value="${ member.phone }" required>
                 </td>
           </tr>
         <br>
         <hr>
-
-
 
         <br><br><br>
         <div class="order-title">
@@ -229,68 +211,112 @@
         <button type="button" class="btn btn-primary btn-lg">결제하기</button>
 </div>
 
-<!--yes24 DB 주소록불러오기 자바스크립트-->
-<script>
-        function getHeightestElement() {
-            const isScrollable = function (node) {
-                let overflowY = window.getComputedStyle(node)['overflow-y'];
-                return (overflowY === 'scroll' || overflowY === 'auto') && node.scrollHeight > node.clientHeight && node.clientHeight !== 0 && node.scrollTop == 0
-            }
-        
-            const isBodyScrollable = function (node) {
-                return document.body.scrollHeight > window.innerHeight
-            }
-        
-            let allElems = document.body.getElementsByTagName("*")
-            let body = document.getElementsByTagName("body")[0]
-        
-            let heightestElem = isBodyScrollable(body) ? body : null
-        
-        
-            for (let i = 0; i < allElems.length; i++) {
-                let elem = allElems[i]
-        
-                if (elem.scrollHeight >= elem.clientHeight && isScrollable(elem) && (elem.scrollHeight - elem.clientHeight) > 50) {
-                    if (!heightestElem) {
-                        heightestElem = elem
-                        continue
-                    }
-        
-                    if (elem.scrollHeight >= heightestElem.scrollHeight) { //&& elem.clientWidth > heightestElem.clientWidth
-                        heightestElem = elem
-                    }
-                }
-            }
-        }
+	<!--yes24 DB 주소록불러오기 자바스크립트-->
+	<script>
+	        function getHeightestElement() {
+	            const isScrollable = function (node) {
+	                let overflowY = window.getComputedStyle(node)['overflow-y'];
+	                return (overflowY === 'scroll' || overflowY === 'auto') && node.scrollHeight > node.clientHeight && node.clientHeight !== 0 && node.scrollTop == 0
+	            }
+	        
+	            const isBodyScrollable = function (node) {
+	                return document.body.scrollHeight > window.innerHeight
+	            }
+	        
+	            let allElems = document.body.getElementsByTagName("*")
+	            let body = document.getElementsByTagName("body")[0]
+	        
+	            let heightestElem = isBodyScrollable(body) ? body : null
+	        
+	        
+	            for (let i = 0; i < allElems.length; i++) {
+	                let elem = allElems[i]
+	        
+	                if (elem.scrollHeight >= elem.clientHeight && isScrollable(elem) && (elem.scrollHeight - elem.clientHeight) > 50) {
+	                    if (!heightestElem) {
+	                        heightestElem = elem
+	                        continue
+	                    }
+	        
+	                    if (elem.scrollHeight >= heightestElem.scrollHeight) { //&& elem.clientWidth > heightestElem.clientWidth
+	                        heightestElem = elem
+	                    }
+	                }
+	            }
+	        }
+	
+	</script>
+	
+		<!--결제 창 불러오기-->
+ 
+	<script>
+			IMP.request_pay({
+		    pg : 'payco',
+		    pay_method : 'card',
+		    merchant_uid: "${orderNo}", // 상점에서 관리하는 주문 번호
+		    name : '주문명:결제테스트',
+		    amount : 14000,
+		    buyer_email : 'iamport@siot.do',
+		    buyer_name : '구매자이름',
+		    buyer_tel : '010-1234-5678',
+		    buyer_addr : '서울특별시 강남구 삼성동',
+		    buyer_postcode : '123-456'
+				}, function(rsp) {
+				    if ( rsp.success ) {
+				    	//[1] 서버단에서 결제정보 조회를 위해 jQuery ajax로 imp_uid 전달하기
+				    	jQuery.ajax({
+				    		url: "/payments/complete", //cross-domain error가 발생하지 않도록 주의해주세요
+				    		type: 'POST',
+				    		dataType: 'json',
+				    		data: {
+					    		imp_uid : rsp.imp_uid
+					    		//기타 필요한 데이터가 있으면 추가 전달
+				    		}
+				    	}).done(function(data) {
+				    		//[2] 서버에서 REST API로 결제정보확인 및 서비스루틴이 정상적인 경우
+				    		if ( everythings_fine ) {
+				    			var msg = '결제가 완료되었습니다.';
+				    			msg += '\n고유ID : ' + rsp.imp_uid;
+				    			msg += '\n상점 거래ID : ' + rsp.merchant_uid;
+				    			msg += '\결제 금액 : ' + rsp.paid_amount;
+				    			msg += '카드 승인번호 : ' + rsp.apply_num;
+				    			
+				    			alert(msg);
+				    		} else {
+				    			//[3] 아직 제대로 결제가 되지 않았습니다.
+				    			//[4] 결제된 금액이 요청한 금액과 달라 결제를 자동취소처리하였습니다.
+				    		}
+				    	});
+				    } else {
+				        var msg = '결제에 실패하였습니다.';
+				        msg += '에러내용 : ' + rsp.error_msg;
+				        
+				        alert(msg);
+				    }
+				});
+			
+	</script>
+	
+	<!--주소 검색-->
+	<script>
+	    function findAddr(){
+	        new daum.Postcode({
+	            oncomplete:function(data){
+	                console.log(data);
+	                var roadAddr = data.roadAddress;
+	                var jibunAddr = data.jibunAddress;
+	                document.getElementById("postcode").value = data.zonecode;
+	                if(roadAddr !== ''){
+	                    document.getElementById("address1").value = roadAddr;
+	                } else if(jibunAddr !== ''){
+	                    document.getElementById("address1").value = jibunAddr;
+	                }
+	                document.getElementById("address2").focus();
+	            }
+	        }).open();
+	    }
+	
+	</script>
 
-</script>
-
-
-
-
-
-
-/* 주소검색*/
-<script>
-    function findAddr(){
-        new daum.Postcode({
-            oncomplete:function(data){
-                console.log(data);
-                var roadAddr = data.roadAddress;
-                var jibunAddr = data.jibunAddress;
-                document.getElementById("postcode").value = data.zonecode;
-                if(roadAddr !== ''){
-                    document.getElementById("address1").value = roadAddr;
-                } else if(jibunAddr !== ''){
-                    document.getElementById("address1").value = jibunAddr;
-                }
-                document.getElementById("address2").focus();
-            }
-        }).open();
-    }
-
-</script>
-    
-<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </body>
 </html>

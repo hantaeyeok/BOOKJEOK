@@ -8,6 +8,7 @@ import java.net.URL;
 
 import org.json.JSONObject;
 import org.json.XML;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,17 +24,27 @@ import lombok.extern.slf4j.Slf4j;
 public class PaymentAPIController {
 
 	
+	@Value("${kew.k1}")
+	private String imp_key;
+	@Value("${kew.k2}")
+	private String imp_secret;
+
+	
 	@GetMapping( produces = "application/json; charset=UTF-8")
-	public String searchAladinAPI(@RequestParam("keyword") String keyword,@RequestParam("start") int start) throws IOException {
+	public String portOneAPI(@RequestParam("keyword") String keyword,@RequestParam("start") int start) throws IOException {
 
 		StringBuilder sb = new StringBuilder();
-		String paykey = "";
-		int maxResults = 5;
+
+        sb.append("Received keyword: ").append(keyword).append(", start: ").append(start);
+        sb.append(", paykey: ").append(payKey);
+
+        return sb.toString();
+    }
+
 		
 		
-		
-		imp_uid: string
-		
+	
+	/*	
 		
 		HttpRequest request = HttpRequest.newBuilder()
 	    .uri(URI.create("https://api.iamport.kr/payments/imp_uid/balance"))
@@ -42,24 +53,11 @@ public class PaymentAPIController {
 	    .build();
 	HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 	System.out.println(response.body());
+		*/
 		
-		
-		
-	{
-		  "code": 0,
-		  "message": null,
-		  "response": {
-		    ",
-		    "now": 1721294252,     token 만료시각을 정확히 계산하기 위해 사용되는 현재시각. UNIX timestamp
-		    "expired_at": 1721296052     access_token의 만료시각. UNIX timestamp
-		  }
-		}
 
 	
-	
-	
-	
-	
+	/*
 		
 		
 
@@ -99,7 +97,7 @@ public class PaymentAPIController {
 	    urlConnection.disconnect();
 	    
 		return json.toString();
-	}
+	}*/
 	
-	
+/*	}
 }*/

@@ -19,6 +19,7 @@ public class Payment {
 	
 	private int orderNo;
 	private String userId;
+	private String userPhone;
 	private Date paymentDate;
 	private String paymentCard;
 	private String paymentCardNum;
