@@ -1,4 +1,4 @@
-/*package com.kh.bookjeok.payment.controller;
+package com.kh.bookjeok.payment.controller;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,25 +24,18 @@ import lombok.extern.slf4j.Slf4j;
 public class PaymentAPIController {
 
 	
-	@Value("${kew.k1}")
-	private String imp_key;
-	@Value("${kew.k2}")
-	private String imp_secret;
+	@Value("${imp.api.key}")
+	private String apiKey;
+	@Value("${imp.api.secretkey}")
+	private String secretKey;
 
 	
-	@GetMapping( produces = "application/json; charset=UTF-8")
-	public String portOneAPI(@RequestParam("keyword") String keyword,@RequestParam("start") int start) throws IOException {
 
-		StringBuilder sb = new StringBuilder();
-
-        sb.append("Received keyword: ").append(keyword).append(", start: ").append(start);
-        sb.append(", paykey: ").append(payKey);
-
-        return sb.toString();
-    }
-
-		
-		
+	@Construct
+	public void init() {
+		this.iamportClient = new IamportClient(apiKey, secretKey);
+	}
+}	
 	
 	/*	
 		
