@@ -13,8 +13,9 @@
 </head>
 <body>
 <jsp:include page="../common/menubar.jsp"></jsp:include>
+<div style="width:100%; height:100px; display:block; background-color:#FFF;"></div>
 <div style="width:100%; height:1200px; display:flex; justify-content:center;">
-	<div style="width:30%;" id="page1">
+	<div style="width:40%;" id="page1">
 	<form>
 	  <div class="row mb-3">
 	  	<input type="hidden" value="${member.userId }" id="userId">

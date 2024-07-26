@@ -1,6 +1,5 @@
 package com.kh.bookjeok.mypage.model.vo;
 
-
 import java.util.List;
 
 import lombok.AllArgsConstructor;

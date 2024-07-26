@@ -240,196 +240,196 @@ select option {
 <jsp:include page="../common/menubar.jsp"></jsp:include>
 <div style="width:100%; height:75px;"></div>
 <div style="width:100%; height:1000px;">
-<c:if test="${PassEncryptPasscheck eq'OK'}">
-	<div class="container">
-	    <form action="/member/EditMemberInfoPwd" method="post" id="pwdForm">
-	        <div class="row">
-	            <h4>회원 정보</h4>
-	            <div class="input-group input-group-icon"><input type="text" id="userId" placeholder="아이디" name="userId" value="${loginUser.userId }" readonly/>
-	                <div class="input-icon"><i class="fa fa-user"></i></div>
-	            </div>
-	            
-	            <div class="input-group input-group-icon">
-	            	<input type="password" placeholder="비밀번호" id="userPwd" name="userPwd"/>
-	                <div class="input-icon"><i class="fa fa-key"></i></div>
-	                <div style="font-size:0.7em; margin-top:10px; float:right; color:gray;">비밀번호는 영어 대문자, 영어 소문자, 숫자, 특수문자가 하나씩 포함된 문자열로 작성하여주세요</div><br>
-	            </div>
-	            <div class="input-group input-group-icon"><input type="password" placeholder="비밀번호 재확인" id="userPwdRetype" />
-	                <div class="input-icon"><i class="fa fa-key"></i></div>
-	            </div>
-	            <div class="input-group" style="display:flex; justify-content:flex-end;">
-	            	<button type="button" class="btn btn-primary" id="pwd_submit" onclick="pwd_submitfc()">비밀번호 변경</button>
-	            </div>
-	            <br>
-	            <script>
-	            	function pwd_submitfc() {
-	                	const pattern = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/;
-	                	const $userId = $('#userId');
-	                	const $userPwd = $('#userPwd');
-	                	const $userPwdRetype = $('#userPwdRetype');
-	                	const $pwdForm = $('#pwdForm');
-	                	if(pattern.test($userPwd.val())) { //패스워드 정규식
-	                    	if($userPwd.val()===$userPwdRetype.val()) { //비밀번호와 비밀번호확인 일치여부
-        			    		$.ajax({
-        			    			url:'EditMemberInfoPwd',
-        			    			type:'post',
-        			    			data: {
-        			    				"userId":$userId.val(),
-        			    				"userPwd":$userPwd.val()
-        			    			},
-        			    			success: result => {
-        			    				const member = result.data;
-        			    				$userPwd.val('');
-        			    				$userPwdRetype.val('');
-        			    				alert('비밀번호 수정이 완료되었습니다.');
-        			    			}
-        			    		});
-                    			//$pwdForm.submit();
-	                    	} else {
-	                    		alert('비밀번호와 비밀번호확인란이 일치하지 않습니다.');
-	                    	}
-	                	} else {
-	                		alert('비밀번호는 영어 대문자, 영어 소문자, 숫자, 특수문자가 하나씩 포함된 문자열로 작성하여주세요.');
-	                	}
-	            	};
-	            </script>
-	        </div>
-	     </form>
-	     <form action="/member/EditMemberInfoEtc" method="post" id="etcForm">
-	        <div class="row">
-	            <h4>세부 정보</h4>
-	            <div class="input-group input-group-icon"><input type="text" placeholder="이름" id="userName" name="userName" value="${loginUser.userName }" readonly />
-	                <div class="input-icon"><i class="fa fa-user"></i></div>
-	            </div>
-	            <div class="input-group input-group-icon"><input type="email" placeholder="이메일" id="email" name="email" value="${loginUser.email }" />
-	                <div class="input-icon"><i class="fa fa-envelope"></i></div>
-	                <div id="emailCheckResult" style="display:none; font-size:1em; margin-top:10px; float:right;"></div><br>
-	            </div>
-                <script>
-                	$(() => {
-                		const $emailInput = $('#email');
-                		const $checkEmailResult = $('#emailCheckResult');
-                		const $info_submit = $('#info_submit');
-
-                		$emailInput.keyup(() => { 
-               				$.ajax({
-               					url : '/member/emailCheck',
-               					type : 'get',
-               					data : {
-               						checkEmail : $emailInput.val()
-               					},
-               					success : response => {
-               						if (response.substr(4)==="N") { // jung bok
-               							if ($emailInput.val() != '${sessionScope.loginUser.email}') {
-	               							$checkEmailResult.show().css('color', 'crimson').text('이미 사용중인 이메일입니다.');
-	               							$info_submit.attr('disabled', true);
-               							} else {
-               								$checkEmailResult.show().css('color', 'lightgreen').text('사용 가능한 이메일입니다.');
-               								$info_submit.attr('disabled', false);
-               							}
-               						} else { //not jung bok
-               							$checkEmailResult.show().css('color', 'lightgreen').text('사용 가능한 이메일입니다.');
-               							$info_submit.attr('disabled', false);
-               						}
-               					},
-               					error : () => {}
-               				});
-                		} );
-                	})
-                </script>
-	            <div class="input-group">
-		            <input id="payment-method-card" type="radio" name="gender" value="M" readonly/>
-		            <label for="payment-method-card">
-		            	<span><i class="fa fa-cc-visa"></i>남성</span>
-		            </label>
-		            <input id="payment-method-paypal" type="radio" name="gender" value="F" readonly/>
-		            <label for="payment-method-paypal">
-		            	<span><i class="fa fa-cc-paypal"></i>여성</span>
-		            </label>
-	            </div>
-	            <div class="input-group input-group-icon">
-	            	<input type="text" placeholder="주소" id="address" name="address" value="${loginUser.address }"/>
-	                <div class="input-icon"><i class="fa fa-credit-card"></i></div>
-	            </div>
-	            <div class="col-half">
+	<c:if test="${PassEncryptPasscheck eq'OK'}">
+		<div class="container">
+		    <form action="/member/EditMemberInfoPwd" method="post" id="pwdForm">
+		        <div class="row">
+		            <h4>회원 정보</h4>
+		            <div class="input-group input-group-icon"><input type="text" id="userId" placeholder="아이디" name="userId" value="${loginUser.userId }" readonly/>
+		                <div class="input-icon"><i class="fa fa-user"></i></div>
+		            </div>
+		            
 		            <div class="input-group input-group-icon">
-		            	<input type="text" placeholder="상세주소" id="addressDetail" name="addressDetail" value="${loginUser.addressDetail }" />
+		            	<input type="password" placeholder="비밀번호" id="userPwd" name="userPwd"/>
+		                <div class="input-icon"><i class="fa fa-key"></i></div>
+		                <div style="font-size:0.7em; margin-top:10px; float:right; color:gray;">비밀번호는 영어 대문자, 영어 소문자, 숫자, 특수문자가 하나씩 포함된 문자열로 작성하여주세요</div><br>
+		            </div>
+		            <div class="input-group input-group-icon"><input type="password" placeholder="비밀번호 재확인" id="userPwdRetype" />
+		                <div class="input-icon"><i class="fa fa-key"></i></div>
+		            </div>
+		            <div class="input-group" style="display:flex; justify-content:flex-end;">
+		            	<button type="button" class="btn btn-primary" id="pwd_submit" onclick="pwd_submitfc()">비밀번호 변경</button>
+		            </div>
+		            <br>
+		            <script>
+		            	function pwd_submitfc() {
+		                	const pattern = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/;
+		                	const $userId = $('#userId');
+		                	const $userPwd = $('#userPwd');
+		                	const $userPwdRetype = $('#userPwdRetype');
+		                	const $pwdForm = $('#pwdForm');
+		                	if(pattern.test($userPwd.val())) { //패스워드 정규식
+		                    	if($userPwd.val()===$userPwdRetype.val()) { //비밀번호와 비밀번호확인 일치여부
+	        			    		$.ajax({
+	        			    			url:'EditMemberInfoPwd',
+	        			    			type:'post',
+	        			    			data: {
+	        			    				"userId":$userId.val(),
+	        			    				"userPwd":$userPwd.val()
+	        			    			},
+	        			    			success: result => {
+	        			    				const member = result.data;
+	        			    				$userPwd.val('');
+	        			    				$userPwdRetype.val('');
+	        			    				alert('비밀번호 수정이 완료되었습니다.');
+	        			    			}
+	        			    		});
+	                    			//$pwdForm.submit();
+		                    	} else {
+		                    		alert('비밀번호와 비밀번호확인란이 일치하지 않습니다.');
+		                    	}
+		                	} else {
+		                		alert('비밀번호는 영어 대문자, 영어 소문자, 숫자, 특수문자가 하나씩 포함된 문자열로 작성하여주세요.');
+		                	}
+		            	};
+		            </script>
+		        </div>
+		     </form>
+		     <form action="/member/EditMemberInfoEtc" method="post" id="etcForm">
+		        <div class="row">
+		            <h4>세부 정보</h4>
+		            <div class="input-group input-group-icon"><input type="text" placeholder="이름" id="userName" name="userName" value="${loginUser.userName }" readonly />
+		                <div class="input-icon"><i class="fa fa-user"></i></div>
+		            </div>
+		            <div class="input-group input-group-icon"><input type="email" placeholder="이메일" id="email" name="email" value="${loginUser.email }" />
+		                <div class="input-icon"><i class="fa fa-envelope"></i></div>
+		                <div id="emailCheckResult" style="display:none; font-size:1em; margin-top:10px; float:right;"></div><br>
+		            </div>
+	                <script>
+	                	$(() => {
+	                		const $emailInput = $('#email');
+	                		const $checkEmailResult = $('#emailCheckResult');
+	                		const $info_submit = $('#info_submit');
+	
+	                		$emailInput.keyup(() => { 
+	               				$.ajax({
+	               					url : '/member/emailCheck',
+	               					type : 'get',
+	               					data : {
+	               						checkEmail : $emailInput.val()
+	               					},
+	               					success : response => {
+	               						if (response.substr(4)==="N") { // jung bok
+	               							if ($emailInput.val() != '${sessionScope.loginUser.email}') {
+		               							$checkEmailResult.show().css('color', 'crimson').text('이미 사용중인 이메일입니다.');
+		               							$info_submit.attr('disabled', true);
+	               							} else {
+	               								$checkEmailResult.show().css('color', 'lightgreen').text('사용 가능한 이메일입니다.');
+	               								$info_submit.attr('disabled', false);
+	               							}
+	               						} else { //not jung bok
+	               							$checkEmailResult.show().css('color', 'lightgreen').text('사용 가능한 이메일입니다.');
+	               							$info_submit.attr('disabled', false);
+	               						}
+	               					},
+	               					error : () => {}
+	               				});
+	                		} );
+	                	})
+	                </script>
+		            <div class="input-group">
+			            <input id="payment-method-card" type="radio" name="gender" value="M" readonly/>
+			            <label for="payment-method-card">
+			            	<span><i class="fa fa-cc-visa"></i>남성</span>
+			            </label>
+			            <input id="payment-method-paypal" type="radio" name="gender" value="F" readonly/>
+			            <label for="payment-method-paypal">
+			            	<span><i class="fa fa-cc-paypal"></i>여성</span>
+			            </label>
+		            </div>
+		            <div class="input-group input-group-icon">
+		            	<input type="text" placeholder="주소" id="address" name="address" value="${loginUser.address }"/>
 		                <div class="input-icon"><i class="fa fa-credit-card"></i></div>
 		            </div>
-	            </div>
-	            <div class="col-half">
-		            <div class="input-group input-group-icon">
-		            	<input type="text" placeholder="우편번호" id="postnum" name="postnum" value="${loginUser.postnum }" />
-		                <div class="input-icon"><i class="fa fa-credit-card"></i></div>
+		            <div class="col-half">
+			            <div class="input-group input-group-icon">
+			            	<input type="text" placeholder="상세주소" id="addressDetail" name="addressDetail" value="${loginUser.addressDetail }" />
+			                <div class="input-icon"><i class="fa fa-credit-card"></i></div>
+			            </div>
 		            </div>
-	            </div>
-	       	</div>
-	       	<div class="row">
-	            <div class="input-group input-group-icon"><input type="text" id="phone" placeholder="전화번호" name="phone" value="${loginUser.phone }" />
-	                <div class="input-icon"><i class="fa fa-envelope"></i></div>
-	            </div>
-	        </div>
-	        <div class="row">
-	        	<input type="button" class="input-group" value="회원정보 수정" id="info_submit" onclick="info_submitfc()"/>
-	        </div>
-	        <script>
-	        	window.onload = () => {
-	        		$("input:radio[name='gender'][value=${loginUser.gender }]").prop('checked',true);
-	        	};
-	        	function info_submitfc() {
-	           		const phone_pattern = /^(?:(010)|(01[1|6|7|8|9]))-\d{3,4}-(\d{4})$/;
-	           		const email_pattern = /[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]$/i;
-	           		const postnum_pattern = /^[a-z|A-Z|0-9]{5}$/;
-	           		
-	           		const $userId = $('#userId');
-	            	const $email = $('#email');
-	            	const $phone = $('#phone');
-	            	const $address = $('#address');
-	            	const $addressDetail = $('#addressDetail');
-	            	const $postnum = $('#postnum');
-	            	const $gender = $('input:radio[name="gender"]:checked');
-	            	
-	            	if(postnum_pattern.test($postnum.val())) { //우편번호 정규식
-        		    	if($phone.val()=='' || phone_pattern.test($phone.val())) { //폰 정규식
-        			    	if(email_pattern.test($email.val())) { //이메일 정규식
-        			    		$.ajax({
-        			    			url:'EditMemberInfoEtc',
-        			    			type:'post',
-        			    			data: {
-        			    				"userId":$userId.val(),
-        			    				"email":$email.val(),
-        			    				"phone":$phone.val(),
-        			    				"postnum":$postnum.val(),
-        			    				"address":$address.val(),
-        			    				"addressDetail":$addressDetail.val(),
-        			    				"gender":$gender.val()
-        			    			},
-        			    			success: result => {
-        			    				const member = result.data;
-        			    				$email.val(member.email);
-        			    				$phone.val(member.phone);
-        			    				$postnum.val(member.postnum);
-        			    				$address.val(member.address);
-        			    				$addressDetail.val(member.addressDetail);
-        			    				$gender.val(member.gender);
-        			    				alert('세부 정보 수정이 완료되었습니다.');
-        			    			}
-        			    		});
-        			    	} else {
-        			    		alert('올바른 이메일 형식을 입력해주세요.');
-        			    	}
-        		    	} else {
-        		    		alert('하이픈(-)을 포함하여 올바른 형식으로 휴대폰 번호를 작성해주세요.');
-        		    	}
-	            	} else {
-	            		alert('우편번호는 숫자5자리로 이루어져 있어야 합니다.');
-	            	}
-	        		
-	        	}
-	        </script>
-	    </form>
-	</div>
-</c:if>
+		            <div class="col-half">
+			            <div class="input-group input-group-icon">
+			            	<input type="text" placeholder="우편번호" id="postnum" name="postnum" value="${loginUser.postnum }" />
+			                <div class="input-icon"><i class="fa fa-credit-card"></i></div>
+			            </div>
+		            </div>
+		       	</div>
+		       	<div class="row">
+		            <div class="input-group input-group-icon"><input type="text" id="phone" placeholder="전화번호" name="phone" value="${loginUser.phone }" />
+		                <div class="input-icon"><i class="fa fa-envelope"></i></div>
+		            </div>
+		        </div>
+		        <div class="row">
+		        	<input type="button" class="input-group" value="회원정보 수정" id="info_submit" onclick="info_submitfc()"/>
+		        </div>
+		        <script>
+		        	window.onload = () => {
+		        		$("input:radio[name='gender'][value=${loginUser.gender }]").prop('checked',true);
+		        	};
+		        	function info_submitfc() {
+		           		const phone_pattern = /^(?:(010)|(01[1|6|7|8|9]))-\d{3,4}-(\d{4})$/;
+		           		const email_pattern = /[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]$/i;
+		           		const postnum_pattern = /^[a-z|A-Z|0-9]{5}$/;
+		           		
+		           		const $userId = $('#userId');
+		            	const $email = $('#email');
+		            	const $phone = $('#phone');
+		            	const $address = $('#address');
+		            	const $addressDetail = $('#addressDetail');
+		            	const $postnum = $('#postnum');
+		            	const $gender = $('input:radio[name="gender"]:checked');
+		            	
+		            	if(postnum_pattern.test($postnum.val())) { //우편번호 정규식
+	        		    	if($phone.val()=='' || phone_pattern.test($phone.val())) { //폰 정규식
+	        			    	if(email_pattern.test($email.val())) { //이메일 정규식
+	        			    		$.ajax({
+	        			    			url:'EditMemberInfoEtc',
+	        			    			type:'post',
+	        			    			data: {
+	        			    				"userId":$userId.val(),
+	        			    				"email":$email.val(),
+	        			    				"phone":$phone.val(),
+	        			    				"postnum":$postnum.val(),
+	        			    				"address":$address.val(),
+	        			    				"addressDetail":$addressDetail.val(),
+	        			    				"gender":$gender.val()
+	        			    			},
+	        			    			success: result => {
+	        			    				const member = result.data;
+	        			    				$email.val(member.email);
+	        			    				$phone.val(member.phone);
+	        			    				$postnum.val(member.postnum);
+	        			    				$address.val(member.address);
+	        			    				$addressDetail.val(member.addressDetail);
+	        			    				$gender.val(member.gender);
+	        			    				alert('세부 정보 수정이 완료되었습니다.');
+	        			    			}
+	        			    		});
+	        			    	} else {
+	        			    		alert('올바른 이메일 형식을 입력해주세요.');
+	        			    	}
+	        		    	} else {
+	        		    		alert('하이픈(-)을 포함하여 올바른 형식으로 휴대폰 번호를 작성해주세요.');
+	        		    	}
+		            	} else {
+		            		alert('우편번호는 숫자5자리로 이루어져 있어야 합니다.');
+		            	}
+		        		
+		        	}
+		        </script>
+		    </form>
+		</div>
+	</c:if>
 </div>
 <jsp:include page="../common/footer.jsp"></jsp:include>
 </body>

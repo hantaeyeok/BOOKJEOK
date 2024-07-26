@@ -57,8 +57,6 @@ public class MemberController {
 					.userPwd(bCryptPasswordEncoder.encode(sm.getId()+sm.getNickName()+sm.getThumbnailImg()))
 					.email("example"+sm.getId()+"@gmail.com")
 					.build();
-					//비밀번호 : 소셜 사용자의 경우 마이페이지 정보수정 등에서도 비밀번호 재확인을 물어보지 않고 그냥 넘어가므로, 임의의 
-					//이메일부분은 카카오에서 사업허가 등을 받고 카카오 이메일을 받아올 수 있게 된다면 그 이메일을 넣게 될 것이고, 현재는 임시 데이터를 집어넣었음 
 			Member memberDB = memberService.login(socialMember);
 			if (memberDB != null) {
 				session.setAttribute("loginUser", memberDB);
@@ -119,7 +117,11 @@ public class MemberController {
 			helper = new MimeMessageHelper(message, false, "UTF-8");
 			Member memberFind=memberService.getMemberByEmail(member);
 			if (memberFind!=null && member.getUserId().equals(memberFind.getUserId())) {
-				String code = bCryptPasswordEncoder.encode(memberFind.getUserName());
+				String code = bCryptPasswordEncoder.encode(memberFind.getUserId()
+																		+"&&::"
+																		+memberFind.getUserName()
+																		+"with"
+																		+memberFind.getEmail().split("@")[0]);
 				PwResetKey pwResetKey = PwResetKey.builder()
 												  .userId(memberFind.getUserId())
 												  .code(code)
@@ -128,33 +130,30 @@ public class MemberController {
 				if (i>0) {
 					String link = "http://localhost/member/pwdreset?id="+memberFind.getUserId()+"&key="+code;
 					helper.setSubject("북적북적 - 비밀번호 재설정");
-					helper.setText("<h1>비밀번호 재설정</h1><h3>"+memberFind.getUserId()+"</h3>님<br/><p>아래 링크로 접속하셔서 비밀번호를 재설정해주세요.</p><br/>"+ link +"<br/><p>절대 타인과 이 링크를 공유하지 마세요!</p>" ,true);
+					helper.setText("<h1>비밀번호 재설정</h1><h3>"+memberFind.getUserId()
+															 +"</h3>님<br/><p>아래 링크로 접속하셔서 비밀번호를 재설정해주세요.</p><br/>"
+															 +link
+															 +"<br/><p>절대 타인과 이 링크를 공유하지 마세요!</p>" ,true);
 					helper.setTo(memberFind.getEmail());
 					sender.send(message);
-					return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
-																			.data("success")
-																		    .message("데이터 전송완료")
-																		    .build());
+					
+					return responseReturn(HttpStatus.OK,"success", "데이터 전송완료");
 				} else {
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder()
-																		 .data("fail")
-																	     .message("비밀번호 재설정 코드 등록 실패")
-																	     .build());
+					return responseReturn(HttpStatus.BAD_REQUEST, "fail", "비밀번호 재설정 코드 등록 실패");
 				}
-				
-
 			} else {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder()
-																				 .data("fail")
-																			     .message("데이터 전송실패")
-																			     .build());
+				return responseReturn(HttpStatus.BAD_REQUEST, "fail", "데이터 전송실패");
 			}
 		} catch (MessagingException e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder()
-																.data("fail")
-															    .message("이메일 전송실패")
-															    .build());
+			return responseReturn(HttpStatus.BAD_REQUEST, "fail", "이메일 전송실패");
 		}
+	}
+	
+	private ResponseEntity<Message> responseReturn(HttpStatus status, String data, String message) {
+		return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+															.data(data)
+														    .message(message)
+														    .build());
 	}
 	
 	@GetMapping("pwdreset")
@@ -162,15 +161,21 @@ public class MemberController {
 		PwResetKey pwResetKey = PwResetKey.builder().userId(id).code(key).build();
 		Member member = memberService.login(Member.builder().userId(pwResetKey.getUserId()).build());
 		if( pwResetKey!=null && memberService.pwdResetKeySelectOne(pwResetKey).getCode().equals(pwResetKey.getCode())  ) {
-			if( member!=null && bCryptPasswordEncoder.matches(member.getUserName(), pwResetKey.getCode()) ) {
+			if( member!=null && bCryptPasswordEncoder.matches(member.getUserId()
+					+"&&::"
+					+member.getUserName()
+					+"with"
+					+member.getEmail().split("@")[0], pwResetKey.getCode()) ) {
 				mv.addObject("member",member)
 				  .addObject("pwResetKey",pwResetKey)
 				  .setViewName("/member/findPwd_reset");
 			} else {
-				mv.setViewName("redirect:/");
+				mv.addObject("alertMsg", "잘못된 인증코드입니다.")
+				  .setViewName("redirect:/");
 			}
 		} else {
-			mv.setViewName("redirect:/");
+			mv.addObject("alertMsg", "유효하지 않은 링크입니다.")
+			  .setViewName("redirect:/");
 		}
 		return mv;
 	}
@@ -228,7 +233,6 @@ public class MemberController {
 		if (loginUser!=null && bCryptPasswordEncoder.matches(member.getUserPwd(), loginUser.getUserPwd())) { 
 			session.setAttribute("loginUser", loginUser);
 			System.out.println("로그인 성공 - session객체 loginUser : "+ session.getAttribute("loginUser"));
-			System.out.println();
 			return ResponseEntity.status(HttpStatus.OK).body(Message.builder().message("success")
 																			  .data(loginUser)
 																			  .build());
@@ -240,22 +244,11 @@ public class MemberController {
 	
 	@PostMapping("join")
 	public String join(Member member, HttpSession session) {
-
-		member.setUserId(member.getUserId().replaceAll(" ", ""));
-		member.setUserName(member.getUserName().replaceAll(" ", ""));
-		member.setUserPwd(member.getUserPwd().replaceAll(" ", ""));
-		member.setPhone(member.getPhone().replaceAll(" ", ""));
-		member.setAddress(member.getAddress().replaceAll("  ", " "));
-		member.setPostnum(member.getPostnum().replaceAll(" ", ""));
-		member.setEmail(member.getEmail().replaceAll(" ", ""));
 		
-		//암호화구문 삽입 부분
 		String encPwd = bCryptPasswordEncoder.encode(member.getUserPwd());
 		member.setUserPwd(encPwd);
 
-		//DB 삽입구문
 		int nnn = memberService.insertMem(member);
-		//DB 삽입 성공시
 		if (nnn > 0) {
 			session.setAttribute("loginUser", member);
 		} else {
@@ -295,11 +288,10 @@ public class MemberController {
 	public Member EditMemberInfoPwd(Member member, HttpSession session) {
 		member.setUserId(member.getUserId().replaceAll(" ", ""));
 		member.setUserPwd(member.getUserPwd().replaceAll(" ", ""));
-		if(session.getAttribute("loginUser")!=null && member.getUserId().equals(  memberService.login(  (Member)(session.getAttribute("loginUser"))  ).getUserId())  ) {
+		if(session.getAttribute("loginUser")!=null
+				&& member.getUserId().equals( ((Member)(session.getAttribute("loginUser"))).getUserId() ) ) {
 			String encPwd = bCryptPasswordEncoder.encode(member.getUserPwd());
-			System.out.println("member.getUserPwd() : "+member.getUserPwd());
 			member.setUserPwd(encPwd);
-			System.out.println("인코딩 후 member.getUserPwd() : " + member.getUserPwd());
 
 			int up = memberService.updatePwd(member);
 			member=memberService.login(member);
@@ -318,7 +310,9 @@ public class MemberController {
 		member.setPostnum(member.getPostnum().replaceAll(" ", ""));
 		member.setEmail(member.getEmail().replaceAll(" ", ""));
 		System.out.println(member);
-		if(session.getAttribute("loginUser")!=null && member.getUserId().equals(  memberService.login(  (Member)(session.getAttribute("loginUser"))  ).getUserId())  ) {
+		if(session.getAttribute("loginUser")!=null 
+				&& member.getUserId().equals(  
+				memberService.login(  (Member)(session.getAttribute("loginUser"))  ).getUserId())  ) {
 			int upAddress=0;
 			int upPhone=0;
 			int upGender=0;

@@ -190,7 +190,6 @@ select option {
   margin: 0em auto;
   background-color: #fff;
   border-radius: 4.2px;
-  box-shadow: 0px 3px 10px -2px rgba(0, 0, 0, 0.2);
 }
 .row {
   zoom: 1;
@@ -241,6 +240,7 @@ select option {
 <body>
 <jsp:include page="../common/menubar.jsp"></jsp:include>
 <div class="container">
+	<div style="width:100%; height:100px;"></div>
     <form action="/member/join" method="post" id="join_form">
         <div class="row">
             <h4>회원 정보</h4>
