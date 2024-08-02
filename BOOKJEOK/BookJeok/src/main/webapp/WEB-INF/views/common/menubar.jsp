@@ -103,13 +103,7 @@
                     </div>
                 </div>
             </nav>
-        <form class="form-inline my-4">
-            <div class="dropdown w-100">
-                <input type="text" class="form-control w-75" id="searchInput" name="searchInput" placeholder="검색어를 입력하세요" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <button type="button" class="btn btn-primary ml-2" id="searchButtonDB">검색</button>
-                <div id="searchResults" class="dropdown-menu" aria-labelledby="searchInput"></div>
-            </div>
-        </form>
+
         </div>
     </header>
     

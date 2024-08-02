@@ -19,6 +19,10 @@ public interface MemberService {
 	int updateEmail(Member member);
 	int updateGender(Member member);
 	int updateAddress(Member member);
+	int insertPhone(Member member);
+	int insertEmail(Member member);
+	int insertGender(Member member);
+	int insertAddress(Member member);
 	
 	int delete(String string);
 	

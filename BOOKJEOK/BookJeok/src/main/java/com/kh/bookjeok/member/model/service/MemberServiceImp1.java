@@ -113,6 +113,35 @@ public class MemberServiceImp1 implements MemberService{
 	}
 
 
+	@Override
+	public int insertPhone(Member member) {
+		// TODO Auto-generated method stub
+		return memberMapper.insertPhone(member);
+	}
+
+
+	@Override
+	public int insertEmail(Member member) {
+		// TODO Auto-generated method stub
+		return memberMapper.insertEmail(member);
+	}
+
+
+	@Override
+	public int insertGender(Member member) {
+		// TODO Auto-generated method stub
+		return memberMapper.insertGender(member);
+	}
+
+
+	@Override
+	public int insertAddress(Member member) {
+		// TODO Auto-generated method stub
+		return memberMapper.insertAddress(member);
+	}
+
+
+
 
 
 

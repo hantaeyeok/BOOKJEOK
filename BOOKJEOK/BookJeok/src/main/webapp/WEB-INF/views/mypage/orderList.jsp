@@ -55,20 +55,20 @@ border-left: solid 1px #CCC; padding:0px 10px; display:flex; align-items:center;
 			<tbody class="orderList">
 				
 				<!-- 줄 단위 블럭 시작 -->
-				<c:forEach items="${orderList }" var="order" varStatus="status">
+				<c:forEach items="${orderList}" var="order" varStatus="status">
 					<tr>
-						<th scope="row">${order.orderNo }</th>
-						<td>${order.paymentDate }</td>
+						<th scope="row">${order.orderNo}</th>
+						<td>${order.paymentDate}</td>
 						<td>
 							<!-- 한 줄 당 여러 도서 항목 블럭 시작 -->
-							<c:forEach items="${order.orderList }" var="orderPerbook">
+							<c:forEach items="${order.orderList}" var="orderPerbook">
 								<div class="item_div" style="display:flex;">
 									<img class="item_div_img" alt="" src="${orderPerbook.book.bookCover}" />
 									<div class="item_div_title">
-										${orderPerbook.book.bookTitle }
+										${orderPerbook.book.bookTitle}
 									</div>
 									<div class="item_div_count">
-										${orderPerbook.orderQuan }권
+										${orderPerbook.orderQuan}권
 									</div>
 								</div>
 							<!-- 한 줄 당 여러 도서 항목 블럭 끝 -->
@@ -76,23 +76,7 @@ border-left: solid 1px #CCC; padding:0px 10px; display:flex; align-items:center;
 							
 						</td>
 						<td>${order.paymentPrice}(${order.mileageGet })</td>
-						<c:choose>
-							<c:when test="${order.paymentStatus eq '1'}">
-								<td>배송전</td>
-							</c:when>
-							<c:when test="${order.paymentStatus eq '2'}">
-								<td>배송중</td>
-							</c:when>
-							<c:when test="${order.paymentStatus eq '3'}">
-								<td>배송 완료</td>
-							</c:when>
-							<c:when test="${order.paymentStatus eq '4'}">
-								<td>환불중</td>
-							</c:when>
-							<c:otherwise>
-								<td>환불완료</td>
-							</c:otherwise>
-						</c:choose>
+						<td>${order.deliveryStatus }</td>
 						<c:choose>
 							<c:when test="${order.paymentStatus eq '1'}">
 								<td><button type="button" class="btn btn-primary">환불가능</button></td>

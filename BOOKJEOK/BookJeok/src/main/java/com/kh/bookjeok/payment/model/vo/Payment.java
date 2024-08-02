@@ -25,6 +25,7 @@ public class Payment {
 	private int paymentPeriod;
 	private String paymentTool;
 	private String paymentStatus;
+	private String deliveryStatus;
 	private String paymentBank;
 	private String totalPrice;
 	private String paymentPrice;

@@ -1,6 +1,7 @@
 package com.kh.bookjeok.member.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -126,8 +127,8 @@ public class MemberController {
 												  .userId(memberFind.getUserId())
 												  .code(code)
 												  .build();
-				int i = memberService.pwdResetKeyInsert(pwResetKey);
-				if (i>0) {
+				int insSuccess = memberService.pwdResetKeyInsert(pwResetKey);
+				if (insSuccess>0) {
 					String link = "http://localhost/member/pwdreset?id="+memberFind.getUserId()+"&key="+code;
 					helper.setSubject("북적북적 - 비밀번호 재설정");
 					helper.setText("<h1>비밀번호 재설정</h1><h3>"+memberFind.getUserId()
@@ -137,28 +138,52 @@ public class MemberController {
 					helper.setTo(memberFind.getEmail());
 					sender.send(message);
 					
-					return responseReturn(HttpStatus.OK,"success", "데이터 전송완료");
+					return successResponse("데이터 전송완료");
 				} else {
-					return responseReturn(HttpStatus.BAD_REQUEST, "fail", "비밀번호 재설정 코드 등록 실패");
+					return failResponse("비밀번호 재설정 코드 등록 실패");
 				}
 			} else {
-				return responseReturn(HttpStatus.BAD_REQUEST, "fail", "데이터 전송실패");
+				return failResponse("데이터 전송실패");
 			}
 		} catch (MessagingException e) {
-			return responseReturn(HttpStatus.BAD_REQUEST, "fail", "이메일 전송실패");
+			return failResponse("이메일 전송실패");
 		}
 	}
 	
-	private ResponseEntity<Message> responseReturn(HttpStatus status, String data, String message) {
-		return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
-															.data(data)
+	private ResponseEntity<Message> failResponse(String message) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder()
+															.data("fail")
 														    .message(message)
 														    .build());
+	}
+	private ResponseEntity<Message> failResponse(String message, Object data) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder()
+															.data(data)
+															.message(message)
+															.build());
+	}
+	
+	private ResponseEntity<Message> successResponse(String message) {
+		return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+												   .data("success")
+												   .message(message)
+												   .build());
+	}
+	private ResponseEntity<Message> successResponse(String message, Object data) {
+		return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
+												   .data(data)
+												   .message(message)
+											   	   .build());
 	}
 	
 	@GetMapping("pwdreset")
 	public ModelAndView pwdreset(String id, String key, ModelAndView mv) {
+
 		PwResetKey pwResetKey = PwResetKey.builder().userId(id).code(key).build();
+		System.out.println(pwResetKey);
+		System.out.println(Member.builder().userId(pwResetKey.getUserId()).build());
+		System.out.println(memberService.login(Member.builder().userId(pwResetKey.getUserId()).build()));
+		System.out.println(memberService.pwdResetKeySelectOne(pwResetKey));
 		Member member = memberService.login(Member.builder().userId(pwResetKey.getUserId()).build());
 		if( pwResetKey!=null && memberService.pwdResetKeySelectOne(pwResetKey).getCode().equals(pwResetKey.getCode())  ) {
 			if( member!=null && bCryptPasswordEncoder.matches(member.getUserId()
@@ -170,49 +195,40 @@ public class MemberController {
 				  .addObject("pwResetKey",pwResetKey)
 				  .setViewName("/member/findPwd_reset");
 			} else {
-				mv.addObject("alertMsg", "잘못된 인증코드입니다.")
-				  .setViewName("redirect:/");
+				returnAlert(mv, "잘못된 인증코드입니다.");
 			}
 		} else {
-			mv.addObject("alertMsg", "유효하지 않은 링크입니다.")
-			  .setViewName("redirect:/");
+			returnAlert(mv, "유효하지 않은 링크입니다.");
 		}
 		return mv;
+	}
+	
+	public void returnAlert(ModelAndView mv, String message) {
+		mv.addObject("alertMsg", message)
+		  .setViewName("/");
 	}
 	
 	@ResponseBody
 	@PostMapping("pwdresetPro")
 	public ResponseEntity<Message> pwdresetPro(Member member, String code) {
-		PwResetKey pwResetKey = memberService.pwdResetKeySelectOne( PwResetKey.builder().userId(member.getUserId()).code(code).build() );
-		member.setUserPwd( bCryptPasswordEncoder.encode(member.getUserPwd().replaceAll(" ", "")) );
+		PwResetKey pwResetKey = memberService.pwdResetKeySelectOne( PwResetKey.builder()
+																			  .userId(member.getUserId())
+																			  .code(code)
+																			  .build());
 		if(member!=null && pwResetKey.getCode().equals(code)) {
-			int i = memberService.pwdResetKeyDelete(pwResetKey);
-			int j = memberService.updatePwd(member);
-			if (i>0) {
-				if (j>0) {
-					return ResponseEntity.status(HttpStatus.OK).body(Message.builder()
-							.data("success")
-						    .message("데이터 전송완료")
-						    .build());
+			int delSuccess = memberService.pwdResetKeyDelete(pwResetKey);
+			int upSuccess = memberService.updatePwd(member);
+			if (delSuccess>0) {
+				if (upSuccess>0) {
+					return successResponse("데이터 전송완료");
 				} else {
-					System.out.println("memberService.updatePwd 실패");
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder()
-							.data("fail")
-						    .message("memberService.updatePwd 실패")
-						    .build());
+					return failResponse("memberService.updatePwd 실패");
 				}
 			} else {
-				System.out.println("memberService.pwdResetKeyDelete 실패");
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder()
-						.data("fail")
-					    .message("memberService.pwdResetKeyDelete 실패")
-					    .build());
+				return failResponse("memberService.pwdResetKeyDelete 실패");
 			}
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Message.builder()
-				.data("fail")
-			    .message("member이 null 이거나 pwResetKey가 DB와 일치하지않습니다.")
-			    .build());
+		return failResponse("member이 null 이거나 pwResetKey가 DB와 일치하지않습니다.");
 	}
 	
 	@GetMapping("logout")
@@ -227,12 +243,10 @@ public class MemberController {
 	@ResponseBody
 	@PostMapping("login")
 	public ResponseEntity<Message> login(Member member, HttpSession session) {
-		Member loginUser;
-		loginUser = memberService.login(member);
+		Member loginUser = memberService.login(member);
 		
 		if (loginUser!=null && bCryptPasswordEncoder.matches(member.getUserPwd(), loginUser.getUserPwd())) { 
 			session.setAttribute("loginUser", loginUser);
-			System.out.println("로그인 성공 - session객체 loginUser : "+ session.getAttribute("loginUser"));
 			return ResponseEntity.status(HttpStatus.OK).body(Message.builder().message("success")
 																			  .data(loginUser)
 																			  .build());
@@ -304,44 +318,65 @@ public class MemberController {
 	
 	@ResponseBody
 	@PostMapping("EditMemberInfoEtc")
-	public Member EditMemberInfoEtc(Member member, HttpSession session) {
-		member.setPhone(member.getPhone().replaceAll(" ", ""));
-		member.setAddress(member.getAddress().replaceAll("  ", " "));
-		member.setPostnum(member.getPostnum().replaceAll(" ", ""));
-		member.setEmail(member.getEmail().replaceAll(" ", ""));
-		System.out.println(member);
+	public ResponseEntity<Message> EditMemberInfoEtc(Member member, HttpSession session) {
 		if(session.getAttribute("loginUser")!=null 
-				&& member.getUserId().equals(  
-				memberService.login(  (Member)(session.getAttribute("loginUser"))  ).getUserId())  ) {
+				&& member.getUserId().equals(( (Member)(session.getAttribute("loginUser")) ).getUserId())  ) {
 			int upAddress=0;
 			int upPhone=0;
 			int upGender=0;
 			int upEmail=0;
-			if (!member.getAddress().isEmpty())				{
-				upAddress = memberService.updateAddress(member);
-			}
-			if (!member.getPhone().isEmpty())				{
-				upPhone = memberService.updatePhone(member);
-			}
-			if (!member.getGender().isEmpty())				{
-				upGender = memberService.updateGender(member);
-			}
-			if (!member.getEmail().isEmpty())				{
-				upEmail = memberService.updateEmail(member);
-			}
-			member = memberService.login(member);
-			session.setAttribute("loginUser", member);
+			HashMap<String, Integer> updated= new HashMap();
 			
+			/*
+			if ("".equals(((Member)session.getAttribute("loginUser")).getAddress()) && member.getAddress().equals("")) {
+				updated.put("upAddress", 0);
+			} else {
+				if (!"".equals(((Member)session.getAttribute("loginUser")).getAddress()) ) 				{
+					updated.put("upAddress", memberService.updateAddress(member));
+				} else {
+					updated.put("upAddress", memberService.insertAddress(member));
+				}
+			}
+			*/
+
+
+			if (!"".equals(((Member)session.getAttribute("loginUser")).getAddress()) ) 				{
+				upAddress = memberService.updateAddress(member);
+			} else if(!member.getAddress().equals("")) {
+				upAddress = memberService.insertAddress(member);
+			}
+			if (!"".equals(((Member)session.getAttribute("loginUser")).getPhone()) ) 				{
+				upPhone = memberService.updatePhone(member);
+			} else if(!member.getPhone().equals("")) {
+				upPhone = memberService.insertPhone(member);
+			}
+			if (!"".equals(((Member)session.getAttribute("loginUser")).getGender()) ) 				{
+				upGender = memberService.updateGender(member);
+			} else if(!member.getGender().equals("")) {
+				upGender = memberService.insertGender(member);
+			}
+			if (!"".equals(((Member)session.getAttribute("loginUser")).getEmail()) ) 				{
+				upEmail = memberService.updateEmail(member);
+			} else if(!member.getEmail().equals("")) {
+				upEmail = memberService.insertEmail(member);
+			}
+			
+			/*
 			int rst = upAddress + upPhone + upGender + upEmail;
 			if (rst > 0) {
-				System.out.println("업데이트 성공 - member : "+ member);
+				session.setAttribute("loginUser", member);
+				return responseReturn(HttpStatus.OK, member, "업데이트 성공");
 			} else {
-				System.out.println("없데이트");
+				return responseReturn(HttpStatus.BAD_REQUEST, "fail", "업데이트 실패");
 			}
+			*/
+			
+			return successResponse("업데이트 메소드 실행", updated);
 		}
 		
-		return member;
+		return failResponse("로그인된 사용자와 전달받은 사용자 정보가 일치하지 않습니다.");
 	}
+	
 	
 	@GetMapping("editMemberInfoBfr")
 	public ModelAndView editMemberInfoBfr(HttpSession session, ModelAndView mv) {

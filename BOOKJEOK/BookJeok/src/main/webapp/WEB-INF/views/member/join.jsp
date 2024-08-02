@@ -396,6 +396,41 @@ select option {
     	const $postnum = $('#postnum');
     	const $join_form = $('#join_form');
     	
+    	let alertMsg = '';
+    	let pass = false;
+    	
+    	switch (false){
+    		case ($postnum.val()=='' || postnum_pattern.test($postnum.val())) :
+    			alertMsg='우편번호는 숫자5자리로 이루어져 있어야 합니다.';
+    			break;
+    		case id_pattern.test($userId.val()) :
+    			alertMsg='id에는 영문자와 숫자만, 최소 4자리 이상 들어가야 사용할 수 있습니다.';
+    			break;
+    		case ($phone.val()=='' || phone_pattern.test($phone.val())) :
+    			alertMsg='하이픈(-)을 포함하여 올바른 형식으로 휴대폰 번호를 작성해주세요.';
+    			break;
+    		case email_pattern.test($email.val()) :
+    			alertMsg='올바른 이메일 형식을 입력해주세요.';
+    			break;
+    		case pw_pattern.test($userPwd.val()) :
+    			alertMsg='비밀번호는 영어 대문자, 영어 소문자, 숫자, 특수문자가 하나씩 포함된 문자열로 작성하여주세요.';
+    			break;
+    		case $userPwd.val()===$userPwdRetype.val() :
+    			alertMsg='비밀번호와 비밀번호확인란이 일치하지 않습니다.';
+    			break;
+    		case ($terms.is(':checked')) :
+    			alertMsg='개인정보 이용 약관에 동의하여주세요.';
+    			break;
+    		default :
+    			pass=true;
+    	}
+    	if(pass===true) {
+    		$join_form.submit();
+    	}
+    	else {
+    		alert(alertMsg);
+    	}
+    	/*
     	if(postnum_pattern.test($postnum.val())) { //우편번호 정규식
 			if(id_pattern.test($userId.val())) { //아이디 정규식
 		    	if($phone.val()=='' || phone_pattern.test($phone.val())) { //폰 정규식
@@ -425,6 +460,7 @@ select option {
     	} else {
     		alert('우편번호는 숫자5자리로 이루어져 있어야 합니다.');
     	}
+    	*/
     };
     </script>
     

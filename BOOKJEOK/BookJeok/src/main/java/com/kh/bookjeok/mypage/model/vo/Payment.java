@@ -23,6 +23,7 @@ public class Payment {
 	private String paymentDate;
 	private String paymentCard;
 	private String paymentCardNum;
+	private String deliveryStatus;
 	private int paymentPeriod;
 	private String paymentBank;
 	private int paymentPrice;

@@ -5,48 +5,55 @@
 <mapper namespace="com.kh.bookjeok.mypage.model.dao.PaymentMapper">
 	<sql id="getOrderSQL">
 		SELECT
-				P.ORDER_NO ,
-				P.USER_ID ,
-				P.PAYMENT_STATUS ,
-				P.PAYMENT_TOOL ,
-				P.PAYMENT_DATE ,
-				P.PAYMENT_CARD ,
-				P.PAYMENT_CARD_NUM ,
-				P.PAYMENT_PERIOD ,
-				P.PAYMENT_BANK ,
-				P.PAYMENT_PRICE ,
-				P.MILEAGE_GET ,
-				P.MILEAGE_USED ,
-				PB.ORDER_NO ,
-				PB.BOOK_NO ,
-				PB.ORDER_QUAN ,
-		        B.BOOK_NO,
-		        B.CATEGORY_ID,
-		        B.BOOK_TITLE,
-		        B.BOOK_AUTHOR,
-		        B.BOOK_PUBLISHER,
-		        B.BOOK_PUB_DATE,
-		        B.BOOK_ISBN,
-		        B.BOOK_PRICE,
-		        B.BOOK_DESCRIPTION,
-		        B.BOOK_COVER,
-		        B.BOOK_CREATE_DATE,
-		        B.BOOK_AMOUNT,
-		        B.BOOK_STATUS
-		FROM
-				PAYMENT P
-		JOIN
-				PAYMENT_PERBOOK PB
+			   P.ORDER_NO ,
+			   P.USER_ID ,
+			   P.PAYMENT_STATUS ,
+			   O.DELIVERY_STATUS ,
+			   P.PAYMENT_TOOL ,
+			   P.PAYMENT_DATE ,
+			   P.PAYMENT_CARD ,
+			   P.PAYMENT_CARD_NUM ,
+			   P.PAYMENT_PERIOD ,
+			   P.PAYMENT_BANK ,
+			   P.PAYMENT_PRICE ,
+			   P.MILEAGE_GET ,
+			   P.MILEAGE_USED ,
+			   PB.ORDER_NO ,
+			   PB.BOOK_NO ,
+			   PB.ORDER_QUAN ,
+			   B.BOOK_NO,
+			   B.CATEGORY_ID,
+			   B.BOOK_TITLE,
+			   B.BOOK_AUTHOR,
+			   B.BOOK_PUBLISHER,
+			   B.BOOK_PUB_DATE,
+			   B.BOOK_ISBN,
+			   B.BOOK_PRICE,
+			   B.BOOK_DESCRIPTION,
+			   B.BOOK_COVER,
+			   B.BOOK_CREATE_DATE,
+			   B.BOOK_AMOUNT,
+			   B.BOOK_STATUS
+		  FROM
+			   PAYMENT P
+		  JOIN
+			   PAYMENT_PERBOOK PB
 			ON
-				P.ORDER_NO = PB.ORDER_NO
-		JOIN
-				BOOK B
+			   P.ORDER_NO = PB.ORDER_NO
+		  JOIN
+			   BOOK B
 			ON
-				PB.BOOK_NO = B.BOOK_NO
+			   PB.BOOK_NO = B.BOOK_NO
+          JOIN
+			   ORDER_STATUS O
+            ON
+			   P.PAYMENT_STATUS = O.PAYMENT_STATUS
+				
 	</sql>
 	<resultMap id="orderResultSet" type="payment">
 		<result column="ORDER_NO" property="orderNo"/>
 		<result column="USER_ID" property="userId"/>
+		<result column="DELIVERY_STATUS" property="deliveryStatus"/>
 		<result column="PAYMENT_STATUS" property="paymentStatus"/>
 		<result column="PAYMENT_TOOL" property="paymentTool"/>
 		<result column="PAYMENT_DATE" property="paymentDate"/>

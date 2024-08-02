@@ -13,7 +13,7 @@
 </head>
 <body>
 <jsp:include page="../common/menubar.jsp"></jsp:include>
-<br>
+<div style="width:100%; height:100px; display:block; background-color:#FFF;"></div>
 <div style="width:100%; height:1200px; display:flex; justify-content:center;">
 	<div style="width:600px;" id="page1">
 	<form>
@@ -52,11 +52,11 @@
    						$page2.show();
    						$page3.hide();
    					}
-   					if (response.data == 'fail') {
-   						$page1.hide();
+   	  			},
+   	  			error : response => {
+						$page1.hide();
    						$page2.hide();
    						$page3.show();
-   					}
    	  			}
    	  		});
 

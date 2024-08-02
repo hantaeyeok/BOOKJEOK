@@ -15,10 +15,15 @@ public interface MemberMapper{
 	int update(Member member);
 	
 	int updatePwd(Member member);
+	
 	int updatePhone(Member member);
 	int updateEmail(Member member);
 	int updateGender(Member member);
 	int updateAddress(Member member);
+	int insertPhone(Member member);
+	int insertEmail(Member member);
+	int insertGender(Member member);
+	int insertAddress(Member member);
 	
 	int delete(String string);
 	
@@ -33,5 +38,6 @@ public interface MemberMapper{
 	PwResetKey pwdResetKeySelectOne(PwResetKey pwResetKey);
 
 	int pwdResetKeyDelete(PwResetKey pwResetKey);
+
 	
 }
